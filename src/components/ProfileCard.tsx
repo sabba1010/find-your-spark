@@ -4,11 +4,16 @@ import type { User } from "@/data/users";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-export default function ProfileCard({ user }: { user: User }) {
+export default function ProfileCard({ user, matchPercent }: { user: User; matchPercent?: number }) {
   const navigate = useNavigate();
 
   return (
     <div className="group relative overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-shadow hover:shadow-lg">
+      {matchPercent != null && (
+        <div className="absolute top-3 right-3 z-10 rounded-full bg-primary px-2.5 py-1 text-xs font-bold text-primary-foreground shadow">
+          {matchPercent}% match
+        </div>
+      )}
       <div className="aspect-[3/4] overflow-hidden">
         <img
           src={user.photo}
