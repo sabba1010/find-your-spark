@@ -5,6 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import ProfileCard from "@/components/ProfileCard";
 import { fakeUsers } from "@/data/users";
+import FeaturesSection from "@/components/FeaturesSection";
+import StatsSection from "@/components/StatsSection";
+import SafetySection from "@/components/SafetySection";
+import SuccessStories from "@/components/SuccessStories";
+import Footer from "@/components/Footer";
 
 const steps = ["Gender", "Looking for", "Age range", "Location", "Find matches"];
 
@@ -12,9 +17,8 @@ function OptionButton({ label, selected, onClick, emoji }: { label: string; sele
   return (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center gap-3 rounded-xl border-2 px-6 py-4 text-base font-medium transition-all ${
-        selected ? "border-primary bg-primary/10 text-primary shadow-sm" : "border-border bg-card text-foreground hover:border-primary/40"
-      }`}
+      className={`flex items-center justify-center gap-3 rounded-xl border-2 px-6 py-4 text-base font-medium transition-all ${selected ? "border-primary bg-primary/10 text-primary shadow-sm" : "border-border bg-card text-foreground hover:border-primary/40"
+        }`}
     >
       {emoji && <span className="text-xl">{emoji}</span>}
       {label}
@@ -160,6 +164,15 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* New Sections */}
+      <FeaturesSection />
+      <StatsSection />
+      <SafetySection />
+      <SuccessStories />
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
