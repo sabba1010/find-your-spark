@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Discover from "./pages/Discover";
 import Messages from "./pages/Messages";
+import MatchSetup from "./pages/MatchSetup";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
