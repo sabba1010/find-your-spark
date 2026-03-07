@@ -14,7 +14,7 @@ export default function Footer() {
                                 <Heart className="h-5 w-5 fill-current" />
                             </div>
                             <span className="text-2xl font-black tracking-tighter text-foreground">
-                                Spark<span className="text-primary">.</span>
+                                Heartbeat<span className="text-primary">.</span>
                             </span>
                         </Link>
                         <p className="text-muted-foreground">

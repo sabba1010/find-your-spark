@@ -16,7 +16,9 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2 md:py-3">
         <Link to="/" className="hidden items-center gap-2 md:flex">
           <Heart className="h-6 w-6 fill-primary text-primary" />
-          <span className="text-xl font-bold text-foreground">Heartbeat</span>
+          <span className="text-2xl font-black tracking-tighter text-foreground">
+                                Heartbeat<span className="text-primary">.</span>
+                            </span>
         </Link>
         <div className="flex w-full justify-around md:w-auto md:gap-1">
           {navItems.map(({ to, icon: Icon, label }) => {
