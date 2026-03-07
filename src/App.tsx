@@ -24,6 +24,7 @@ const App = () => (
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/discover" element={<Discover />} />
+          <Route path="/match-setup" element={<MatchSetup />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
