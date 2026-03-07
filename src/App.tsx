@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Discover from "./pages/Discover";
 import Messages from "./pages/Messages";
+import MatchSetup from "./pages/MatchSetup";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/discover" element={<Discover />} />
+          <Route path="/match-setup" element={<MatchSetup />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
