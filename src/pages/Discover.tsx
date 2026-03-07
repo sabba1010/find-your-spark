@@ -36,12 +36,12 @@ export default function Discover() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 pb-20 pt-6 md:pt-20">
-      <h1 className="mb-6 text-2xl font-bold text-foreground">Your Matches</h1>
+      <h1 className="mb-6 text-2xl font-bold text-foreground">Vos Profils</h1>
       {filteredUsers.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-lg text-muted-foreground">No matches found for your preferences.</p>
+          <p className="text-lg text-muted-foreground">Aucun profil trouvé pour vos préférences.</p>
           <a href="/match-setup" className="mt-4 text-sm font-medium text-primary hover:underline">
-            Update your preferences
+            Mettre à jour vos préférences
           </a>
         </div>
       ) : (

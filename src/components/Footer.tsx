@@ -37,38 +37,38 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h4 className="mb-6 text-sm font-bold uppercase tracking-wider text-foreground">Explore</h4>
-                        <ul className="space-y-4">
-                            <li><Link to="/discover" className="text-muted-foreground hover:text-primary transition-colors">Discover</Link></li>
-                            <li><Link to="/match-setup" className="text-muted-foreground hover:text-primary transition-colors">Matches</Link></li>
-                            <li><Link to="/messages" className="text-muted-foreground hover:text-primary transition-colors">Messages</Link></li>
-                            <li><Link to="/auth" className="text-muted-foreground hover:text-primary transition-colors">Get Started</Link></li>
+                        <h4 className="mb-4 font-bold text-foreground">Application</h4>
+                        <ul className="space-y-2 text-sm text-muted-foreground">
+                            <li><Link to="/discover" className="hover:text-primary">Découvrir</Link></li>
+                            <li><Link to="/messages" className="hover:text-primary">Messages</Link></li>
+                            <li><Link to="/profile" className="hover:text-primary">Profil</Link></li>
+                            <li><Link to="/match-setup" className="hover:text-primary">Configuration</Link></li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="mb-6 text-sm font-bold uppercase tracking-wider text-foreground">About us</h4>
-                        <ul className="space-y-4">
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Our Story</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Success Stories</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Safety Tips</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Blog</a></li>
+                        <h4 className="mb-4 font-bold text-foreground">Compagnie</h4>
+                        <ul className="space-y-2 text-sm text-muted-foreground">
+                            <li><Link to="/" className="hover:text-primary">À propos</Link></li>
+                            <li><Link to="/" className="hover:text-primary">Carrières</Link></li>
+                            <li><Link to="/" className="hover:text-primary">Blog</Link></li>
+                            <li><Link to="/" className="hover:text-primary">Contact</Link></li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="mb-6 text-sm font-bold uppercase tracking-wider text-foreground">Legal</h4>
-                        <ul className="space-y-4">
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Cookie Policy</a></li>
-                            <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Community Guidelines</a></li>
+                        <h4 className="mb-4 font-bold text-foreground">Légal</h4>
+                        <ul className="space-y-2 text-sm text-muted-foreground">
+                            <li><Link to="/" className="hover:text-primary">Confidentialité</Link></li>
+                            <li><Link to="/" className="hover:text-primary">Conditions</Link></li>
+                            <li><Link to="/" className="hover:text-primary">Cookies</Link></li>
+                            <li><Link to="/" className="hover:text-primary">Sécurité</Link></li>
                         </ul>
                     </div>
                 </div>
 
                 <div className="mt-16 border-t border-border pt-8 text-center text-sm text-muted-foreground">
-                    <p>© {currentYear} Find Your Spark. All rights reserved.</p>
+                    <p>© {currentYear} Find Your Spark. Tous droits réservés.</p>
                 </div>
             </div>
         </footer>

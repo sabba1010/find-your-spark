@@ -12,7 +12,7 @@ export default function Auth() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success(isLogin ? "Welcome back! 💕" : "Account created! Let's find your match 🎉");
+    toast.success(isLogin ? "Bon retour parmi nous ! 💕" : "Compte créé ! Trouvons votre match 🎉");
     navigate("/match-setup");
   };
 
@@ -22,10 +22,10 @@ export default function Auth() {
         <div className="mb-6 text-center">
           <Heart className="mx-auto mb-2 h-10 w-10 fill-primary text-primary" />
           <h1 className="text-2xl font-bold text-card-foreground">
-            {isLogin ? "Welcome back" : "Create your account"}
+            {isLogin ? "Bon retour parmi nous" : "Créez votre compte"}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {isLogin ? "Sign in to continue" : "Start your journey to love"}
+            {isLogin ? "Connectez-vous pour continuer" : "Commencez votre voyage vers l'amour"}
           </p>
         </div>
 
@@ -35,7 +35,7 @@ export default function Auth() {
             <Input id="email" type="email" placeholder="you@example.com" required />
           </div>
           <div>
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Mot de passe</Label>
             <Input id="password" type="password" placeholder="••••••••" required />
           </div>
 
@@ -43,27 +43,27 @@ export default function Auth() {
             <>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="gender">I am a</Label>
+                  <Label htmlFor="gender">Je suis</Label>
                   <select id="gender" className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                    <option value="woman">Woman</option>
-                    <option value="man">Man</option>
+                    <option value="woman">Une femme</option>
+                    <option value="man">Un homme</option>
                   </select>
                 </div>
                 <div>
-                  <Label htmlFor="looking">Looking for</Label>
+                  <Label htmlFor="looking">Recherche</Label>
                   <select id="looking" className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                    <option value="man">Man</option>
-                    <option value="woman">Woman</option>
+                    <option value="man">Un homme</option>
+                    <option value="woman">Une femme</option>
                   </select>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="age">Age</Label>
+                  <Label htmlFor="age">Âge</Label>
                   <Input id="age" type="number" min={18} max={99} placeholder="25" required />
                 </div>
                 <div>
-                  <Label htmlFor="location">Location</Label>
+                  <Label htmlFor="location">Ville/Lieu</Label>
                   <Input id="location" placeholder="Paris" required />
                 </div>
               </div>
@@ -71,17 +71,17 @@ export default function Auth() {
           )}
 
           <Button type="submit" className="w-full" size="lg">
-            {isLogin ? "Sign In" : "Create Account"}
+            {isLogin ? "Se Connecter" : "Créer un Compte"}
           </Button>
         </form>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+          {isLogin ? "Vous n'avez pas de compte ?" : "Vous avez déjà un compte ?"}{" "}
           <button
             onClick={() => setIsLogin(!isLogin)}
             className="font-medium text-primary hover:underline"
           >
-            {isLogin ? "Sign Up" : "Log In"}
+            {isLogin ? "S'inscrire" : "Se Connecter"}
           </button>
         </p>
       </div>

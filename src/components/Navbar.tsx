@@ -2,10 +2,10 @@ import { Heart, MessageCircle, Search, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const navItems = [
-  { to: "/", icon: Heart, label: "Home" },
-  { to: "/discover", icon: Search, label: "Discover" },
+  { to: "/", icon: Heart, label: "Accueil" },
+  { to: "/discover", icon: Search, label: "Découvrir" },
   { to: "/messages", icon: MessageCircle, label: "Messages" },
-  { to: "/profile", icon: User, label: "Profile" },
+  { to: "/profile", icon: User, label: "Profil" },
 ];
 
 export default function Navbar() {
@@ -17,8 +17,8 @@ export default function Navbar() {
         <Link to="/" className="hidden items-center gap-2 md:flex">
           <Heart className="h-6 w-6 fill-primary text-primary" />
           <span className="text-2xl font-black tracking-tighter text-foreground">
-                                Heartbeat<span className="text-primary">.</span>
-                            </span>
+            Heartbeat<span className="text-primary">.</span>
+          </span>
         </Link>
         <div className="flex w-full justify-around md:w-auto md:gap-1">
           {navItems.map(({ to, icon: Icon, label }) => {
@@ -28,8 +28,8 @@ export default function Navbar() {
                 key={to}
                 to={to}
                 className={`flex flex-col items-center gap-0.5 rounded-lg px-4 py-1.5 text-xs transition-colors md:flex-row md:gap-2 md:text-sm ${active
-                    ? "text-primary font-semibold"
-                    : "text-muted-foreground hover:text-foreground"
+                  ? "text-primary font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
                   }`}
               >
                 <Icon className="h-5 w-5" />

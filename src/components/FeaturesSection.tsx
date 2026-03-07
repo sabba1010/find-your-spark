@@ -3,23 +3,23 @@ import { MessageCircle, Heart, Search, Video } from "lucide-react";
 const features = [
   {
     icon: <Search className="h-8 w-8 text-primary" />,
-    title: "Smart Matching",
-    description: "Our advanced algorithm connects you with people who share your interests and values.",
+    title: "Matching Intelligent",
+    description: "Notre algorithme avancé vous met en relation avec des personnes qui partagent vos centres d'intérêt et vos valeurs.",
   },
   {
     icon: <MessageCircle className="h-8 w-8 text-primary" />,
-    title: "Real-time Messaging",
-    description: "Start a conversation instantly with our seamless and secure chat platform.",
+    title: "Messagerie en Temps Réel",
+    description: "Lancez une conversation instantanément grâce à notre plateforme de chat fluide et sécurisée.",
   },
   {
     icon: <Video className="h-8 w-8 text-primary" />,
-    title: "Video Dates",
-    description: "Connect face-to-face from the comfort of your home with high-quality video calling.",
+    title: "Rendez-vous Vidéo",
+    description: "Connectez-vous face à face dans le confort de votre maison avec des appels vidéo de haute qualité.",
   },
   {
     icon: <Heart className="h-8 w-8 text-primary" />,
-    title: "Verified Profiles",
-    description: "Browse with confidence knowing that our team manually verifies every profile.",
+    title: "Profils Vérifiés",
+    description: "Naviguez en toute confiance en sachant que notre équipe vérifie manuellement chaque profil.",
   },
 ];
 
@@ -29,10 +29,10 @@ export default function FeaturesSection() {
       <div className="mx-auto max-w-6xl px-4">
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Why Choose Find Your Spark?
+            Pourquoi Choisir Heartbeat ?
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-            We provide the tools and security you need to find a meaningful connection in the modern dating world.
+            Nous fournissons les outils et la sécurité dont vous avez besoin pour trouver une connexion significative dans le monde des rencontres modernes.
           </p>
         </div>
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">

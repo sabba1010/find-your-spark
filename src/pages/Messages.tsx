@@ -30,7 +30,7 @@ export default function Messages() {
             ...c,
             messages: [
               ...c.messages,
-              { id: `m${Date.now()}`, senderId: "me", text: newMsg, timestamp: "Now" },
+              { id: `m${Date.now()}`, senderId: "me", text: newMsg, timestamp: "À l'instant" },
             ],
           }
           : c
@@ -109,8 +109,8 @@ export default function Messages() {
                 >
                   <div
                     className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm ${msg.senderId === "me"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-foreground"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-foreground"
                       }`}
                   >
                     {msg.text}
@@ -134,7 +134,7 @@ export default function Messages() {
                 <Input
                   value={newMsg}
                   onChange={(e) => setNewMsg(e.target.value)}
-                  placeholder="Type a message..."
+                  placeholder="Écrire un message..."
                   className="flex-1"
                 />
                 <Button type="submit" size="icon">
@@ -145,7 +145,7 @@ export default function Messages() {
           </>
         ) : (
           <div className="flex flex-1 items-center justify-center text-muted-foreground">
-            Select a conversation to start chatting
+            Sélectionnez une conversation pour commencer à discuter
           </div>
         )}
       </div>

@@ -36,7 +36,7 @@ export default function Profile() {
     const isOwnProfile = !id;
     const userName = isOwnProfile ? "Sabba" : publicUser?.name;
     const userBio = isOwnProfile
-        ? "Passionate about building beautiful interfaces and finding meaningful connections. Love coffee, travel, and tech."
+        ? "Passionné par la création de belles interfaces et la recherche de connexions significatives. J'aime le café, les voyages et la technologie."
         : publicUser?.bio;
     const displayPic = isOwnProfile
         ? (prefs?.profilePic || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop")
@@ -46,10 +46,10 @@ export default function Profile() {
     if (id && !publicUser) {
         return (
             <div className="flex h-[70vh] flex-col items-center justify-center text-center px-4">
-                <h2 className="text-2xl font-bold text-foreground">User not found</h2>
-                <p className="text-muted-foreground mt-2">The profile you're looking for doesn't exist.</p>
+                <h2 className="text-2xl font-bold text-foreground">Utilisateur non trouvé</h2>
+                <p className="text-muted-foreground mt-2">Le profil que vous recherchez n'existe pas.</p>
                 <Button className="mt-6" asChild>
-                    <Link to="/discover">Back to Discover</Link>
+                    <Link to="/discover">Retour à Découvrir</Link>
                 </Button>
             </div>
         );
@@ -92,7 +92,7 @@ export default function Profile() {
                                 <>
                                     <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" asChild>
                                         <Link to="/match-setup">
-                                            <Edit className="mr-2 h-4 w-4" /> Edit Profile
+                                            <Edit className="mr-2 h-4 w-4" /> Modifier le Profil
                                         </Link>
                                     </Button>
                                     <Button size="lg" className="rounded-xl font-bold shadow-lg shadow-primary/20">
@@ -101,8 +101,8 @@ export default function Profile() {
                                 </>
                             ) : (
                                 <>
-                                    <Button size="lg" className="rounded-xl font-bold bg-primary px-8" onClick={() => toast.success(`You liked ${userName}! 💕`)}>
-                                        <Heart className="mr-2 h-5 w-5 fill-current" /> Like
+                                    <Button size="lg" className="rounded-xl font-bold bg-primary px-8" onClick={() => toast.success(`Vous avez aimé ${userName} ! 💕`)}>
+                                        <Heart className="mr-2 h-5 w-5 fill-current" /> J'aime
                                     </Button>
                                     <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" onClick={() => navigate(`/messages?user=${id}`)}>
                                         <MessageCircle className="mr-2 h-5 w-5" /> Message
@@ -116,7 +116,7 @@ export default function Profile() {
                         {/* Main Content */}
                         <div className="lg:col-span-2 space-y-8">
                             <div>
-                                <h2 className="text-xl font-bold text-foreground mb-4">About {isOwnProfile ? 'Me' : userName}</h2>
+                                <h2 className="text-xl font-bold text-foreground mb-4">À propos de {isOwnProfile ? 'moi' : userName}</h2>
                                 <p className="text-lg text-muted-foreground leading-relaxed">
                                     {userBio}
                                 </p>
@@ -124,15 +124,15 @@ export default function Profile() {
 
                             {!isOwnProfile && (
                                 <div>
-                                    <h2 className="text-xl font-bold text-foreground mb-4">Quick Facts</h2>
+                                    <h2 className="text-xl font-bold text-foreground mb-4">Infos Rapides</h2>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="rounded-2xl bg-muted/50 p-4 border border-border/50">
-                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Age</p>
-                                            <p className="text-lg font-bold text-foreground">{publicUser?.age} years old</p>
+                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Âge</p>
+                                            <p className="text-lg font-bold text-foreground">{publicUser?.age} ans</p>
                                         </div>
                                         <div className="rounded-2xl bg-muted/50 p-4 border border-border/50">
-                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Gender</p>
-                                            <p className="text-lg font-bold text-foreground capitalize">{publicUser?.gender}</p>
+                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Genre</p>
+                                            <p className="text-lg font-bold text-foreground capitalize">{publicUser?.gender === 'man' ? 'Homme' : 'Femme'}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -140,13 +140,13 @@ export default function Profile() {
 
                             {isOwnProfile && (
                                 <div>
-                                    <h2 className="text-xl font-bold text-foreground mb-4">My Match Preferences</h2>
+                                    <h2 className="text-xl font-bold text-foreground mb-4">Mes Préférences</h2>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         {[
-                                            { label: "I am a", value: prefs?.gender || "Not specified" },
-                                            { label: "Looking for", value: prefs?.lookingFor || "Not specified" },
-                                            { label: "Age range", value: prefs?.ageRange || "Not specified" },
-                                            { label: "Location", value: prefs?.location || "Not specified" },
+                                            { label: "Je suis", value: (prefs?.gender === 'man' ? 'Homme' : (prefs?.gender === 'woman' ? 'Femme' : 'Non spécifié')) },
+                                            { label: "Recherche", value: (prefs?.lookingFor === 'man' ? 'Homme' : (prefs?.lookingFor === 'woman' ? 'Femme' : 'Non spécifié')) },
+                                            { label: "Tranche d'âge", value: prefs?.ageRange || "Non spécifié" },
+                                            { label: "Lieu", value: prefs?.location || "Non spécifié" },
                                         ].map((attr, i) => (
                                             <div key={i} className="flex items-center justify-between rounded-2xl bg-muted/50 p-4 border border-border/50">
                                                 <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{attr.label}</span>
@@ -163,8 +163,8 @@ export default function Profile() {
                                         <Shield className="h-6 w-6 text-primary" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-foreground text-lg mb-1">Stay Safe</h3>
-                                        <p className="text-muted-foreground">Always follow our community guidelines and prioritize your safety when meeting new people.</p>
+                                        <h3 className="font-bold text-foreground text-lg mb-1">Restez en Sécurité</h3>
+                                        <p className="text-muted-foreground">Suivez toujours nos conseils de communauté et donnez la priorité à votre sécurité lors de rencontres avec de nouvelles personnes.</p>
                                     </div>
                                 </div>
                             </div>
@@ -177,9 +177,9 @@ export default function Profile() {
                                     <h3 className="font-bold text-foreground mb-4">Menu</h3>
                                     <nav className="space-y-2">
                                         {[
-                                            { label: "Account Settings", icon: Settings },
-                                            { label: "Terms of Service", icon: Shield },
-                                            { label: "Log Out", icon: LogOut, danger: true },
+                                            { label: "Paramètres du Compte", icon: Settings },
+                                            { label: "Conditions d'Utilisation", icon: Shield },
+                                            { label: "Se Déconnecter", icon: LogOut, danger: true },
                                         ].map((item, i) => (
                                             <button
                                                 key={i}
@@ -196,11 +196,17 @@ export default function Profile() {
                                 </div>
                             ) : (
                                 <div className="rounded-2xl border border-border bg-card p-6">
-                                    <h3 className="font-bold text-foreground mb-4">Interests</h3>
+                                    <h3 className="font-bold text-foreground mb-4">Centres d'Intérêt</h3>
                                     <div className="flex flex-wrap gap-2">
-                                        {["Travel", "Music", "Coffee", "Fitness", "Art"].map((interest, i) => (
+                                        {[
+                                            { en: "Travel", fr: "Voyage" },
+                                            { en: "Music", fr: "Musique" },
+                                            { en: "Coffee", fr: "Café" },
+                                            { en: "Fitness", fr: "Fitness" },
+                                            { en: "Art", fr: "Art" }
+                                        ].map((interest, i) => (
                                             <span key={i} className="px-3 py-1 rounded-full bg-muted text-sm font-medium text-muted-foreground">
-                                                #{interest}
+                                                #{interest.fr}
                                             </span>
                                         ))}
                                     </div>
@@ -209,10 +215,10 @@ export default function Profile() {
 
                             <div className="rounded-2xl bg-gradient-to-br from-primary to-rose-600 p-6 text-white shadow-lg shadow-primary/20">
                                 <Heart className="h-10 w-10 fill-white mb-4" />
-                                <h3 className="text-xl font-bold mb-2">Upgrade to Premium</h3>
-                                <p className="text-white/80 text-sm mb-4">Get unlimited matches, see who likes you, and much more!</p>
+                                <h3 className="text-xl font-bold mb-2">Passer au Premium</h3>
+                                <p className="text-white/80 text-sm mb-4">Obtenez des matchs illimités, voyez qui vous aime, et bien plus encore !</p>
                                 <Button className="w-full bg-white text-primary hover:bg-white/90 font-bold rounded-xl h-12">
-                                    View Plans
+                                    Voir les Forfaits
                                 </Button>
                             </div>
                         </div>

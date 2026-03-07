@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Heart, ArrowRight, ArrowLeft, Check, Camera, Upload } from "lucide-react";
 
-const steps = ["Gender", "Looking for", "Age range", "Location", "Profile Picture", "Find matches"];
+const steps = ["Genre", "À la recherche de", "Tranche d'âge", "Lieu", "Photo de Profil", "Trouver des Profils"];
 
 export default function MatchSetup() {
   const [step, setStep] = useState(0);
@@ -59,8 +59,8 @@ export default function MatchSetup() {
     <button
       onClick={onClick}
       className={`flex items-center justify-center gap-3 rounded-xl border-2 px-6 py-5 text-lg font-medium transition-all ${selected
-          ? "border-primary bg-primary/10 text-primary shadow-sm"
-          : "border-border bg-card text-foreground hover:border-primary/40"
+        ? "border-primary bg-primary/10 text-primary shadow-sm"
+        : "border-border bg-card text-foreground hover:border-primary/40"
         }`}
     >
       {emoji && <span className="text-2xl">{emoji}</span>}
@@ -86,17 +86,17 @@ export default function MatchSetup() {
         <div className="rounded-2xl border border-border bg-card p-8 shadow-lg">
           <Heart className="mx-auto mb-4 h-8 w-8 fill-primary text-primary" />
           <p className="mb-1 text-center text-sm font-medium text-muted-foreground">
-            Step {step + 1} of 6
+            Étape {step + 1} sur 6
           </p>
 
           {step === 0 && (
             <>
               <h2 className="mb-6 text-center text-2xl font-bold text-card-foreground">
-                I am a...
+                Je suis...
               </h2>
               <div className="grid gap-3">
-                <OptionButton label="Man" emoji="👨" selected={gender === "man"} onClick={() => setGender("man")} />
-                <OptionButton label="Woman" emoji="👩" selected={gender === "woman"} onClick={() => setGender("woman")} />
+                <OptionButton label="Un Homme" emoji="👨" selected={gender === "man"} onClick={() => setGender("man")} />
+                <OptionButton label="Une Femme" emoji="👩" selected={gender === "woman"} onClick={() => setGender("woman")} />
               </div>
             </>
           )}
@@ -104,11 +104,11 @@ export default function MatchSetup() {
           {step === 1 && (
             <>
               <h2 className="mb-6 text-center text-2xl font-bold text-card-foreground">
-                Looking for a...
+                À la recherche d'un(e)...
               </h2>
               <div className="grid gap-3">
-                <OptionButton label="Man" emoji="👨" selected={lookingFor === "man"} onClick={() => setLookingFor("man")} />
-                <OptionButton label="Woman" emoji="👩" selected={lookingFor === "woman"} onClick={() => setLookingFor("woman")} />
+                <OptionButton label="Homme" emoji="👨" selected={lookingFor === "man"} onClick={() => setLookingFor("man")} />
+                <OptionButton label="Femme" emoji="👩" selected={lookingFor === "woman"} onClick={() => setLookingFor("woman")} />
               </div>
             </>
           )}
@@ -116,7 +116,7 @@ export default function MatchSetup() {
           {step === 2 && (
             <>
               <h2 className="mb-6 text-center text-2xl font-bold text-card-foreground">
-                Preferred age range
+                Tranche d'âge préférée
               </h2>
               <div className="grid gap-3">
                 {["18–25", "25–35", "35–45", "45+"].map((range) => (
@@ -129,10 +129,10 @@ export default function MatchSetup() {
           {step === 3 && (
             <>
               <h2 className="mb-6 text-center text-2xl font-bold text-card-foreground">
-                Your location
+                Votre ville/lieu
               </h2>
               <Input
-                placeholder="e.g. Paris, London, Berlin..."
+                placeholder="ex. Paris, Lyon, Bordeaux..."
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 className="text-center text-lg"
@@ -142,10 +142,10 @@ export default function MatchSetup() {
 
           {step === 4 && (
             <div className="text-center">
-              <h2 className="mb-6 text-2xl font-bold text-card-foreground">Your Photo</h2>
+              <h2 className="mb-6 text-2xl font-bold text-card-foreground">Votre Photo</h2>
               <div className="relative mx-auto mb-6 h-40 w-40 overflow-hidden rounded-full border-4 border-dashed border-muted-foreground/30 flex items-center justify-center bg-muted/50 transition-colors hover:border-primary/50">
                 {profilePic ? (
-                  <img src={profilePic} alt="Preview" className="h-full w-full object-cover" />
+                  <img src={profilePic} alt="Aperçu" className="h-full w-full object-cover" />
                 ) : (
                   <Camera className="h-12 w-12 text-muted-foreground/50" />
                 )}
@@ -164,26 +164,26 @@ export default function MatchSetup() {
                 className="hidden"
               />
               <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
-                {profilePic ? "Change Photo" : "Choose Photo"}
+                {profilePic ? "Changer la Photo" : "Choisir une Photo"}
               </Button>
             </div>
           )}
 
           {step === 5 && (
             <div className="text-center">
-              <h2 className="mb-2 text-2xl font-bold text-card-foreground">You're all set! 🎉</h2>
+              <h2 className="mb-2 text-2xl font-bold text-card-foreground">Vous êtes prêt ! 🎉</h2>
               <p className="text-muted-foreground">
-                We'll find the best matches for you based on your preferences.
+                Nous trouverons les meilleurs profils pour vous en fonction de vos préférences.
               </p>
               <div className="mt-6 flex flex-col items-center gap-6 rounded-lg bg-muted p-6">
                 {profilePic && (
-                  <img src={profilePic} alt="Profile" className="h-24 w-24 rounded-full object-cover shadow-md border-2 border-white" />
+                  <img src={profilePic} alt="Profil" className="h-24 w-24 rounded-full object-cover shadow-md border-2 border-white" />
                 )}
                 <div className="w-full space-y-2 text-sm text-left">
-                  <p><span className="font-medium text-foreground">Gender:</span> <span className="text-muted-foreground capitalize">{gender}</span></p>
-                  <p><span className="font-medium text-foreground">Looking for:</span> <span className="text-muted-foreground capitalize">{lookingFor}</span></p>
-                  <p><span className="font-medium text-foreground">Age range:</span> <span className="text-muted-foreground">{ageRange}</span></p>
-                  <p><span className="font-medium text-foreground">Location:</span> <span className="text-muted-foreground">{location}</span></p>
+                  <p><span className="font-medium text-foreground">Genre :</span> <span className="text-muted-foreground capitalize">{gender === 'man' ? 'Homme' : 'Femme'}</span></p>
+                  <p><span className="font-medium text-foreground">Recherche :</span> <span className="text-muted-foreground capitalize">{lookingFor === 'man' ? 'Homme' : 'Femme'}</span></p>
+                  <p><span className="font-medium text-foreground">Tranche d'âge :</span> <span className="text-muted-foreground">{ageRange}</span></p>
+                  <p><span className="font-medium text-foreground">Lieu :</span> <span className="text-muted-foreground">{location}</span></p>
                 </div>
               </div>
             </div>
@@ -193,14 +193,14 @@ export default function MatchSetup() {
           <div className="mt-8 flex gap-3">
             {step > 0 && (
               <Button variant="outline" onClick={() => setStep(step - 1)} className="flex-1">
-                <ArrowLeft className="mr-1 h-4 w-4" /> Back
+                <ArrowLeft className="mr-1 h-4 w-4" /> Retour
               </Button>
             )}
             <Button onClick={handleNext} disabled={!canNext()} className="flex-1">
               {step === 5 ? (
-                <>Find Matches <Heart className="ml-1 h-4 w-4" /></>
+                <>Trouver des Profils <Heart className="ml-1 h-4 w-4" /></>
               ) : (
-                <>Next <ArrowRight className="ml-1 h-4 w-4" /></>
+                <>Suivant <ArrowRight className="ml-1 h-4 w-4" /></>
               )}
             </Button>
           </div>

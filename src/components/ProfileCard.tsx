@@ -11,7 +11,7 @@ export default function ProfileCard({ user, matchPercent }: { user: User; matchP
     <div className="group relative overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-shadow hover:shadow-lg">
       {matchPercent != null && (
         <div className="absolute top-3 right-3 z-10 rounded-full bg-primary px-2.5 py-1 text-xs font-bold text-primary-foreground shadow">
-          {matchPercent}% match
+          {matchPercent}% de compatibilité
         </div>
       )}
       <Link to={`/profile/${user.id}`} className="block aspect-[3/4] overflow-hidden">
@@ -26,7 +26,7 @@ export default function ProfileCard({ user, matchPercent }: { user: User; matchP
         <div className="flex items-center justify-between">
           <Link to={`/profile/${user.id}`} className="hover:text-primary transition-colors">
             <h3 className="text-lg font-semibold text-card-foreground">
-              {user.name}, {user.age}
+              {user.name}, {user.age} ans
             </h3>
           </Link>
           <span className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -40,10 +40,10 @@ export default function ProfileCard({ user, matchPercent }: { user: User; matchP
             size="sm"
             className="flex-1"
             onClick={() => {
-              toast.success(`You liked ${user.name}! 💕`);
+              toast.success(`Vous avez aimé ${user.name} ! 💕`);
             }}
           >
-            <Heart className="mr-1 h-4 w-4" /> Like
+            <Heart className="mr-1 h-4 w-4" /> J'aime
           </Button>
           <Button
             size="sm"

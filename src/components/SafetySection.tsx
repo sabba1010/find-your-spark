@@ -4,18 +4,18 @@ export default function SafetySection() {
     const safetyFeatures = [
         {
             icon: <ShieldCheck className="h-10 w-10 text-primary" />,
-            title: "Your Safety First",
-            description: "We use advanced technology combined with human moderation to keep our community safe."
+            title: "Votre Sécurité d'Abord",
+            description: "Nous utilisons une technologie de pointe combinée à une modération humaine pour assurer la sécurité de notre communauté."
         },
         {
             icon: <Lock className="h-10 w-10 text-primary" />,
-            title: "Data Privacy",
-            description: "Your personal information is encrypted and never shared without your explicit consent."
+            title: "Confidentialité des Données",
+            description: "Vos informations personnelles sont cryptées et ne sont jamais partagées sans votre consentement explicite."
         },
         {
             icon: <UserCheck className="h-10 w-10 text-primary" />,
-            title: "Verified Members",
-            description: "Look for the blue checkmark to know you're talking to a real person."
+            title: "Membres Vérifiés",
+            description: "Cherchez la coche bleue pour savoir que vous parlez à une personne réelle."
         }
     ];
 
@@ -25,10 +25,10 @@ export default function SafetySection() {
                 <div className="flex flex-col lg:flex-row items-center gap-12">
                     <div className="lg:w-1/2">
                         <h2 className="mb-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                            Date with Confidence and Security
+                            Rencontrez en toute Confiance et Sécurité
                         </h2>
                         <p className="mb-8 text-lg text-muted-foreground">
-                            At Find Your Spark, your safety is our top priority. We've built a platform that respects your privacy and ensures a secure environment for meaningful connections.
+                            Chez Heartbeat, votre sécurité est notre priorité absolue. Nous avons construit une plateforme qui respecte votre vie privée et assure un environnement sécurisé pour des connexions significatives.
                         </p>
                         <div className="space-y-6">
                             {safetyFeatures.map((feature, index) => (

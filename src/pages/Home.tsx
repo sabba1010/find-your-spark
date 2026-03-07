@@ -11,7 +11,7 @@ import SafetySection from "@/components/SafetySection";
 import SuccessStories from "@/components/SuccessStories";
 import Footer from "@/components/Footer";
 
-const steps = ["Gender", "Looking for", "Age range", "Location", "Find matches"];
+const steps = ["Genre", "À la recherche de", "Tranche d'âge", "Lieu", "Trouver des profils"];
 
 function OptionButton({ label, selected, onClick, emoji }: { label: string; selected: boolean; onClick: () => void; emoji?: string }) {
   return (
@@ -80,35 +80,35 @@ export default function Home() {
         <div className="relative z-10 text-center max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 mb-8 backdrop-blur-md border border-white/20">
             <span className="flex h-2 w-2 rounded-full bg-rose-400 animate-pulse"></span>
-            <span className="text-sm font-medium text-white/90">Join 5 million+ active users</span>
+            <span className="text-sm font-medium text-white/90">Rejoignez plus de 5 millions d'utilisateurs actifs</span>
           </div>
 
           <h1 className="text-5xl font-black tracking-tighter text-white sm:text-6xl md:text-8xl lg:text-8xl mb-6 drop-shadow-sm">
-            Find your <span className="text-rose-200">perfect</span> match
+            Trouvez votre partenaire <span className="text-rose-200">idéal</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-xl md:text-2xl text-white/80 font-light leading-relaxed">
-            Stop searching and start connecting with real people who share your spark. Your love story begins with a single click.
+            Arrêtez de chercher et commencez à vous connecter avec des personnes réelles qui partagent votre étincelle. Votre histoire d'amour commence d'un simple clic.
           </p>
 
           <div className="mt-12 flex flex-col items-center gap-5 sm:flex-row sm:justify-center">
             <Button size="lg" className="h-14 px-10 text-lg font-bold rounded-2xl bg-white text-rose-600 hover:bg-rose-50 transition-all hover:scale-105 shadow-xl shadow-rose-900/20" asChild>
-              <Link to="/auth">Start Your Journey</Link>
+              <Link to="/auth">Commencez votre voyage</Link>
             </Button>
             <Button size="lg" variant="ghost" className="h-14 px-10 text-lg font-bold rounded-2xl text-white border-2 border-white/20 hover:bg-white/10 transition-all" asChild>
-              <Link to="/auth">Join Free Now</Link>
+              <Link to="/auth">Rejoindre gratuitement</Link>
             </Button>
           </div>
 
           <div className="mt-16 flex items-center justify-center gap-8 text-white/60">
             <div className="flex flex-col items-center">
               <span className="text-2xl font-bold text-white">#1</span>
-              <span className="text-xs uppercase tracking-widest font-bold">Trusted App</span>
+              <span className="text-xs uppercase tracking-widest font-bold">App de confiance</span>
             </div>
             <div className="h-8 w-px bg-white/20"></div>
             <div className="flex flex-col items-center">
               <span className="text-2xl font-bold text-white">98%</span>
-              <span className="text-xs uppercase tracking-widest font-bold">Success Rate</span>
+              <span className="text-xs uppercase tracking-widest font-bold">Taux de réussite</span>
             </div>
           </div>
         </div>
@@ -116,7 +116,7 @@ export default function Home() {
 
       {/* Match Setup */}
       <section className="mx-auto max-w-lg px-4 py-16">
-        <h2 className="mb-6 text-center text-2xl font-bold text-foreground">Start Matching Now</h2>
+        <h2 className="mb-6 text-center text-2xl font-bold text-foreground">Commencez vos rencontres maintenant</h2>
         {/* Progress */}
         <div className="mb-6 flex items-center gap-2">
           {steps.map((_, i) => (
@@ -124,29 +124,29 @@ export default function Home() {
           ))}
         </div>
         <div className="rounded-2xl border border-border bg-card p-6 shadow-lg">
-          <p className="mb-1 text-center text-sm font-medium text-muted-foreground">Step {step + 1} of 5</p>
+          <p className="mb-1 text-center text-sm font-medium text-muted-foreground">Étape {step + 1} sur 5</p>
 
           {step === 0 && (
             <>
-              <h3 className="mb-4 text-center text-xl font-bold text-card-foreground">I am a...</h3>
+              <h3 className="mb-4 text-center text-xl font-bold text-card-foreground">Je suis...</h3>
               <div className="grid gap-3">
-                <OptionButton label="Man" emoji="👨" selected={gender === "man"} onClick={() => setGender("man")} />
-                <OptionButton label="Woman" emoji="👩" selected={gender === "woman"} onClick={() => setGender("woman")} />
+                <OptionButton label="Un homme" emoji="👨" selected={gender === "man"} onClick={() => setGender("man")} />
+                <OptionButton label="Une femme" emoji="👩" selected={gender === "woman"} onClick={() => setGender("woman")} />
               </div>
             </>
           )}
           {step === 1 && (
             <>
-              <h3 className="mb-4 text-center text-xl font-bold text-card-foreground">Looking for a...</h3>
+              <h3 className="mb-4 text-center text-xl font-bold text-card-foreground">À la recherche d'un(e)...</h3>
               <div className="grid gap-3">
-                <OptionButton label="Man" emoji="👨" selected={lookingFor === "man"} onClick={() => setLookingFor("man")} />
-                <OptionButton label="Woman" emoji="👩" selected={lookingFor === "woman"} onClick={() => setLookingFor("woman")} />
+                <OptionButton label="Homme" emoji="👨" selected={lookingFor === "man"} onClick={() => setLookingFor("man")} />
+                <OptionButton label="Femme" emoji="👩" selected={lookingFor === "woman"} onClick={() => setLookingFor("woman")} />
               </div>
             </>
           )}
           {step === 2 && (
             <>
-              <h3 className="mb-4 text-center text-xl font-bold text-card-foreground">Preferred age range</h3>
+              <h3 className="mb-4 text-center text-xl font-bold text-card-foreground">Tranche d'âge préférée</h3>
               <div className="grid gap-3">
                 {["18–25", "25–35", "35–45", "45+"].map((range) => (
                   <OptionButton key={range} label={range} selected={ageRange === range} onClick={() => setAgeRange(range)} />
@@ -156,19 +156,19 @@ export default function Home() {
           )}
           {step === 3 && (
             <>
-              <h3 className="mb-4 text-center text-xl font-bold text-card-foreground">Your location</h3>
-              <Input placeholder="e.g. Paris, London, Berlin..." value={location} onChange={(e) => setLocation(e.target.value)} className="text-center text-lg" />
+              <h3 className="mb-4 text-center text-xl font-bold text-card-foreground">Votre ville/lieu</h3>
+              <Input placeholder="ex. Paris, Lyon, Bordeaux..." value={location} onChange={(e) => setLocation(e.target.value)} className="text-center text-lg" />
             </>
           )}
           {step === 4 && (
             <div className="text-center">
-              <h3 className="mb-2 text-xl font-bold text-card-foreground">You're all set! 🎉</h3>
-              <p className="text-muted-foreground text-sm">We'll find the best matches based on your preferences.</p>
+              <h3 className="mb-2 text-xl font-bold text-card-foreground">Vous êtes prêt ! 🎉</h3>
+              <p className="text-muted-foreground text-sm">Nous trouverons les meilleurs profils en fonction de vos préférences.</p>
               <div className="mt-4 space-y-1 rounded-lg bg-muted p-4 text-sm text-left">
-                <p><span className="font-medium text-foreground">Gender:</span> <span className="text-muted-foreground capitalize">{gender}</span></p>
-                <p><span className="font-medium text-foreground">Looking for:</span> <span className="text-muted-foreground capitalize">{lookingFor}</span></p>
-                <p><span className="font-medium text-foreground">Age range:</span> <span className="text-muted-foreground">{ageRange}</span></p>
-                <p><span className="font-medium text-foreground">Location:</span> <span className="text-muted-foreground">{location}</span></p>
+                <p><span className="font-medium text-foreground">Genre :</span> <span className="text-muted-foreground capitalize">{gender === 'man' ? 'Homme' : 'Femme'}</span></p>
+                <p><span className="font-medium text-foreground">Recherche :</span> <span className="text-muted-foreground capitalize">{lookingFor === 'man' ? 'Homme' : 'Femme'}</span></p>
+                <p><span className="font-medium text-foreground">Tranche d'âge :</span> <span className="text-muted-foreground">{ageRange}</span></p>
+                <p><span className="font-medium text-foreground">Lieu :</span> <span className="text-muted-foreground">{location}</span></p>
               </div>
             </div>
           )}
@@ -176,11 +176,11 @@ export default function Home() {
           <div className="mt-6 flex gap-3">
             {step > 0 && (
               <Button variant="outline" onClick={() => setStep(step - 1)} className="flex-1">
-                <ArrowLeft className="mr-1 h-4 w-4" /> Back
+                <ArrowLeft className="mr-1 h-4 w-4" /> Retour
               </Button>
             )}
             <Button onClick={handleNext} disabled={!canNext()} className="flex-1">
-              {step === 4 ? <>Find Matches <Heart className="ml-1 h-4 w-4" /></> : <>Next <ArrowRight className="ml-1 h-4 w-4" /></>}
+              {step === 4 ? <>Trouver des Profils <Heart className="ml-1 h-4 w-4" /></> : <>Suivant <ArrowRight className="ml-1 h-4 w-4" /></>}
             </Button>
           </div>
         </div>
@@ -189,9 +189,9 @@ export default function Home() {
       {/* Featured */}
       <section className="mx-auto max-w-5xl px-4 py-16">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-foreground">Featured Profiles</h2>
+          <h2 className="text-2xl font-bold text-foreground">Profils en Vedette</h2>
           <Link to="/discover" className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-            See all <ArrowRight className="h-4 w-4" />
+            Tout voir <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

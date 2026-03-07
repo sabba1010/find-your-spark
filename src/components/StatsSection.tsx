@@ -1,9 +1,9 @@
 export default function StatsSection() {
     const stats = [
-        { label: "Active Users", value: "5M+" },
-        { label: "Matches Made", value: "1.2M+" },
-        { label: "Success Stories", value: "500K+" },
-        { label: "Countries", value: "50+" },
+        { label: "Utilisateurs Actifs", value: "5M+" },
+        { label: "Rencontres Réalisées", value: "1.2M+" },
+        { label: "Histoires de Succès", value: "500K+" },
+        { label: "Pays", value: "50+" },
     ];
 
     return (
