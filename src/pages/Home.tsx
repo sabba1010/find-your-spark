@@ -54,7 +54,7 @@ export default function Home() {
   };
 
   return (
-    <div className="pb-20 md:pt-16">
+    <div className=" md:pt-16">
       {/* Hero */}
       <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden px-4 py-20"
         style={{
