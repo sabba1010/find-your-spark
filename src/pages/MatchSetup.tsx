@@ -24,7 +24,11 @@ export default function MatchSetup() {
 
   const handleNext = () => {
     if (step < 4) setStep(step + 1);
-    else navigate("/discover");
+    else {
+      const prefs = { gender, lookingFor, ageRange, location };
+      localStorage.setItem("matchPrefs", JSON.stringify(prefs));
+      navigate("/discover");
+    }
   };
 
   const OptionButton = ({
