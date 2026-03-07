@@ -5,7 +5,7 @@ export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="border-t border-border bg-card  pt-16">
+        <footer className="border-t border-border bg-card py-8">
             <div className="mx-auto max-w-6xl px-4">
                 <div className="grid gap-12 lg:grid-cols-4">
                     <div className="lg:col-span-1">
@@ -66,7 +66,7 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="mt-16 border-t border-border pt-8 text-center text-sm text-muted-foreground">
+                <div className="mt-8 border-t border-border pt-6 text-center text-sm text-muted-foreground">
                     <p>© {currentYear} Find Your Spark. Tous droits réservés.</p>
                 </div>
             </div>
