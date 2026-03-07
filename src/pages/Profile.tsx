@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight } from "lucide-react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { fakeUsers } from "@/data/users";
+import { toast } from "sonner";
 
 interface UserPrefs {
     gender: string;
@@ -12,19 +14,46 @@ interface UserPrefs {
 }
 
 export default function Profile() {
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [prefs, setPrefs] = useState<UserPrefs | null>(null);
+    const [publicUser, setPublicUser] = useState<any>(null);
 
     useEffect(() => {
-        const raw = localStorage.getItem("matchPrefs");
-        if (raw) {
-            setPrefs(JSON.parse(raw));
+        if (id) {
+            const user = fakeUsers.find(u => u.id === id);
+            if (user) {
+                setPublicUser(user);
+            }
+        } else {
+            const raw = localStorage.getItem("matchPrefs");
+            if (raw) {
+                setPrefs(JSON.parse(raw));
+            }
         }
-    }, []);
+    }, [id]);
 
-    // Default values if no prefs exist
-    const userName = "Sabba"; // Placeholder for actual auth name
-    const userBio = "Passionate about building beautiful interfaces and finding meaningful connections. Love coffee, travel, and tech.";
-    const displayPic = prefs?.profilePic || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop";
+    const isOwnProfile = !id;
+    const userName = isOwnProfile ? "Sabba" : publicUser?.name;
+    const userBio = isOwnProfile
+        ? "Passionate about building beautiful interfaces and finding meaningful connections. Love coffee, travel, and tech."
+        : publicUser?.bio;
+    const displayPic = isOwnProfile
+        ? (prefs?.profilePic || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop")
+        : publicUser?.photo;
+    const location = isOwnProfile ? (prefs?.location || "Paris, France") : publicUser?.location;
+
+    if (id && !publicUser) {
+        return (
+            <div className="flex h-[70vh] flex-col items-center justify-center text-center px-4">
+                <h2 className="text-2xl font-bold text-foreground">User not found</h2>
+                <p className="text-muted-foreground mt-2">The profile you're looking for doesn't exist.</p>
+                <Button className="mt-6" asChild>
+                    <Link to="/discover">Back to Discover</Link>
+                </Button>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-muted/30 pb-20 md:pt-16">
@@ -54,19 +83,32 @@ export default function Profile() {
                                 </h1>
                                 <p className="flex items-center justify-center md:justify-start gap-1 text-muted-foreground font-medium mt-1">
                                     <MapPin className="h-4 w-4" />
-                                    {prefs?.location || "Paris, France"}
+                                    {location}
                                 </p>
                             </div>
                         </div>
                         <div className="flex gap-3 justify-center">
-                            <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" asChild>
-                                <Link to="/match-setup">
-                                    <Edit className="mr-2 h-4 w-4" /> Edit Profile
-                                </Link>
-                            </Button>
-                            <Button size="lg" className="rounded-xl font-bold shadow-lg shadow-primary/20">
-                                <Settings className="h-5 w-5" />
-                            </Button>
+                            {isOwnProfile ? (
+                                <>
+                                    <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" asChild>
+                                        <Link to="/match-setup">
+                                            <Edit className="mr-2 h-4 w-4" /> Edit Profile
+                                        </Link>
+                                    </Button>
+                                    <Button size="lg" className="rounded-xl font-bold shadow-lg shadow-primary/20">
+                                        <Settings className="h-5 w-5" />
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Button size="lg" className="rounded-xl font-bold bg-primary px-8" onClick={() => toast.success(`You liked ${userName}! 💕`)}>
+                                        <Heart className="mr-2 h-5 w-5 fill-current" /> Like
+                                    </Button>
+                                    <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" onClick={() => navigate(`/messages?user=${id}`)}>
+                                        <MessageCircle className="mr-2 h-5 w-5" /> Message
+                                    </Button>
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -74,28 +116,46 @@ export default function Profile() {
                         {/* Main Content */}
                         <div className="lg:col-span-2 space-y-8">
                             <div>
-                                <h2 className="text-xl font-bold text-foreground mb-4">About Me</h2>
+                                <h2 className="text-xl font-bold text-foreground mb-4">About {isOwnProfile ? 'Me' : userName}</h2>
                                 <p className="text-lg text-muted-foreground leading-relaxed">
                                     {userBio}
                                 </p>
                             </div>
 
-                            <div>
-                                <h2 className="text-xl font-bold text-foreground mb-4">My Match Preferences</h2>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    {[
-                                        { label: "I am a", value: prefs?.gender || "Not specified" },
-                                        { label: "Looking for", value: prefs?.lookingFor || "Not specified" },
-                                        { label: "Age range", value: prefs?.ageRange || "Not specified" },
-                                        { label: "Location", value: prefs?.location || "Not specified" },
-                                    ].map((attr, i) => (
-                                        <div key={i} className="flex items-center justify-between rounded-2xl bg-muted/50 p-4 border border-border/50">
-                                            <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{attr.label}</span>
-                                            <span className="font-bold text-foreground capitalize">{attr.value}</span>
+                            {!isOwnProfile && (
+                                <div>
+                                    <h2 className="text-xl font-bold text-foreground mb-4">Quick Facts</h2>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="rounded-2xl bg-muted/50 p-4 border border-border/50">
+                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Age</p>
+                                            <p className="text-lg font-bold text-foreground">{publicUser?.age} years old</p>
                                         </div>
-                                    ))}
+                                        <div className="rounded-2xl bg-muted/50 p-4 border border-border/50">
+                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Gender</p>
+                                            <p className="text-lg font-bold text-foreground capitalize">{publicUser?.gender}</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
+
+                            {isOwnProfile && (
+                                <div>
+                                    <h2 className="text-xl font-bold text-foreground mb-4">My Match Preferences</h2>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {[
+                                            { label: "I am a", value: prefs?.gender || "Not specified" },
+                                            { label: "Looking for", value: prefs?.lookingFor || "Not specified" },
+                                            { label: "Age range", value: prefs?.ageRange || "Not specified" },
+                                            { label: "Location", value: prefs?.location || "Not specified" },
+                                        ].map((attr, i) => (
+                                            <div key={i} className="flex items-center justify-between rounded-2xl bg-muted/50 p-4 border border-border/50">
+                                                <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{attr.label}</span>
+                                                <span className="font-bold text-foreground capitalize">{attr.value}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="rounded-2xl bg-primary/5 border border-primary/10 p-6">
                                 <div className="flex items-start gap-4">
@@ -112,27 +172,40 @@ export default function Profile() {
 
                         {/* Sidebar */}
                         <div className="space-y-6">
-                            <div className="rounded-2xl border border-border bg-card p-6">
-                                <h3 className="font-bold text-foreground mb-4">Menu</h3>
-                                <nav className="space-y-2">
-                                    {[
-                                        { label: "Account Settings", icon: Settings },
-                                        { label: "Terms of Service", icon: Shield },
-                                        { label: "Log Out", icon: LogOut, danger: true },
-                                    ].map((item, i) => (
-                                        <button
-                                            key={i}
-                                            className={`flex w-full items-center justify-between rounded-xl p-3 text-left transition-colors hover:bg-muted ${item.danger ? 'text-rose-500' : 'text-foreground'}`}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <item.icon className="h-5 w-5" />
-                                                <span className="font-medium">{item.label}</span>
-                                            </div>
-                                            <ChevronRight className="h-4 w-4 opacity-30" />
-                                        </button>
-                                    ))}
-                                </nav>
-                            </div>
+                            {isOwnProfile ? (
+                                <div className="rounded-2xl border border-border bg-card p-6">
+                                    <h3 className="font-bold text-foreground mb-4">Menu</h3>
+                                    <nav className="space-y-2">
+                                        {[
+                                            { label: "Account Settings", icon: Settings },
+                                            { label: "Terms of Service", icon: Shield },
+                                            { label: "Log Out", icon: LogOut, danger: true },
+                                        ].map((item, i) => (
+                                            <button
+                                                key={i}
+                                                className={`flex w-full items-center justify-between rounded-xl p-3 text-left transition-colors hover:bg-muted ${item.danger ? 'text-rose-500' : 'text-foreground'}`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <item.icon className="h-5 w-5" />
+                                                    <span className="font-medium">{item.label}</span>
+                                                </div>
+                                                <ChevronRight className="h-4 w-4 opacity-30" />
+                                            </button>
+                                        ))}
+                                    </nav>
+                                </div>
+                            ) : (
+                                <div className="rounded-2xl border border-border bg-card p-6">
+                                    <h3 className="font-bold text-foreground mb-4">Interests</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {["Travel", "Music", "Coffee", "Fitness", "Art"].map((interest, i) => (
+                                            <span key={i} className="px-3 py-1 rounded-full bg-muted text-sm font-medium text-muted-foreground">
+                                                #{interest}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="rounded-2xl bg-gradient-to-br from-primary to-rose-600 p-6 text-white shadow-lg shadow-primary/20">
                                 <Heart className="h-10 w-10 fill-white mb-4" />

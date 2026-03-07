@@ -28,6 +28,7 @@ const App = () => (
           <Route path="/match-setup" element={<MatchSetup />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:id" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

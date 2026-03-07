@@ -1,7 +1,7 @@
 import { Heart, MessageCircle, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { User } from "@/data/users";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function ProfileCard({ user, matchPercent }: { user: User; matchPercent?: number }) {
@@ -14,19 +14,21 @@ export default function ProfileCard({ user, matchPercent }: { user: User; matchP
           {matchPercent}% match
         </div>
       )}
-      <div className="aspect-[3/4] overflow-hidden">
+      <Link to={`/profile/${user.id}`} className="block aspect-[3/4] overflow-hidden">
         <img
           src={user.photo}
           alt={user.name}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
         />
-      </div>
+      </Link>
       <div className="p-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-card-foreground">
-            {user.name}, {user.age}
-          </h3>
+          <Link to={`/profile/${user.id}`} className="hover:text-primary transition-colors">
+            <h3 className="text-lg font-semibold text-card-foreground">
+              {user.name}, {user.age}
+            </h3>
+          </Link>
           <span className="flex items-center gap-1 text-sm text-muted-foreground">
             <MapPin className="h-3.5 w-3.5" />
             {user.location}
