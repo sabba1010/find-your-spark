@@ -1,0 +1,151 @@
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+interface UserPrefs {
+    gender: string;
+    lookingFor: string;
+    ageRange: string;
+    location: string;
+    profilePic: string | null;
+}
+
+export default function Profile() {
+    const [prefs, setPrefs] = useState<UserPrefs | null>(null);
+
+    useEffect(() => {
+        const raw = localStorage.getItem("matchPrefs");
+        if (raw) {
+            setPrefs(JSON.parse(raw));
+        }
+    }, []);
+
+    // Default values if no prefs exist
+    const userName = "Sabba"; // Placeholder for actual auth name
+    const userBio = "Passionate about building beautiful interfaces and finding meaningful connections. Love coffee, travel, and tech.";
+    const displayPic = prefs?.profilePic || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop";
+
+    return (
+        <div className="min-h-screen bg-muted/30 pb-20 md:pt-16">
+            {/* Header / Cover */}
+            <div className="relative h-48 w-full bg-gradient-to-r from-rose-500 to-primary md:h-64">
+                <div className="absolute inset-0 bg-black/10"></div>
+            </div>
+
+            {/* Profile Info Card */}
+            <div className="mx-auto -mt-20 max-w-4xl px-4 relative z-10">
+                <div className="rounded-3xl border border-border bg-card p-6 shadow-xl md:p-8">
+                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+                        <div className="flex flex-col md:flex-row items-center md:items-end gap-6 text-center md:text-left">
+                            <div className="relative">
+                                <img
+                                    src={displayPic}
+                                    alt="Profile"
+                                    className="h-32 w-32 rounded-3xl border-4 border-card object-cover shadow-lg md:h-40 md:w-40"
+                                />
+                                <div className="absolute -bottom-2 -right-2 rounded-full bg-green-500 p-1.5 border-4 border-card">
+                                    <div className="h-3 w-3 rounded-full bg-white animate-pulse"></div>
+                                </div>
+                            </div>
+                            <div className="pb-2">
+                                <h1 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
+                                    {userName}<span className="text-rose-500">.</span>
+                                </h1>
+                                <p className="flex items-center justify-center md:justify-start gap-1 text-muted-foreground font-medium mt-1">
+                                    <MapPin className="h-4 w-4" />
+                                    {prefs?.location || "Paris, France"}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex gap-3 justify-center">
+                            <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" asChild>
+                                <Link to="/match-setup">
+                                    <Edit className="mr-2 h-4 w-4" /> Edit Profile
+                                </Link>
+                            </Button>
+                            <Button size="lg" className="rounded-xl font-bold shadow-lg shadow-primary/20">
+                                <Settings className="h-5 w-5" />
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div className="mt-10 grid gap-10 lg:grid-cols-3">
+                        {/* Main Content */}
+                        <div className="lg:col-span-2 space-y-8">
+                            <div>
+                                <h2 className="text-xl font-bold text-foreground mb-4">About Me</h2>
+                                <p className="text-lg text-muted-foreground leading-relaxed">
+                                    {userBio}
+                                </p>
+                            </div>
+
+                            <div>
+                                <h2 className="text-xl font-bold text-foreground mb-4">My Match Preferences</h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {[
+                                        { label: "I am a", value: prefs?.gender || "Not specified" },
+                                        { label: "Looking for", value: prefs?.lookingFor || "Not specified" },
+                                        { label: "Age range", value: prefs?.ageRange || "Not specified" },
+                                        { label: "Location", value: prefs?.location || "Not specified" },
+                                    ].map((attr, i) => (
+                                        <div key={i} className="flex items-center justify-between rounded-2xl bg-muted/50 p-4 border border-border/50">
+                                            <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{attr.label}</span>
+                                            <span className="font-bold text-foreground capitalize">{attr.value}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="rounded-2xl bg-primary/5 border border-primary/10 p-6">
+                                <div className="flex items-start gap-4">
+                                    <div className="rounded-full bg-primary/20 p-3">
+                                        <Shield className="h-6 w-6 text-primary" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-foreground text-lg mb-1">Stay Safe</h3>
+                                        <p className="text-muted-foreground">Always follow our community guidelines and prioritize your safety when meeting new people.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Sidebar */}
+                        <div className="space-y-6">
+                            <div className="rounded-2xl border border-border bg-card p-6">
+                                <h3 className="font-bold text-foreground mb-4">Menu</h3>
+                                <nav className="space-y-2">
+                                    {[
+                                        { label: "Account Settings", icon: Settings },
+                                        { label: "Terms of Service", icon: Shield },
+                                        { label: "Log Out", icon: LogOut, danger: true },
+                                    ].map((item, i) => (
+                                        <button
+                                            key={i}
+                                            className={`flex w-full items-center justify-between rounded-xl p-3 text-left transition-colors hover:bg-muted ${item.danger ? 'text-rose-500' : 'text-foreground'}`}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <item.icon className="h-5 w-5" />
+                                                <span className="font-medium">{item.label}</span>
+                                            </div>
+                                            <ChevronRight className="h-4 w-4 opacity-30" />
+                                        </button>
+                                    ))}
+                                </nav>
+                            </div>
+
+                            <div className="rounded-2xl bg-gradient-to-br from-primary to-rose-600 p-6 text-white shadow-lg shadow-primary/20">
+                                <Heart className="h-10 w-10 fill-white mb-4" />
+                                <h3 className="text-xl font-bold mb-2">Upgrade to Premium</h3>
+                                <p className="text-white/80 text-sm mb-4">Get unlimited matches, see who likes you, and much more!</p>
+                                <Button className="w-full bg-white text-primary hover:bg-white/90 font-bold rounded-xl h-12">
+                                    View Plans
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

@@ -56,24 +56,60 @@ export default function Home() {
   return (
     <div className="pb-20 md:pt-16">
       {/* Hero */}
-      <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden px-4"
-        style={{ background: "var(--gradient-hero)" }}
+      <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden px-4 py-20"
+        style={{
+          background: "radial-gradient(circle at 20% 30%, rgba(217, 70, 239, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(244, 63, 94, 0.15) 0%, transparent 40%), var(--gradient-hero)"
+        }}
       >
-        <div className="relative z-10 text-center">
-          <Heart className="mx-auto mb-4 h-16 w-16 text-primary-foreground opacity-90" />
-          <h1 className="text-4xl font-extrabold tracking-tight text-primary-foreground sm:text-5xl md:text-6xl">
-            Find your perfect match
+        {/* Floating Sparks/Hearts Decor */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-[20%] left-[10%] animate-bounce opacity-20 transition-all duration-1000">
+            <Heart className="h-12 w-12 text-white fill-white" />
+          </div>
+          <div className="absolute top-[60%] right-[15%] animate-pulse opacity-20 transition-all duration-1000 delay-300">
+            <Heart className="h-20 w-20 text-white fill-white" />
+          </div>
+          <div className="absolute bottom-[10%] left-[25%] animate-pulse opacity-10 transition-all duration-1000 delay-700">
+            <Heart className="h-16 w-16 text-white fill-white" />
+          </div>
+          <div className="absolute top-[15%] right-[25%] animate-bounce opacity-10 transition-all duration-1000 delay-500">
+            <Heart className="h-10 w-10 text-white fill-white" />
+          </div>
+        </div>
+
+        <div className="relative z-10 text-center max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 mb-8 backdrop-blur-md border border-white/20">
+            <span className="flex h-2 w-2 rounded-full bg-rose-400 animate-pulse"></span>
+            <span className="text-sm font-medium text-white/90">Join 5 million+ active users</span>
+          </div>
+
+          <h1 className="text-5xl font-black tracking-tighter text-white sm:text-6xl md:text-8xl lg:text-8xl mb-6 drop-shadow-sm">
+            Find your <span className="text-rose-200">perfect</span> match
           </h1>
-          <p className="mx-auto mt-4 max-w-lg text-lg text-primary-foreground/80">
-            Connect with real people near you. Start your love story today.
+
+          <p className="mx-auto mt-6 max-w-2xl text-xl md:text-2xl text-white/80 font-light leading-relaxed">
+            Stop searching and start connecting with real people who share your spark. Your love story begins with a single click.
           </p>
-          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <Button size="lg" variant="secondary" asChild>
-              <Link to="/auth">Sign Up Free</Link>
+
+          <div className="mt-12 flex flex-col items-center gap-5 sm:flex-row sm:justify-center">
+            <Button size="lg" className="h-14 px-10 text-lg font-bold rounded-2xl bg-white text-rose-600 hover:bg-rose-50 transition-all hover:scale-105 shadow-xl shadow-rose-900/20" asChild>
+              <Link to="/auth">Start Your Journey</Link>
             </Button>
-            <Button size="lg" variant="ghost" className="text-primary-foreground border-primary-foreground/30 border hover:bg-primary-foreground/10" asChild>
-              <Link to="/auth">Log In</Link>
+            <Button size="lg" variant="ghost" className="h-14 px-10 text-lg font-bold rounded-2xl text-white border-2 border-white/20 hover:bg-white/10 transition-all" asChild>
+              <Link to="/auth">Join Free Now</Link>
             </Button>
+          </div>
+
+          <div className="mt-16 flex items-center justify-center gap-8 text-white/60">
+            <div className="flex flex-col items-center">
+              <span className="text-2xl font-bold text-white">#1</span>
+              <span className="text-xs uppercase tracking-widest font-bold">Trusted App</span>
+            </div>
+            <div className="h-8 w-px bg-white/20"></div>
+            <div className="flex flex-col items-center">
+              <span className="text-2xl font-bold text-white">98%</span>
+              <span className="text-xs uppercase tracking-widest font-bold">Success Rate</span>
+            </div>
           </div>
         </div>
       </section>

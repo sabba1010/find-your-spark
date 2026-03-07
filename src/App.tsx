@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import Discover from "./pages/Discover";
 import Messages from "./pages/Messages";
 import MatchSetup from "./pages/MatchSetup";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/discover" element={<Discover />} />
           <Route path="/match-setup" element={<MatchSetup />} />
           <Route path="/messages" element={<Messages />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

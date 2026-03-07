@@ -47,7 +47,7 @@ export default function ProfileCard({ user, matchPercent }: { user: User; matchP
             size="sm"
             variant="outline"
             className="flex-1"
-            onClick={() => navigate("/messages")}
+            onClick={() => navigate(`/messages?user=${user.id}`)}
           >
             <MessageCircle className="mr-1 h-4 w-4" /> Message
           </Button>

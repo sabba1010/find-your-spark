@@ -5,7 +5,7 @@ const navItems = [
   { to: "/", icon: Heart, label: "Home" },
   { to: "/discover", icon: Search, label: "Discover" },
   { to: "/messages", icon: MessageCircle, label: "Messages" },
-  { to: "/auth", icon: User, label: "Profile" },
+  { to: "/profile", icon: User, label: "Profile" },
 ];
 
 export default function Navbar() {
@@ -25,11 +25,10 @@ export default function Navbar() {
               <Link
                 key={to}
                 to={to}
-                className={`flex flex-col items-center gap-0.5 rounded-lg px-4 py-1.5 text-xs transition-colors md:flex-row md:gap-2 md:text-sm ${
-                  active
+                className={`flex flex-col items-center gap-0.5 rounded-lg px-4 py-1.5 text-xs transition-colors md:flex-row md:gap-2 md:text-sm ${active
                     ? "text-primary font-semibold"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                  }`}
               >
                 <Icon className="h-5 w-5" />
                 <span>{label}</span>

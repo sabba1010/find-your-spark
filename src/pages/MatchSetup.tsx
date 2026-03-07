@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Heart, ArrowRight, ArrowLeft, Check } from "lucide-react";
+import { Heart, ArrowRight, ArrowLeft, Check, Camera, Upload } from "lucide-react";
 
-const steps = ["Gender", "Looking for", "Age range", "Location", "Find matches"];
+const steps = ["Gender", "Looking for", "Age range", "Location", "Profile Picture", "Find matches"];
 
 export default function MatchSetup() {
   const [step, setStep] = useState(0);
@@ -12,20 +12,34 @@ export default function MatchSetup() {
   const [lookingFor, setLookingFor] = useState("");
   const [ageRange, setAgeRange] = useState("");
   const [location, setLocation] = useState("");
+  const [profilePic, setProfilePic] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePic(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const canNext = () => {
     if (step === 0) return !!gender;
     if (step === 1) return !!lookingFor;
     if (step === 2) return !!ageRange;
     if (step === 3) return !!location;
+    if (step === 4) return !!profilePic;
     return true;
   };
 
   const handleNext = () => {
-    if (step < 4) setStep(step + 1);
+    if (step < 5) setStep(step + 1);
     else {
-      const prefs = { gender, lookingFor, ageRange, location };
+      const prefs = { gender, lookingFor, ageRange, location, profilePic };
       localStorage.setItem("matchPrefs", JSON.stringify(prefs));
       navigate("/discover");
     }
@@ -44,11 +58,10 @@ export default function MatchSetup() {
   }) => (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center gap-3 rounded-xl border-2 px-6 py-5 text-lg font-medium transition-all ${
-        selected
+      className={`flex items-center justify-center gap-3 rounded-xl border-2 px-6 py-5 text-lg font-medium transition-all ${selected
           ? "border-primary bg-primary/10 text-primary shadow-sm"
           : "border-border bg-card text-foreground hover:border-primary/40"
-      }`}
+        }`}
     >
       {emoji && <span className="text-2xl">{emoji}</span>}
       {label}
@@ -64,9 +77,8 @@ export default function MatchSetup() {
           {steps.map((_, i) => (
             <div
               key={i}
-              className={`h-1.5 flex-1 rounded-full transition-colors ${
-                i <= step ? "bg-primary" : "bg-border"
-              }`}
+              className={`h-1.5 flex-1 rounded-full transition-colors ${i <= step ? "bg-primary" : "bg-border"
+                }`}
             />
           ))}
         </div>
@@ -74,7 +86,7 @@ export default function MatchSetup() {
         <div className="rounded-2xl border border-border bg-card p-8 shadow-lg">
           <Heart className="mx-auto mb-4 h-8 w-8 fill-primary text-primary" />
           <p className="mb-1 text-center text-sm font-medium text-muted-foreground">
-            Step {step + 1} of 5
+            Step {step + 1} of 6
           </p>
 
           {step === 0 && (
@@ -130,15 +142,49 @@ export default function MatchSetup() {
 
           {step === 4 && (
             <div className="text-center">
+              <h2 className="mb-6 text-2xl font-bold text-card-foreground">Your Photo</h2>
+              <div className="relative mx-auto mb-6 h-40 w-40 overflow-hidden rounded-full border-4 border-dashed border-muted-foreground/30 flex items-center justify-center bg-muted/50 transition-colors hover:border-primary/50">
+                {profilePic ? (
+                  <img src={profilePic} alt="Preview" className="h-full w-full object-cover" />
+                ) : (
+                  <Camera className="h-12 w-12 text-muted-foreground/50" />
+                )}
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute bottom-2 right-2 rounded-full bg-primary p-2 text-white shadow-lg hover:bg-primary/90"
+                >
+                  <Upload className="h-4 w-4" />
+                </button>
+              </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept="image/*"
+                className="hidden"
+              />
+              <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+                {profilePic ? "Change Photo" : "Choose Photo"}
+              </Button>
+            </div>
+          )}
+
+          {step === 5 && (
+            <div className="text-center">
               <h2 className="mb-2 text-2xl font-bold text-card-foreground">You're all set! 🎉</h2>
               <p className="text-muted-foreground">
                 We'll find the best matches for you based on your preferences.
               </p>
-              <div className="mt-6 space-y-1 rounded-lg bg-muted p-4 text-sm text-left">
-                <p><span className="font-medium text-foreground">Gender:</span> <span className="text-muted-foreground capitalize">{gender}</span></p>
-                <p><span className="font-medium text-foreground">Looking for:</span> <span className="text-muted-foreground capitalize">{lookingFor}</span></p>
-                <p><span className="font-medium text-foreground">Age range:</span> <span className="text-muted-foreground">{ageRange}</span></p>
-                <p><span className="font-medium text-foreground">Location:</span> <span className="text-muted-foreground">{location}</span></p>
+              <div className="mt-6 flex flex-col items-center gap-6 rounded-lg bg-muted p-6">
+                {profilePic && (
+                  <img src={profilePic} alt="Profile" className="h-24 w-24 rounded-full object-cover shadow-md border-2 border-white" />
+                )}
+                <div className="w-full space-y-2 text-sm text-left">
+                  <p><span className="font-medium text-foreground">Gender:</span> <span className="text-muted-foreground capitalize">{gender}</span></p>
+                  <p><span className="font-medium text-foreground">Looking for:</span> <span className="text-muted-foreground capitalize">{lookingFor}</span></p>
+                  <p><span className="font-medium text-foreground">Age range:</span> <span className="text-muted-foreground">{ageRange}</span></p>
+                  <p><span className="font-medium text-foreground">Location:</span> <span className="text-muted-foreground">{location}</span></p>
+                </div>
               </div>
             </div>
           )}
@@ -151,7 +197,7 @@ export default function MatchSetup() {
               </Button>
             )}
             <Button onClick={handleNext} disabled={!canNext()} className="flex-1">
-              {step === 4 ? (
+              {step === 5 ? (
                 <>Find Matches <Heart className="ml-1 h-4 w-4" /></>
               ) : (
                 <>Next <ArrowRight className="ml-1 h-4 w-4" /></>
