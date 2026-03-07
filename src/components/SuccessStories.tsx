@@ -117,7 +117,7 @@ export default function SuccessStories() {
                                         <img
                                             src={stories[currentIndex].image}
                                             alt={stories[currentIndex].name}
-                                            className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
+                                            className="h-full w-full object-cover object-top transition-transform duration-700 hover:scale-110"
                                         />
                                         <div className="absolute top-6 left-6 bg-primary text-white p-3 rounded-2xl shadow-lg ring-4 ring-white/10 backdrop-blur-sm">
                                             <Quote className="h-6 w-6" />
