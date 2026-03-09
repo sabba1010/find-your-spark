@@ -17,10 +17,13 @@ export default function ProfileCard({ user, matchPercent }: { user: User; matchP
       )}
       <Link to={`/profile/${user.id}`} className="block aspect-[3/4] overflow-hidden">
         <img
-          src={user.photo}
+          src={user.photo || "https://images.unsplash.com/photo-1544005313-94ddf0286df2"}
           alt={user.name}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2";
+          }}
         />
       </Link>
       <div className="p-4">

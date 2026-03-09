@@ -20,7 +20,7 @@ interface MatchedUser {
   gender: string;
   photo: string;
   location: string;
-  matchScore: number;
+  matchPercent: number;
 }
 
 const steps = ["Genre", "À la recherche de", "Tranche d'âge", "Lieu", "Trouver des profils"];
@@ -254,6 +254,9 @@ export default function Home() {
                     src={match.photo || "https://images.unsplash.com/photo-1544005313-94ddf0286df2"}
                     alt={match.name}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2";
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute bottom-0 left-0 p-6 text-white w-full">
