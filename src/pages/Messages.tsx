@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Send, ArrowLeft } from "lucide-react";
-import { useSearchParams, useLocation } from "react-router-dom";
+import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -26,6 +26,7 @@ interface Chat {
 }
 
 export default function Messages() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [activeChat, setActiveChat] = useState<string | null>(null);
   const [chats, setChats] = useState<Chat[]>([]);
@@ -111,6 +112,17 @@ export default function Messages() {
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMsg.trim() || !activeChat) return;
+
+    // Plan restriction: Free users cannot send messages
+    if (currentUser.planName === 'Free Registration' || !currentUser.planName) {
+      toast.error("Veuillez passer à un forfait payant pour envoyer des messages.", {
+        action: {
+          label: "Voir les Forfaits",
+          onClick: () => navigate("/plans")
+        },
+      });
+      return;
+    }
 
     try {
       const token = localStorage.getItem("token");

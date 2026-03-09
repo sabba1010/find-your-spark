@@ -48,7 +48,19 @@ export default function Discover() {
           throw new Error(data.message);
         }
 
-        setMatches(data.matches);
+        const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+        const isFree = currentUser.planName === 'Free Registration' || !currentUser.planName;
+
+        setMatches(isFree ? data.matches.slice(0, 5) : data.matches);
+
+        if (isFree && data.matches.length > 5) {
+          toast.info("Passez au Premium pour voir tous les profils !", {
+            action: {
+              label: "En savoir plus",
+              onClick: () => navigate("/plans")
+            }
+          });
+        }
       } catch (err: unknown) {
         toast.error(err instanceof Error ? err.message : "Erreur lors du chargement.");
       } finally {

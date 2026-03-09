@@ -11,6 +11,7 @@ import Messages from "./pages/Messages";
 import MatchSetup from "./pages/MatchSetup";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
+import SubscriptionPlans from "./pages/SubscriptionPlans";
 import NotFound from "./pages/NotFound";
 import { SocketProvider } from "./context/SocketContext";
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/messages" element={<Messages />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/:id" element={<Profile />} />
+            <Route path="/plans" element={<SubscriptionPlans />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </SocketProvider>

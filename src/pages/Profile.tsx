@@ -248,10 +248,19 @@ export default function Profile() {
 
                             <div className="rounded-2xl bg-gradient-to-br from-primary to-rose-600 p-6 text-white shadow-lg shadow-primary/20">
                                 <Heart className="h-10 w-10 fill-white mb-4" />
-                                <h3 className="text-xl font-bold mb-2">Passer au Premium</h3>
-                                <p className="text-white/80 text-sm mb-4">Obtenez des matchs illimités, voyez qui vous aime, et bien plus encore !</p>
-                                <Button className="w-full bg-white text-primary hover:bg-white/90 font-bold rounded-xl h-12">
-                                    Voir les Forfaits
+                                <h3 className="text-xl font-bold mb-2">
+                                    {prefs?.planName || "Passer au Premium"}
+                                </h3>
+                                <p className="text-white/80 text-sm mb-4">
+                                    {prefs?.planName
+                                        ? `Votre forfait ${prefs.planName} est actif.`
+                                        : "Obtenez des matchs illimités, voyez qui vous aime, et bien plus encore !"}
+                                </p>
+                                <Button
+                                    className="w-full bg-white text-primary hover:bg-white/90 font-bold rounded-xl h-12"
+                                    asChild
+                                >
+                                    <Link to="/plans">Voir les Forfaits</Link>
                                 </Button>
                             </div>
                         </div>
