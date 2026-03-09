@@ -8,6 +8,20 @@ import StatsSection from "@/components/StatsSection";
 import SafetySection from "@/components/SafetySection";
 import SuccessStories from "@/components/SuccessStories";
 import Footer from "@/components/Footer";
+import { useEffect } from "react";
+import { toast } from "sonner";
+
+const API = "https://datting-backend.vercel.app/api";
+
+interface MatchedUser {
+  id: string;
+  name: string;
+  age: number;
+  gender: string;
+  photo: string;
+  location: string;
+  matchScore: number;
+}
 
 const steps = ["Genre", "À la recherche de", "Tranche d'âge", "Lieu", "Trouver des profils"];
 
@@ -33,6 +47,37 @@ export default function Home() {
   const [lookingFor, setLookingFor] = useState("");
   const [ageRange, setAgeRange] = useState("");
   const [location, setLocation] = useState("");
+  const [matches, setMatches] = useState<MatchedUser[]>([]);
+  const [loadingMatches, setLoadingMatches] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+      fetchMatches(token);
+    }
+  }, []);
+
+  const fetchMatches = async (token: string) => {
+    setLoadingMatches(true);
+    try {
+      const prefs = JSON.parse(localStorage.getItem("matchPrefs") || "{}");
+      const ageParam = prefs.ageRange ? `?ageRange=${encodeURIComponent(prefs.ageRange)}` : "";
+
+      const res = await fetch(`${API}/users/matches${ageParam}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMatches(data.matches.slice(0, 3)); // Just show top 3 on home
+      }
+    } catch (err) {
+      console.error("Failed to fetch matches:", err);
+    } finally {
+      setLoadingMatches(false);
+    }
+  };
 
   const canNext = () => {
     if (step === 0) return !!gender;
@@ -183,19 +228,63 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured - CTA to sign up */}
+      {/* Featured - CTA or Matches */}
       <section className="mx-auto max-w-5xl px-4 py-16">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-foreground">Trouvez votre Match</h2>
+          <h2 className="text-2xl font-bold text-foreground">
+            {isLoggedIn ? "Vos Matchs Potentiels" : "Trouvez votre Match"}
+          </h2>
+          {isLoggedIn && (
+            <Link to="/discover" className="text-sm font-bold text-primary hover:underline flex items-center gap-1">
+              Voir tout <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
         </div>
-        <div className="rounded-2xl border border-border bg-card p-10 text-center shadow-lg">
-          <Heart className="mx-auto mb-4 h-12 w-12 fill-primary text-primary" />
-          <h3 className="text-xl font-bold text-foreground mb-2">Rejoignez notre communauté</h3>
-          <p className="text-muted-foreground mb-6">Créez votre compte pour découvrir des profils réels près de chez vous.</p>
-          <Button size="lg" asChild>
-            <Link to="/auth">Commencer gratuitement</Link>
-          </Button>
-        </div>
+
+        {isLoggedIn ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {loadingMatches ? (
+              Array(3).fill(0).map((_, i) => (
+                <div key={i} className="h-[400px] rounded-3xl bg-muted animate-pulse" />
+              ))
+            ) : matches.length > 0 ? (
+              matches.map((match) => (
+                <div key={match.id} className="group relative h-[400px] overflow-hidden rounded-3xl border border-border bg-card shadow-lg transition-all hover:scale-[1.02]">
+                  <img
+                    src={match.photo || "https://images.unsplash.com/photo-1544005313-94ddf0286df2"}
+                    alt={match.name}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute bottom-0 left-0 p-6 text-white w-full">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-xl font-bold">{match.name}, {match.age}</h3>
+                        <p className="text-sm text-white/80">{match.location}</p>
+                      </div>
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 backdrop-blur-md">
+                        <Heart className="h-5 w-5 text-primary fill-primary" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full rounded-3xl border border-dashed border-border p-12 text-center">
+                <p className="text-muted-foreground">Aucun match trouvé pour le moment. Essayez d'ajuster vos préférences !</p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-border bg-card p-10 text-center shadow-lg">
+            <Heart className="mx-auto mb-4 h-12 w-12 fill-primary text-primary" />
+            <h3 className="text-xl font-bold text-foreground mb-2">Rejoignez notre communauté</h3>
+            <p className="text-muted-foreground mb-6">Créez votre compte pour découvrir des profils réels près de chez vous.</p>
+            <Button size="lg" asChild>
+              <Link to="/auth">Commencer gratuitement</Link>
+            </Button>
+          </div>
+        )}
       </section>
 
       {/* New Sections */}
