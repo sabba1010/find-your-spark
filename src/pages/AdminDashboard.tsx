@@ -53,7 +53,8 @@ export default function AdminDashboard() {
         { label: "Total Utilisateurs", value: stats.totalUsers, icon: Users, color: "bg-blue-500", trend: "+12%", up: true },
         { label: "Revenu Total", value: `€${stats.totalRevenue.toFixed(2)}`, icon: DollarSign, color: "bg-green-500", trend: "+8.5%", up: true },
         { label: "Abonnés Actifs", value: stats.planStats.reduce((a, b) => a + (b.price > 0 ? b.count : 0), 0), icon: TrendingUp, color: "bg-purple-500", trend: "+5%", up: true },
-        { label: "Répartition Genre", value: `${Math.round((stats.gender.women / stats.totalUsers) * 100)}% 🚺`, icon: PieChart, color: "bg-rose-500", trend: "Balanced", up: null },
+        { label: "Hommes (Men)", value: stats.gender.men, icon: Users, color: "bg-indigo-500", trend: `${Math.round((stats.gender.men / stats.totalUsers) * 100)}%`, up: null },
+        { label: "Femmes (Women)", value: stats.gender.women, icon: Users, color: "bg-rose-500", trend: `${Math.round((stats.gender.women / stats.totalUsers) * 100)}%`, up: null },
     ];
 
     return (
@@ -67,7 +68,7 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-10">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 mb-10">
                     {cards.map((card, i) => (
                         <div key={i} className="rounded-3xl border border-border bg-card p-6 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
