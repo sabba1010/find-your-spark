@@ -11,6 +11,12 @@ const navItems = [
 
 export default function Navbar() {
   const { pathname } = useLocation();
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const isAdmin = user.role === 'admin';
+
+  const displayNavItems = isAdmin
+    ? [...navItems, { to: "/admin", icon: Search, label: "Admin" }]
+    : navItems;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/80 backdrop-blur-lg md:top-0 md:bottom-auto">
@@ -22,7 +28,7 @@ export default function Navbar() {
           </span>
         </Link>
         <div className="flex w-full justify-around md:w-auto md:gap-1">
-          {navItems.map(({ to, icon: Icon, label }) => {
+          {displayNavItems.map(({ to, icon: Icon, label }) => {
             const active = pathname === to;
             return (
               <Link
