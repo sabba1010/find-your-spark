@@ -3,8 +3,6 @@ import { Heart, ArrowRight, ArrowLeft, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
-import ProfileCard from "@/components/ProfileCard";
-import { fakeUsers } from "@/data/users";
 import FeaturesSection from "@/components/FeaturesSection";
 import StatsSection from "@/components/StatsSection";
 import SafetySection from "@/components/SafetySection";
@@ -28,7 +26,6 @@ function OptionButton({ label, selected, onClick, emoji }: { label: string; sele
 }
 
 export default function Home() {
-  const featured = fakeUsers.slice(0, 3);
   const navigate = useNavigate();
 
   const [step, setStep] = useState(0);
@@ -186,18 +183,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured */}
+      {/* Featured - CTA to sign up */}
       <section className="mx-auto max-w-5xl px-4 py-16">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-foreground">Profils en Vedette</h2>
-          <Link to="/discover" className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-            Tout voir <ArrowRight className="h-4 w-4" />
-          </Link>
+          <h2 className="text-2xl font-bold text-foreground">Trouvez votre Match</h2>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((user) => (
-            <ProfileCard key={user.id} user={user} />
-          ))}
+        <div className="rounded-2xl border border-border bg-card p-10 text-center shadow-lg">
+          <Heart className="mx-auto mb-4 h-12 w-12 fill-primary text-primary" />
+          <h3 className="text-xl font-bold text-foreground mb-2">Rejoignez notre communauté</h3>
+          <p className="text-muted-foreground mb-6">Créez votre compte pour découvrir des profils réels près de chez vous.</p>
+          <Button size="lg" asChild>
+            <Link to="/auth">Commencer gratuitement</Link>
+          </Button>
         </div>
       </section>
 

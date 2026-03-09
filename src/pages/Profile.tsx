@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { fakeUsers } from "@/data/users";
 import { toast } from "sonner";
+
+const API = "http://localhost:5000/api";
 
 interface UserPrefs {
     gender: string;
@@ -16,32 +17,49 @@ interface UserPrefs {
 export default function Profile() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [prefs, setPrefs] = useState<UserPrefs | null>(null);
+    const [prefs, setPrefs] = useState<any>(null);
     const [publicUser, setPublicUser] = useState<any>(null);
+    const [loading, setLoading] = useState(!!id);
 
     useEffect(() => {
         if (id) {
-            const user = fakeUsers.find(u => u.id === id);
-            if (user) {
-                setPublicUser(user);
-            }
+            // Fetch public profile from API
+            const token = localStorage.getItem("token");
+            fetch(`${API}/users/matches`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+                .then(r => r.json())
+                .then(data => {
+                    const found = data.matches?.find((u: any) => u.id === id);
+                    setPublicUser(found || null);
+                })
+                .catch(() => setPublicUser(null))
+                .finally(() => setLoading(false));
         } else {
-            const raw = localStorage.getItem("matchPrefs");
-            if (raw) {
-                setPrefs(JSON.parse(raw));
-            }
+            // Own profile — read from localStorage
+            const raw = localStorage.getItem("user");
+            const prefs2 = localStorage.getItem("matchPrefs");
+            if (raw) setPrefs({ ...JSON.parse(raw), ...(prefs2 ? JSON.parse(prefs2) : {}) });
         }
     }, [id]);
 
     const isOwnProfile = !id;
-    const userName = isOwnProfile ? "Sabba" : publicUser?.name;
+    const userName = isOwnProfile ? (prefs?.name || "Mon Profil") : publicUser?.name;
     const userBio = isOwnProfile
-        ? "Passionné par la création de belles interfaces et la recherche de connexions significatives. J'aime le café, les voyages et la technologie."
+        ? (prefs?.bio || "Passionné par la création de belles interfaces et la recherche de connexions significatives.")
         : publicUser?.bio;
     const displayPic = isOwnProfile
-        ? (prefs?.profilePic || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop")
+        ? (prefs?.photo || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop")
         : publicUser?.photo;
     const location = isOwnProfile ? (prefs?.location || "Paris, France") : publicUser?.location;
+
+    if (loading) {
+        return (
+            <div className="flex h-[70vh] items-center justify-center">
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+            </div>
+        );
+    }
 
     if (id && !publicUser) {
         return (
@@ -91,7 +109,7 @@ export default function Profile() {
                             {isOwnProfile ? (
                                 <>
                                     <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" asChild>
-                                        <Link to="/match-setup">
+                                        <Link to="/settings">
                                             <Edit className="mr-2 h-4 w-4" /> Modifier le Profil
                                         </Link>
                                     </Button>
@@ -104,7 +122,13 @@ export default function Profile() {
                                     <Button size="lg" className="rounded-xl font-bold bg-primary px-8" onClick={() => toast.success(`Vous avez aimé ${userName} ! 💕`)}>
                                         <Heart className="mr-2 h-5 w-5 fill-current" /> J'aime
                                     </Button>
-                                    <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" onClick={() => navigate(`/messages?user=${id}`)}>
+                                    <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" onClick={() => navigate(`/messages?user=${id}`, {
+                                        state: {
+                                            userName,
+                                            userPhoto: displayPic,
+                                            userLocation: location
+                                        }
+                                    })}>
                                         <MessageCircle className="mr-2 h-5 w-5" /> Message
                                     </Button>
                                 </>
@@ -183,6 +207,15 @@ export default function Profile() {
                                         ].map((item, i) => (
                                             <button
                                                 key={i}
+                                                onClick={() => {
+                                                    if (item.danger) {
+                                                        localStorage.removeItem("token");
+                                                        localStorage.removeItem("user");
+                                                        localStorage.removeItem("matchPrefs");
+                                                        toast.success("Vous avez été déconnecté.");
+                                                        navigate("/auth");
+                                                    }
+                                                }}
                                                 className={`flex w-full items-center justify-between rounded-xl p-3 text-left transition-colors hover:bg-muted ${item.danger ? 'text-rose-500' : 'text-foreground'}`}
                                             >
                                                 <div className="flex items-center gap-3">

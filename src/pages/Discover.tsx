@@ -1,43 +1,81 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import ProfileCard from "@/components/ProfileCard";
-import { fakeUsers } from "@/data/users";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
-function getAgeRange(range: string): [number, number] {
-  if (range === "18–25") return [18, 25];
-  if (range === "25–35") return [25, 35];
-  if (range === "35–45") return [35, 45];
-  if (range === "45+") return [45, 100];
-  return [18, 100];
+const API = "http://localhost:5000/api";
+
+export interface MatchedUser {
+  id: string;
+  name: string;
+  age: number;
+  location: string;
+  gender: "man" | "woman";
+  photo: string;
+  bio: string;
+  matchPercent?: number;
 }
 
-const matchPercentages: Record<string, number> = {
-  "1": 92, "2": 87, "3": 78, "4": 95, "5": 83, "6": 71,
-};
-
 export default function Discover() {
-  const filteredUsers = useMemo(() => {
-    const raw = localStorage.getItem("matchPrefs");
-    if (!raw) return fakeUsers;
+  const [matches, setMatches] = useState<MatchedUser[]>([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-    const prefs = JSON.parse(raw) as {
-      lookingFor: string;
-      ageRange: string;
-      location: string;
+  useEffect(() => {
+    const fetchMatches = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Veuillez vous connecter.");
+        navigate("/auth");
+        return;
+      }
+
+      try {
+        const prefs = JSON.parse(localStorage.getItem("matchPrefs") || "{}");
+        const ageParam = prefs.ageRange ? `?ageRange=${encodeURIComponent(prefs.ageRange)}` : "";
+
+        const res = await fetch(`${API}/users/matches${ageParam}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          if (res.status === 401) {
+            localStorage.removeItem("token");
+            navigate("/auth");
+            return;
+          }
+          throw new Error(data.message);
+        }
+
+        setMatches(data.matches);
+      } catch (err: unknown) {
+        toast.error(err instanceof Error ? err.message : "Erreur lors du chargement.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const [minAge, maxAge] = getAgeRange(prefs.ageRange);
+    fetchMatches();
+  }, [navigate]);
 
-    return fakeUsers.filter((u) => {
-      if (prefs.lookingFor && u.gender !== prefs.lookingFor) return false;
-      if (u.age < minAge || u.age > maxAge) return false;
-      return true;
-    });
-  }, []);
+  if (loading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="text-center">
+          <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <p className="text-muted-foreground">Recherche de profils...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-5xl px-4 pb-20 pt-6 md:pt-20">
-      <h1 className="mb-6 text-2xl font-bold text-foreground">Vos Profils</h1>
-      {filteredUsers.length === 0 ? (
+      <h1 className="mb-2 text-2xl font-bold text-foreground">Vos Profils</h1>
+      <p className="mb-6 text-sm text-muted-foreground">{matches.length} profil{matches.length !== 1 ? "s" : ""} trouvé{matches.length !== 1 ? "s" : ""}</p>
+
+      {matches.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <p className="text-lg text-muted-foreground">Aucun profil trouvé pour vos préférences.</p>
           <a href="/match-setup" className="mt-4 text-sm font-medium text-primary hover:underline">
@@ -46,8 +84,8 @@ export default function Discover() {
         </div>
       ) : (
         <div className="grid gap-6 grid-cols-2 lg:grid-cols-3">
-          {filteredUsers.map((user) => (
-            <ProfileCard key={user.id} user={user} matchPercent={matchPercentages[user.id]} />
+          {matches.map((user) => (
+            <ProfileCard key={user.id} user={user} matchPercent={user.matchPercent} />
           ))}
         </div>
       )}
