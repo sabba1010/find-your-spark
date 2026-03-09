@@ -4,17 +4,12 @@ const features = [
   {
     icon: <Search className="h-8 w-8 text-primary" />,
     title: "Matching Intelligent",
-    description: "Notre algorithme avancé vous met en relation avec des personnes qui partagent vos centres d'intérêt et vos valeurs.",
+    description: "Notre algorithme avancé vous met en relation avec des personnes qui partagent vos centres d'intérêt.",
   },
   {
     icon: <MessageCircle className="h-8 w-8 text-primary" />,
-    title: "Messagerie en Temps Réel",
-    description: "Lancez une conversation instantanément grâce à notre plateforme de chat fluide et sécurisée.",
-  },
-  {
-    icon: <Video className="h-8 w-8 text-primary" />,
-    title: "Rendez-vous Vidéo",
-    description: "Connectez-vous face à face dans le confort de votre maison avec des appels vidéo de haute qualité.",
+    title: "Messagerie Sécurisée",
+    description: "Lancez une conversation instantanément grâce à notre plateforme de chat fluide and privée.",
   },
   {
     icon: <Heart className="h-8 w-8 text-primary" />,
@@ -25,27 +20,27 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section className="bg-muted/30 py-20">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Pourquoi Choisir Heartbeat ?
+    <section className="bg-muted/30 py-20 px-4">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-16 text-center">
+          <h2 className="mb-4 text-3xl font-black tracking-tight text-foreground sm:text-5xl">
+            Pourquoi Choisir <span className="text-primary">Heartbeat ?</span>
           </h2>
-          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground font-medium">
             Nous fournissons les outils et la sécurité dont vous avez besoin pour trouver une connexion significative dans le monde des rencontres modernes.
           </p>
         </div>
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => (
             <div
               key={index}
-              className="flex flex-col items-center rounded-2xl border border-border bg-card p-8 text-center transition-all hover:shadow-md"
+              className="group flex flex-col items-center rounded-[2.5rem] border border-border bg-card p-10 text-center transition-all hover:shadow-xl hover:-translate-y-2 hover:border-primary/20"
             >
-              <div className="mb-4 rounded-full bg-primary/10 p-4">
+              <div className="mb-6 rounded-3xl bg-primary/10 p-5 transition-colors group-hover:bg-primary/20">
                 {feature.icon}
               </div>
-              <h3 className="mb-2 text-xl font-bold text-card-foreground">{feature.title}</h3>
-              <p className="text-muted-foreground">{feature.description}</p>
+              <h3 className="mb-3 text-xl font-bold text-card-foreground">{feature.title}</h3>
+              <p className="text-muted-foreground leading-relaxed italic">{feature.description}</p>
             </div>
           ))}
         </div>
