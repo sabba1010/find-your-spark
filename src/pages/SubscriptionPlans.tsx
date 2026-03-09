@@ -4,7 +4,7 @@ import { Check, ArrowLeft, Star, Zap, Shield, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-const API = "http://localhost:5000/api";
+const API = "https://datting-backend.vercel.app/api";
 
 interface Plan {
     _id: string;
