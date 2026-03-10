@@ -4,7 +4,7 @@ import { Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCir
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-const API = "http://localhost:5000/api";
+const API = "/api";
 
 interface UserPrefs {
     gender: string;

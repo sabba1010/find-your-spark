@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Heart, ArrowRight, ArrowLeft, Check, Camera, Upload } from "lucide-react";
 import { toast } from "sonner";
 
-const API = "http://localhost:5000/api";
+const API = "/api";
 const steps = ["Genre", "À la recherche de", "Tranche d'âge", "Lieu", "Photo de Profil", "Trouver des Profils"];
 
 export default function MatchSetup() {
@@ -115,6 +115,7 @@ export default function MatchSetup() {
               <div className="grid gap-3">
                 <OptionButton label="Homme" emoji="👨" selected={lookingFor === "man"} onClick={() => setLookingFor("man")} />
                 <OptionButton label="Femme" emoji="👩" selected={lookingFor === "woman"} onClick={() => setLookingFor("woman")} />
+                <OptionButton label="Tous les deux" emoji="👫" selected={lookingFor === "everyone"} onClick={() => setLookingFor("everyone")} />
               </div>
             </>
           )}
@@ -174,8 +175,8 @@ export default function MatchSetup() {
                   <img src={profilePic} alt="Profil" className="h-24 w-24 rounded-full object-cover shadow-md border-2 border-white" />
                 )}
                 <div className="w-full space-y-2 text-sm text-left">
-                  <p><span className="font-medium text-foreground">Genre :</span> <span className="text-muted-foreground capitalize">{gender === 'man' ? 'Homme' : 'Femme'}</span></p>
-                  <p><span className="font-medium text-foreground">Recherche :</span> <span className="text-muted-foreground capitalize">{lookingFor === 'man' ? 'Homme' : 'Femme'}</span></p>
+                  <p><span className="font-medium text-foreground">Genre :</span> <span className="text-muted-foreground capitalize">{gender === 'man' ? 'Homme' : (gender === 'woman' ? 'Femme' : 'Autre')}</span></p>
+                  <p><span className="font-medium text-foreground">Recherche :</span> <span className="text-muted-foreground capitalize">{lookingFor === 'man' ? 'Homme' : (lookingFor === 'woman' ? 'Femme' : 'Tous les deux')}</span></p>
                   <p><span className="font-medium text-foreground">Tranche d'âge :</span> <span className="text-muted-foreground">{ageRange}</span></p>
                   <p><span className="font-medium text-foreground">Lieu :</span> <span className="text-muted-foreground">{location}</span></p>
                 </div>
