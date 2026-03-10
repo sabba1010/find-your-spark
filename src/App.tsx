@@ -12,6 +12,7 @@ import MatchSetup from "./pages/MatchSetup";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import SubscriptionPlans from "./pages/SubscriptionPlans";
+import ResetPassword from "./pages/ResetPassword";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import { SocketProvider } from "./context/SocketContext";
@@ -29,6 +30,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/discover" element={<Discover />} />
             <Route path="/match-setup" element={<MatchSetup />} />
             <Route path="/settings" element={<Settings />} />
