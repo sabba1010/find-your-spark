@@ -11,7 +11,7 @@ const stories = [
     {
         name: "Emma & David",
         image: emmaDavid,
-        quote: "Nous nous sommes trouvés sur Heartbeat et c'est un rêve devenu réalité depuis lors.",
+        quote: "Nous nous sommes trouvés sur find-your-spark et c'est un rêve devenu réalité depuis lors.",
         time: "Ensemble depuis 2 ans"
     },
     {

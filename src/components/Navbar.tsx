@@ -1,3 +1,4 @@
+import logo from "../assets/logo.jpeg";
 import { CreditCard, Heart, MessageCircle, Search, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -22,9 +23,9 @@ export default function Navbar() {
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/80 backdrop-blur-lg md:top-0 md:bottom-auto">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2 md:py-3">
         <Link to="/" className="hidden items-center gap-2 md:flex">
-          <Heart className="h-6 w-6 fill-primary text-primary" />
+          <img src={logo} alt="find-your-spark logo" className="h-8 w-8 rounded-full object-cover" />
           <span className="text-2xl font-black tracking-tighter text-foreground">
-            Heartbeat<span className="text-primary">.</span>
+            find-your-spark<span className="text-primary">.</span>
           </span>
         </Link>
         <div className="flex w-full justify-around md:w-auto md:gap-1">

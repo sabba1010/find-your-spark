@@ -28,7 +28,7 @@ export default function SafetySection() {
                             Rencontrez en toute Confiance et Sécurité
                         </h2>
                         <p className="mb-8 text-lg text-muted-foreground">
-                            Chez Heartbeat, votre sécurité est notre priorité absolue. Nous avons construit une plateforme qui respecte votre vie privée et assure un environnement sécurisé pour des connexions significatives.
+                            Chez find-your-spark, votre sécurité est notre priorité absolue. Nous avons construit une plateforme qui respecte votre vie privée et assure un environnement sécurisé pour des connexions significatives.
                         </p>
                         <div className="space-y-6">
                             {safetyFeatures.map((feature, index) => (

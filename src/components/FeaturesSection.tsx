@@ -24,7 +24,7 @@ export default function FeaturesSection() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-16 text-center">
           <h2 className="mb-4 text-3xl font-black tracking-tight text-foreground sm:text-5xl">
-            Pourquoi Choisir <span className="text-primary">Heartbeat ?</span>
+            Pourquoi Choisir <span className="text-primary">find-your-spark ?</span>
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground font-medium">
             Nous fournissons les outils et la sécurité dont vous avez besoin pour trouver une connexion significative dans le monde des rencontres modernes.

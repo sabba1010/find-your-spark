@@ -1,5 +1,6 @@
+import logo from "../assets/logo.jpeg";
 import { Link } from "react-router-dom";
-import { Heart, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
@@ -10,11 +11,9 @@ export default function Footer() {
                 <div className="grid gap-12 lg:grid-cols-4">
                     <div className="lg:col-span-1">
                         <Link to="/" className="flex items-center gap-2 mb-6">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg">
-                                <Heart className="h-5 w-5 fill-current" />
-                            </div>
+                            <img src={logo} alt="find-your-spark logo" className="h-10 w-10 rounded-xl object-cover shadow-lg" />
                             <span className="text-2xl font-black tracking-tighter text-foreground">
-                                Heartbeat<span className="text-primary">.</span>
+                                find-your-spark<span className="text-primary">.</span>
                             </span>
                         </Link>
                         <p className="text-muted-foreground">
