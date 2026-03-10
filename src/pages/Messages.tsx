@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useSocket } from "../context/SocketContext";
 
-const API = "https://datting-backend.vercel.app/api";
+const API = "http://localhost:5000/api";
 
 interface Message {
   _id: string;

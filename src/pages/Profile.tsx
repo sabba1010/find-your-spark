@@ -4,7 +4,7 @@ import { Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCir
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-const API = "https://datting-backend.vercel.app/api";
+const API = "http://localhost:5000/api";
 
 interface UserPrefs {
     gender: string;

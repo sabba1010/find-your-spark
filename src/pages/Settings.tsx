@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Save, Camera, Upload } from "lucide-react";
 import { toast } from "sonner";
 
-const API = "https://datting-backend.vercel.app/api";
+const API = "http://localhost:5000/api";
 
 export default function Settings() {
     const navigate = useNavigate();
@@ -23,6 +23,7 @@ export default function Settings() {
         bio: "",
         photo: "" as string | null,
     });
+    const [passwords, setPasswords] = useState({ current: "", new: "" });
 
     useEffect(() => {
         const rawUser = localStorage.getItem("user");
@@ -82,6 +83,35 @@ export default function Settings() {
             setTimeout(() => navigate("/profile"), 1000);
         } catch (err: unknown) {
             toast.error(err instanceof Error ? err.message : "Erreur lors de la sauvegarde.");
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleChangePassword = async () => {
+        if (!passwords.current || !passwords.new) return;
+        setSaving(true);
+        try {
+            const token = localStorage.getItem("token");
+            const res = await fetch(`${API}/auth/change-password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    currentPassword: passwords.current,
+                    newPassword: passwords.new
+                }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message);
+
+            toast.success("Mot de passe mis à jour ! 🎉");
+            setPasswords({ current: "", new: "" });
+        } catch (err: any) {
+            toast.error(err.message || "Erreur lors du changement de mot de passe.");
         } finally {
             setSaving(false);
         }
@@ -194,6 +224,40 @@ export default function Settings() {
                             <label className="text-sm font-medium text-foreground">Localisation</label>
                             <Input name="location" value={formData.location} onChange={handleChange} required />
                         </div>
+                    </div>
+                    <div className="pt-6 border-t border-border">
+                        <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                            Sécurité
+                        </h2>
+                        <div className="grid gap-6 md:grid-cols-2">
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-foreground">Ancien mot de passe</label>
+                                <Input
+                                    type="password"
+                                    placeholder="••••••••"
+                                    value={passwords.current}
+                                    onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-foreground">Nouveau mot de passe</label>
+                                <Input
+                                    type="password"
+                                    placeholder="••••••••"
+                                    value={passwords.new}
+                                    onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="mt-4"
+                            onClick={handleChangePassword}
+                            disabled={!passwords.current || !passwords.new || saving}
+                        >
+                            Changer le mot de passe
+                        </Button>
                     </div>
                 </form>
             </div>
