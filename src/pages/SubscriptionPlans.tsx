@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
-const API = "http://localhost:5000/api";
+const API = "/api";
 const PAYPAL_CLIENT_ID = "AfUE0E35GfN__bPrGA5C5kXFefBHtu2dVJJL_UK-xqf8q70YPYnjTIV6Cc84WyIdPOid_xjyUSOpUvA4";
 
 interface Plan {
@@ -81,7 +81,7 @@ export default function SubscriptionPlans() {
 
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${API}/payment/create-order`, {
+            const res = await fetch(`${API}/paypal/create-order`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -89,19 +89,29 @@ export default function SubscriptionPlans() {
                 },
                 body: JSON.stringify({ planId: selectedPlanForPaypal._id })
             });
+
             const orderData = await res.json();
-            return orderData.orderId;
-        } catch (err) {
-            console.error(err);
-            toast.error("Erreur lors de la création de la commande PayPal.");
-            return "";
+
+            if (!orderData.success || !orderData.id) {
+                console.error("PayPal Order Creation Failed:", orderData);
+                toast.error(orderData.message || "Erreur lors de la création de la commande PayPal.");
+                throw new Error(orderData.message || "Order creation failed");
+            }
+
+            return orderData.id;
+        } catch (err: any) {
+            console.error("createOrder error:", err);
+            if (!err.message?.includes("Order creation failed")) {
+                toast.error("Erreur réseau lors de la création de la commande PayPal.");
+            }
+            throw err;
         }
     };
 
     const onApprove = async (data: any, actions: any) => {
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${API}/payment/capture-order`, {
+            const res = await fetch(`${API}/paypal/capture-order`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -134,7 +144,7 @@ export default function SubscriptionPlans() {
     const icons = [<Shield className="h-6 w-6" />, <Zap className="h-6 w-6" />, <Star className="h-6 w-6" />, <Heart className="h-6 w-6" />];
 
     return (
-        <PayPalScriptProvider options={{ clientId: PAYPAL_CLIENT_ID, currency: "EUR" }}>
+        <PayPalScriptProvider options={{ clientId: PAYPAL_CLIENT_ID, currency: "EUR", intent: "capture" }}>
             <div className="min-h-screen bg-muted/30 pb-20 pt-8 md:pt-24">
                 <div className="mx-auto max-w-6xl px-4">
                     <div className="mb-10 flex items-center gap-4">

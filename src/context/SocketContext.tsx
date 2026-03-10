@@ -26,7 +26,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         if (!userId) return;
 
         // Connect to server
-        const newSocket = io("https://datting-backend.vercel.app");
+        const newSocket = io("http://localhost:5000");
         setSocket(newSocket);
 
         newSocket.on("connect", () => {
