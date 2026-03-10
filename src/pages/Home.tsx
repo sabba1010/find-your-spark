@@ -11,7 +11,7 @@ import Footer from "@/components/Footer";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-const API = "https://datting-backend.vercel.app/api";
+const API = "http://localhost:5000/api";
 
 interface MatchedUser {
   id: string;

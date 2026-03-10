@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Save, Camera, Upload } from "lucide-react";
 import { toast } from "sonner";
 
-const API = "https://datting-backend.vercel.app/api";
+const API = "http://localhost:5000/api";
 
 export default function Settings() {
     const navigate = useNavigate();

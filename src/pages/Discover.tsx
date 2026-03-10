@@ -3,7 +3,7 @@ import ProfileCard from "@/components/ProfileCard";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-const API = "https://datting-backend.vercel.app/api";
+const API = "http://localhost:5000/api";
 
 export interface MatchedUser {
   id: string;

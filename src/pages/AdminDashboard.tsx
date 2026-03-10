@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Users, TrendingUp, DollarSign, PieChart, ArrowUpRight, ArrowDownRight, Clock } from "lucide-react";
 import { toast } from "sonner";
 
-const API = "https://datting-backend.vercel.app/api";
+const API = "http://localhost:5000/api";
 
 interface Stats {
     totalUsers: number;
