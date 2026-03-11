@@ -11,7 +11,7 @@ export default defineConfig({
     },
     proxy: {
       "/api": {
-        target: "http://206.162.244.12:5000",
+        target: "https://amour-et-sincerite.com/api",
         changeOrigin: true,
       },
     },

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Users, TrendingUp, DollarSign, PieChart, ArrowUpRight, ArrowDownRight, Clock } from "lucide-react";
 import { toast } from "sonner";
 
-const API = "http://206.162.244.12:5000/api";
+const API = "https://amour-et-sincerite.com/api/api";
 
 
 interface Stats {

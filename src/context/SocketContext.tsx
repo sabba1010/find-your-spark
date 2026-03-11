@@ -26,7 +26,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         if (!userId) return;
 
         // Connect to server
-        const newSocket = io("http://206.162.244.12:5000");
+        const newSocket = io("https://amour-et-sincerite.com/api");
         setSocket(newSocket);
 
         newSocket.on("connect", () => {
