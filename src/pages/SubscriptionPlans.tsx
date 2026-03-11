@@ -4,8 +4,7 @@ import { Check, ArrowLeft, Star, Zap, Shield, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-
-const API = "/api";
+import { API } from "@/lib/api";
 const PAYPAL_CLIENT_ID = "AfUE0E35GfN__bPrGA5C5kXFefBHtu2dVJJL_UK-xqf8q70YPYnjTIV6Cc84WyIdPOid_xjyUSOpUvA4";
 
 interface Plan {

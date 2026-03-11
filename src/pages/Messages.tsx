@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useSocket } from "../context/SocketContext";
-
-const API = "/api";
+import { API } from "@/lib/api";
 
 interface Message {
   _id: string;

@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Heart } from "lucide-react";
-
-const API = "/api";
+import { API } from "@/lib/api";
 
 export default function ResetPassword() {
     const { token } = useParams();

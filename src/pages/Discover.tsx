@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import ProfileCard from "@/components/ProfileCard";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-
-const API = "/api";
+import { API } from "@/lib/api";
 
 export interface MatchedUser {
   id: string;

@@ -3,10 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Camera, Upload } from "lucide-react";
+import { ArrowLeft, Save, Camera, Upload, Heart } from "lucide-react";
 import { toast } from "sonner";
-
-const API = "/api";
+import { API } from "@/lib/api";
 
 export default function Settings() {
     const navigate = useNavigate();

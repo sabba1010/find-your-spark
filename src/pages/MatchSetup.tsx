@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Heart, ArrowRight, ArrowLeft, Check, Camera, Upload } from "lucide-react";
 import { toast } from "sonner";
-
-const API = "/api";
+import { API } from "@/lib/api";
 const steps = ["Genre", "À la recherche de", "Tranche d'âge", "Lieu", "Photo de Profil", "Trouver des Profils"];
 
 export default function MatchSetup() {
