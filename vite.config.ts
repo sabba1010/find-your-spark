@@ -11,7 +11,7 @@ export default defineConfig({
     },
     proxy: {
       "/api": {
-        target: "https://datting-backend.vercel.app",
+        target: "http://206.162.244.12:5000",
         changeOrigin: true,
       },
     },
