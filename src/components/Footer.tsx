@@ -11,9 +11,9 @@ export default function Footer() {
                 <div className="grid gap-12 lg:grid-cols-4">
                     <div className="lg:col-span-1">
                         <Link to="/" className="flex items-center gap-2 mb-6">
-                            <img src={logo} alt="Love and Sincerity logo" className="h-10 w-10 rounded-xl object-cover shadow-lg" />
+                            <img src={logo} alt="Amour Et Sincerité logo" className="h-10 w-10 rounded-xl object-cover shadow-lg" />
                             <span className="text-2xl font-black tracking-tighter text-foreground">
-                                Love and Sincerity<span className="text-primary">.</span>
+                                Amour Et Sincerité<span className="text-primary">.</span>
                             </span>
                         </Link>
                         <p className="text-muted-foreground">

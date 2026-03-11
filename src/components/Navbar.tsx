@@ -23,9 +23,9 @@ export default function Navbar() {
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/80 backdrop-blur-lg md:top-0 md:bottom-auto">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2 md:py-3">
         <Link to="/" className="hidden items-center gap-2 md:flex">
-          <img src={logo} alt="Love and Sincerity logo" className="h-8 w-8 rounded-full object-cover" />
+          <img src={logo} alt="Amour Et Sincerité logo" className="h-8 w-8 rounded-full object-cover" />
           <span className="text-2xl font-black tracking-tighter text-foreground">
-            Love and Sincerity<span className="text-primary">.</span>
+            Amour Et Sincerité<span className="text-primary">.</span>
           </span>
         </Link>
         <div className="flex w-full justify-around md:w-auto md:gap-1">

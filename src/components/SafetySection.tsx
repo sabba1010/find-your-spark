@@ -28,7 +28,7 @@ export default function SafetySection() {
                             Rencontrez en toute Confiance et Sécurité
                         </h2>
                         <p className="mb-8 text-lg text-muted-foreground">
-                            Chez Love and Sincerity, votre sécurité est notre priorité absolue. Nous avons construit une plateforme qui respecte votre vie privée et assure un environnement sécurisé pour des connexions significatives.
+                            Chez Amour Et Sincerité, votre sécurité est notre priorité absolue. Nous avons construit une plateforme qui respecte votre vie privée et assure un environnement sécurisé pour des connexions significatives.
                         </p>
                         <div className="space-y-6">
                             {safetyFeatures.map((feature, index) => (
