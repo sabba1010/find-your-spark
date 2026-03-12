@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Camera, Upload, Heart } from "lucide-react";
+import { Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { API } from "@/lib/api";
 
@@ -33,6 +33,10 @@ export default function Settings() {
         hairColor: "",
         smoke: "",
         alcohol: "",
+        locationCoords: { type: "Point", coordinates: [0, 0] },
+        country: "",
+        department: "",
+        city: "",
     });
     const [passwords, setPasswords] = useState({ current: "", new: "" });
 
@@ -61,11 +65,35 @@ export default function Settings() {
                 hairColor: user.hairColor || "",
                 smoke: user.smoke || "",
                 alcohol: user.alcohol || "",
+                locationCoords: user.locationCoords || { type: "Point", coordinates: [0, 0] },
+                country: user.country || "",
+                department: user.department || "",
+                city: user.city || "",
             });
         } else {
             navigate("/auth");
         }
     }, [navigate]);
+
+    const getLocation = () => {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setFormData(prev => ({
+                        ...prev,
+                        locationCoords: { type: "Point", coordinates: [longitude, latitude] }
+                    }));
+                    toast.success("Position récupérée !");
+                },
+                (error) => {
+                    toast.error("Impossible de récupérer la position.");
+                }
+            );
+        } else {
+            toast.error("La géolocalisation n'est pas supportée par votre navigateur.");
+        }
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -284,7 +312,46 @@ export default function Settings() {
                         </div>
                     </div>
                     <div className="pt-6 border-t border-border">
-                        <h2 className="text-lg font-bold text-foreground mb-4">Détails Personnels</h2>
+                        <h2 className="text-lg font-bold text-foreground mb-4">Ma Localisation</h2>
+                        <div className="grid gap-6">
+                            <div className="space-y-4">
+                                <Button 
+                                    type="button" 
+                                    variant="outline" 
+                                    onClick={getLocation}
+                                    className="w-full flex items-center justify-center gap-2"
+                                >
+                                    <MapPin className="h-4 w-4" />
+                                    {formData.locationCoords.coordinates[0] !== 0 ? "Mettre à jour ma position" : "Obtenir ma position actuelle"}
+                                </Button>
+                                {formData.locationCoords.coordinates[0] !== 0 && (
+                                    <p className="text-[10px] text-muted-foreground text-center">
+                                        Coordonnées : {formData.locationCoords.coordinates[1].toFixed(4)}, {formData.locationCoords.coordinates[0].toFixed(4)}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="grid gap-6 md:grid-cols-2">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-foreground">Pays</label>
+                                    <Input name="country" value={formData.country} onChange={handleChange} placeholder="ex: France, Belgique..." />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-foreground">Département / Région</label>
+                                    <Input name="department" value={formData.department} onChange={handleChange} placeholder="ex: Île-de-France, PACA..." />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-foreground">Ville</label>
+                                    <Input name="city" value={formData.city} onChange={handleChange} placeholder="ex: Paris, Lyon..." />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-foreground">Adresse affichée (Public)</label>
+                                    <Input name="location" value={formData.location} onChange={handleChange} placeholder="ex: Paris, France" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-border">
                         <div className="grid gap-6 md:grid-cols-2">
                             <div className="space-y-2">
                                 <label className="text-sm font-medium text-foreground">Loisirs (Hobbies)</label>
