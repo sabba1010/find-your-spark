@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles } from "lucide-react";
+import { Heart, MapPin, Edit, Settings as SettingsIcon, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles, ArrowLeft, Save, Camera, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { API } from "@/lib/api";
 

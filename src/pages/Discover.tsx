@@ -30,6 +30,7 @@ export default function Discover() {
   });
   const navigate = useNavigate();
 
+  useEffect(() => {
     fetchMatches();
   }, [navigate, filters]);
 
