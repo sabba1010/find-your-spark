@@ -22,6 +22,17 @@ export default function Settings() {
         bio: "",
         photo: "" as string | null,
         photos: [] as string[],
+        hobbies: "",
+        favoriteActivities: "",
+        zodiacSign: "",
+        religion: "",
+        children: "",
+        height: "",
+        weight: "",
+        eyeColor: "",
+        hairColor: "",
+        smoke: "",
+        alcohol: "",
     });
     const [passwords, setPasswords] = useState({ current: "", new: "" });
 
@@ -39,6 +50,17 @@ export default function Settings() {
                 bio: user.bio || "",
                 photo: user.photo || null,
                 photos: user.photos || [],
+                hobbies: user.hobbies || "",
+                favoriteActivities: user.favoriteActivities || "",
+                zodiacSign: user.zodiacSign || "",
+                religion: user.religion || "",
+                children: user.children || "",
+                height: user.height || "",
+                weight: user.weight || "",
+                eyeColor: user.eyeColor || "",
+                hairColor: user.hairColor || "",
+                smoke: user.smoke || "",
+                alcohol: user.alcohol || "",
             });
         } else {
             navigate("/auth");
@@ -261,6 +283,89 @@ export default function Settings() {
                             <Input name="location" value={formData.location} onChange={handleChange} required />
                         </div>
                     </div>
+                    <div className="pt-6 border-t border-border">
+                        <h2 className="text-lg font-bold text-foreground mb-4">Détails Personnels</h2>
+                        <div className="grid gap-6 md:grid-cols-2">
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-foreground">Loisirs (Hobbies)</label>
+                                <Input name="hobbies" value={formData.hobbies} onChange={handleChange} placeholder="ex: Musique, Voyage, Cuisine" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-foreground">Activités Préférées</label>
+                                <Input name="favoriteActivities" value={formData.favoriteActivities} onChange={handleChange} placeholder="ex: Randonnée, Lecture, Cinéma" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-foreground">Signe Astrologique</label>
+                                <select name="zodiacSign" value={formData.zodiacSign} onChange={handleChange} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                                    <option value="">Sélectionner</option>
+                                    {["Bélier", "Taureau", "Gémeaux", "Cancer", "Lion", "Vierge", "Balance", "Scorpion", "Sagittaire", "Capricorne", "Verseau", "Poissons"].map(z => (
+                                        <option key={z} value={z}>{z}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-foreground">Religion</label>
+                                <Input name="religion" value={formData.religion} onChange={handleChange} placeholder="ex: Chrétien, Musulman, etc." />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-foreground">Enfants</label>
+                                <select name="children" value={formData.children} onChange={handleChange} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                                    <option value="">Sélectionner</option>
+                                    <option value="none">Aucun</option>
+                                    <option value="want">En veut</option>
+                                    <option value="have">En a déjà</option>
+                                    <option value="dont_want">N'en veut pas</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-border">
+                        <h2 className="text-lg font-bold text-foreground mb-4">Apparence</h2>
+                        <div className="grid gap-6 md:grid-cols-2">
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-foreground">Taille (cm)</label>
+                                <Input name="height" value={formData.height} onChange={handleChange} placeholder="ex: 175" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-foreground">Poids (kg)</label>
+                                <Input name="weight" value={formData.weight} onChange={handleChange} placeholder="ex: 70" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-foreground">Couleur des Yeux</label>
+                                <Input name="eyeColor" value={formData.eyeColor} onChange={handleChange} placeholder="ex: Marron, Bleu" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-foreground">Couleur des Cheveux</label>
+                                <Input name="hairColor" value={formData.hairColor} onChange={handleChange} placeholder="ex: Noir, Blond" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-border">
+                        <h2 className="text-lg font-bold text-foreground mb-4">Mode de Vie</h2>
+                        <div className="grid gap-6 md:grid-cols-2">
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-foreground">Fumeur</label>
+                                <select name="smoke" value={formData.smoke} onChange={handleChange} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                                    <option value="">Sélectionner</option>
+                                    <option value="no">Non</option>
+                                    <option value="occasionally">Occasionnellement</option>
+                                    <option value="yes">Oui</option>
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-foreground">Alcool</label>
+                                <select name="alcohol" value={formData.alcohol} onChange={handleChange} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                                    <option value="">Sélectionner</option>
+                                    <option value="never">Jamais</option>
+                                    <option value="socially">Socialement</option>
+                                    <option value="regularly">Régulièrement</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="pt-6 border-t border-border">
                         <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
                             Sécurité

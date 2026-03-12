@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCircle } from "lucide-react";
+import { Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles, Moon, Baby, Ruler, Wine, Scissors, Eye, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -13,6 +13,17 @@ interface UserPrefs {
     location: string;
     profilePic: string | null;
     photos: string[];
+    hobbies?: string;
+    favoriteActivities?: string;
+    zodiacSign?: string;
+    religion?: string;
+    children?: string;
+    height?: string;
+    weight?: string;
+    eyeColor?: string;
+    hairColor?: string;
+    smoke?: string;
+    alcohol?: string;
 }
 
 export default function Profile() {
@@ -240,6 +251,43 @@ export default function Profile() {
                                         <h3 className="font-bold text-foreground text-lg mb-1">Restez en Sécurité</h3>
                                         <p className="text-muted-foreground">Suivez toujours nos conseils de communauté et donnez la priorité à votre sécurité lors de rencontres avec de nouvelles personnes.</p>
                                     </div>
+                                </div>
+                            </div>
+
+                            {/* Detailed Info Grid */}
+                            <div>
+                                <h2 className="text-xl font-bold text-foreground mb-6">Détails Personnels</h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {[
+                                        { label: "Loisirs", value: (isOwnProfile ? prefs?.hobbies : publicUser?.hobbies), icon: Heart, placeholder: "Ajouter vos loisirs" },
+                                        { label: "Activités", value: (isOwnProfile ? prefs?.favoriteActivities : publicUser?.favoriteActivities), icon: Activity, placeholder: "Ajouter des activités" },
+                                        { label: "Zodiaque", value: (isOwnProfile ? prefs?.zodiacSign : publicUser?.zodiacSign), icon: Moon, placeholder: "Signe astrologique" },
+                                        { label: "Religion", value: (isOwnProfile ? prefs?.religion : publicUser?.religion), icon: Sparkles, placeholder: "Ajouter votre religion" },
+                                        { label: "Enfants", value: (isOwnProfile ? (prefs?.children === 'none' ? 'Aucun' : (prefs?.children === 'want' ? 'En veut' : (prefs?.children === 'have' ? 'En a' : (prefs?.children === 'dont_want' ? "N'en veut pas" : prefs?.children)))) : (publicUser?.children === 'none' ? 'Aucun' : (publicUser?.children === 'want' ? 'En veut' : (publicUser?.children === 'have' ? 'En a' : (publicUser?.children === 'dont_want' ? "N'en veut pas" : publicUser?.children))))), icon: Baby, placeholder: "Préférence enfants" },
+                                        { label: "Taille", value: (isOwnProfile ? (prefs?.height ? `${prefs.height} cm` : null) : (publicUser?.height ? `${publicUser.height} cm` : null)), icon: Ruler, placeholder: "Ajouter votre taille" },
+                                        { label: "Yeux", value: (isOwnProfile ? prefs?.eyeColor : publicUser?.eyeColor), icon: Eye, placeholder: "Couleur des yeux" },
+                                        { label: "Cheveux", value: (isOwnProfile ? prefs?.hairColor : publicUser?.hairColor), icon: Scissors, placeholder: "Couleur des cheveux" },
+                                        { label: "Fumeur", value: (isOwnProfile ? (prefs?.smoke === 'yes' ? 'Oui' : (prefs?.smoke === 'no' ? 'Non' : (prefs?.smoke === 'occasionally' ? 'Parfois' : null))) : (publicUser?.smoke === 'yes' ? 'Oui' : (publicUser?.smoke === 'no' ? 'Non' : (publicUser?.smoke === 'occasionally' ? 'Parfois' : null)))), icon: Sparkles, placeholder: "Tabac" },
+                                        { label: "Alcool", value: (isOwnProfile ? (prefs?.alcohol === 'never' ? 'Jamais' : (prefs?.alcohol === 'socially' ? 'Socialement' : (prefs?.alcohol === 'regularly' ? 'Oui' : null))) : (publicUser?.alcohol === 'never' ? 'Jamais' : (publicUser?.alcohol === 'socially' ? 'Socialement' : (publicUser?.alcohol === 'regularly' ? 'Oui' : null)))), icon: Wine, placeholder: "Alcool" },
+                                    ].filter(item => isOwnProfile || item.value).map((item, i) => (
+                                        <div key={i} 
+                                            onClick={() => isOwnProfile && navigate("/settings")}
+                                            className={`flex items-center gap-4 rounded-2xl p-4 border transition-all ${isOwnProfile && !item.value ? 'bg-primary/5 border-dashed border-primary/30 cursor-pointer hover:bg-primary/10' : 'bg-muted/30 border-border/40'}`}
+                                        >
+                                            <div className={`rounded-full p-2 ${isOwnProfile && !item.value ? 'bg-primary/20 text-primary' : 'bg-primary/10 text-primary'}`}>
+                                                <item.icon className="h-4 w-4" />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{item.label}</p>
+                                                <p className={`font-bold text-sm ${!item.value ? 'text-primary/60 italic font-medium' : 'text-foreground'}`}>
+                                                    {item.value || item.placeholder}
+                                                </p>
+                                            </div>
+                                            {isOwnProfile && !item.value && (
+                                                <ChevronRight className="ml-auto h-4 w-4 text-primary opacity-50" />
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>

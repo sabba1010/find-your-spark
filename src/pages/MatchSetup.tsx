@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Heart, ArrowRight, ArrowLeft, Check, Camera, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { API } from "@/lib/api";
-const steps = ["Genre", "À la recherche de", "Tranche d'âge", "Lieu", "Photo de Profil", "Trouver des Profils"];
+const steps = ["Genre", "À la recherche de", "Tranche d'âge", "Lieu", "Photo de Profil", "À propos de vous", "Détails essentiels", "Trouver des Profils"];
 
 export default function MatchSetup() {
   const [step, setStep] = useState(0);
@@ -14,6 +14,11 @@ export default function MatchSetup() {
   const [ageRange, setAgeRange] = useState("");
   const [location, setLocation] = useState("");
   const [profilePic, setProfilePic] = useState<string | null>(null);
+  const [bio, setBio] = useState("");
+  const [hobbies, setHobbies] = useState("");
+  const [zodiacSign, setZodiacSign] = useState("");
+  const [religion, setReligion] = useState("");
+  const [height, setHeight] = useState("");
   const [saving, setSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -37,7 +42,7 @@ export default function MatchSetup() {
   };
 
   const handleNext = async () => {
-    if (step < 5) {
+    if (step < 7) {
       setStep(step + 1);
     } else {
       // Save to DB
@@ -50,7 +55,10 @@ export default function MatchSetup() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ gender, lookingFor, ageRange, location, photo: profilePic }),
+          body: JSON.stringify({ 
+            gender, lookingFor, ageRange, location, photo: profilePic,
+            bio, hobbies, zodiacSign, religion, height
+          }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
@@ -96,7 +104,7 @@ export default function MatchSetup() {
 
         <div className="rounded-2xl border border-border bg-card p-8 shadow-lg">
           <Heart className="mx-auto mb-4 h-8 w-8 fill-primary text-primary" />
-          <p className="mb-1 text-center text-sm font-medium text-muted-foreground">Étape {step + 1} sur 6</p>
+          <p className="mb-1 text-center text-sm font-medium text-muted-foreground">Étape {step + 1} sur 8</p>
 
           {step === 0 && (
             <>
@@ -166,6 +174,60 @@ export default function MatchSetup() {
           )}
 
           {step === 5 && (
+            <div className="space-y-6">
+              <h2 className="text-center text-2xl font-bold text-card-foreground">À propos de vous</h2>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground text-left block">Votre Bio</label>
+                  <textarea
+                    placeholder="Parlez-nous de vous..."
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground text-left block">Loisirs (Hobbies)</label>
+                  <Input
+                    placeholder="Musique, Voyage, Cuisine..."
+                    value={hobbies}
+                    onChange={(e) => setHobbies(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {step === 6 && (
+            <div className="space-y-6">
+              <h2 className="text-center text-2xl font-bold text-card-foreground">Détails essentiels</h2>
+              <div className="grid gap-4">
+                <div className="space-y-2 text-left">
+                  <label className="text-sm font-medium text-foreground">Signe Astrologique</label>
+                  <select
+                    value={zodiacSign}
+                    onChange={(e) => setZodiacSign(e.target.value)}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    <option value="">Sélectionner</option>
+                    {["Bélier", "Taureau", "Gémeaux", "Cancer", "Lion", "Vierge", "Balance", "Scorpion", "Sagittaire", "Capricorne", "Verseau", "Poissons"].map(z => (
+                      <option key={z} value={z}>{z}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-2 text-left">
+                  <label className="text-sm font-medium text-foreground">Religion (Facultatif)</label>
+                  <Input value={religion} onChange={(e) => setReligion(e.target.value)} placeholder="Religion" />
+                </div>
+                <div className="space-y-2 text-left">
+                  <label className="text-sm font-medium text-foreground">Taille (cm)</label>
+                  <Input type="number" value={height} onChange={(e) => setHeight(e.target.value)} placeholder="ex: 175" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {step === 7 && (
             <div className="text-center">
               <h2 className="mb-2 text-2xl font-bold text-card-foreground">Vous êtes prêt ! 🎉</h2>
               <p className="text-muted-foreground">Nous trouverons les meilleurs profils pour vous.</p>
@@ -175,9 +237,8 @@ export default function MatchSetup() {
                 )}
                 <div className="w-full space-y-2 text-sm text-left">
                   <p><span className="font-medium text-foreground">Genre :</span> <span className="text-muted-foreground capitalize">{gender === 'man' ? 'Homme' : (gender === 'woman' ? 'Femme' : 'Autre')}</span></p>
-                  <p><span className="font-medium text-foreground">Recherche :</span> <span className="text-muted-foreground capitalize">{lookingFor === 'man' ? 'Homme' : (lookingFor === 'woman' ? 'Femme' : 'Tous les deux')}</span></p>
-                  <p><span className="font-medium text-foreground">Tranche d'âge :</span> <span className="text-muted-foreground">{ageRange}</span></p>
                   <p><span className="font-medium text-foreground">Lieu :</span> <span className="text-muted-foreground">{location}</span></p>
+                  <p><span className="font-medium text-foreground">Signe :</span> <span className="text-muted-foreground">{zodiacSign || 'Non spécifié'}</span></p>
                 </div>
               </div>
             </div>
@@ -191,7 +252,7 @@ export default function MatchSetup() {
               </Button>
             )}
             <Button onClick={handleNext} disabled={!canNext() || saving} className="flex-1">
-              {step === 5 ? (
+              {step === 7 ? (
                 saving ? "Sauvegarde..." : <><span>Trouver des Profils</span> <Heart className="ml-1 h-4 w-4" /></>
               ) : (
                 <>Suivant <ArrowRight className="ml-1 h-4 w-4" /></>
