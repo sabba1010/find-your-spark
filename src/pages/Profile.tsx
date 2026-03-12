@@ -113,8 +113,10 @@ export default function Profile() {
                                             <Edit className="mr-2 h-4 w-4" /> Modifier le Profil
                                         </Link>
                                     </Button>
-                                    <Button size="lg" className="rounded-xl font-bold shadow-lg shadow-primary/20">
-                                        <Settings className="h-5 w-5" />
+                                    <Button size="lg" className="rounded-xl font-bold shadow-lg shadow-primary/20" asChild>
+                                        <Link to="/settings">
+                                            <Settings className="h-5 w-5" />
+                                        </Link>
                                     </Button>
                                 </>
                             ) : (
@@ -201,8 +203,8 @@ export default function Profile() {
                                     <h3 className="font-bold text-foreground mb-4">Menu</h3>
                                     <nav className="space-y-2">
                                         {[
-                                            { label: "Paramètres du Compte", icon: Settings },
-                                            { label: "Conditions d'Utilisation", icon: Shield },
+                                            { label: "Paramètres du Compte", icon: Settings, path: "/settings" },
+                                            { label: "Conditions d'Utilisation", icon: Shield, path: "/terms" },
                                             { label: "Se Déconnecter", icon: LogOut, danger: true },
                                         ].map((item, i) => (
                                             <button
@@ -214,6 +216,8 @@ export default function Profile() {
                                                         localStorage.removeItem("matchPrefs");
                                                         toast.success("Vous avez été déconnecté.");
                                                         navigate("/auth");
+                                                    } else if (item.path) {
+                                                        navigate(item.path);
                                                     }
                                                 }}
                                                 className={`flex w-full items-center justify-between rounded-xl p-3 text-left transition-colors hover:bg-muted ${item.danger ? 'text-rose-500' : 'text-foreground'}`}

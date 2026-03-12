@@ -15,6 +15,7 @@ import SubscriptionPlans from "./pages/SubscriptionPlans";
 import ResetPassword from "./pages/ResetPassword";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
+import Terms from "./pages/Terms";
 import { SocketProvider } from "./context/SocketContext";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/plans" element={<SubscriptionPlans />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
