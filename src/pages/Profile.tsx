@@ -12,6 +12,7 @@ interface UserPrefs {
     ageRange: string;
     location: string;
     profilePic: string | null;
+    photos: string[];
 }
 
 export default function Profile() {
@@ -39,7 +40,11 @@ export default function Profile() {
             // Own profile — read from localStorage
             const raw = localStorage.getItem("user");
             const prefs2 = localStorage.getItem("matchPrefs");
-            if (raw) setPrefs({ ...JSON.parse(raw), ...(prefs2 ? JSON.parse(prefs2) : {}) });
+            if (raw) {
+                const user = JSON.parse(raw);
+                const matchPrefs = prefs2 ? JSON.parse(prefs2) : {};
+                setPrefs({ ...user, ...matchPrefs });
+            }
         }
     }, [id]);
 
@@ -52,6 +57,9 @@ export default function Profile() {
         ? (prefs?.photo || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop")
         : publicUser?.photo;
     const location = isOwnProfile ? (prefs?.location || "Paris, France") : publicUser?.location;
+    const photos = isOwnProfile ? (prefs?.photos || [displayPic]) : (publicUser?.photos || [displayPic]);
+
+    const [activePhoto, setActivePhoto] = useState(0);
 
     if (loading) {
         return (
@@ -75,9 +83,49 @@ export default function Profile() {
 
     return (
         <div className="min-h-screen bg-muted/30 pb-20 md:pt-16">
-            {/* Header / Cover */}
-            <div className="relative h-48 w-full bg-gradient-to-r from-rose-500 to-primary md:h-64">
-                <div className="absolute inset-0 bg-black/10"></div>
+            {/* Header / Cover / Photo Carousel */}
+            <div className="relative h-64 w-full bg-muted md:h-96">
+                {photos.length > 0 ? (
+                    <div className="h-full w-full relative overflow-hidden">
+                        <img
+                            src={photos[activePhoto]}
+                            alt={`Photo ${activePhoto + 1}`}
+                            className="h-full w-full object-cover transition-all duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        
+                        {/* Dots for carousel */}
+                        <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-1.5 z-20">
+                            {photos.map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setActivePhoto(i)}
+                                    className={`h-1.5 rounded-full transition-all ${i === activePhoto ? "w-6 bg-white" : "w-1.5 bg-white/50"}`}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Arrows for carousel */}
+                        {photos.length > 1 && (
+                            <>
+                                <button 
+                                    onClick={() => setActivePhoto((prev) => (prev > 0 ? prev - 1 : photos.length - 1))}
+                                    className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/20 p-2 text-white backdrop-blur-md hover:bg-black/40 transition-colors"
+                                >
+                                    <ChevronRight className="h-6 w-6 rotate-180" />
+                                </button>
+                                <button 
+                                    onClick={() => setActivePhoto((prev) => (prev < photos.length - 1 ? prev + 1 : 0))}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/20 p-2 text-white backdrop-blur-md hover:bg-black/40 transition-colors"
+                                >
+                                    <ChevronRight className="h-6 w-6" />
+                                </button>
+                            </>
+                        )}
+                    </div>
+                ) : (
+                    <div className="h-full w-full bg-gradient-to-r from-rose-500 to-primary"></div>
+                )}
             </div>
 
             {/* Profile Info Card */}
@@ -89,7 +137,7 @@ export default function Profile() {
                                 <img
                                     src={displayPic}
                                     alt="Profile"
-                                    className="h-32 w-32 rounded-3xl border-4 border-card object-cover shadow-lg md:h-40 md:w-40"
+                                    className="h-32 w-32 rounded-3xl border-4 border-card object-cover shadow-lg md:h-40 md:w-40 ring-1 ring-black/5"
                                 />
                                 <div className="absolute -bottom-2 -right-2 rounded-full bg-green-500 p-1.5 border-4 border-card">
                                     <div className="h-3 w-3 rounded-full bg-white animate-pulse"></div>

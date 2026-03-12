@@ -21,6 +21,7 @@ export default function Settings() {
         age: "",
         bio: "",
         photo: "" as string | null,
+        photos: [] as string[],
     });
     const [passwords, setPasswords] = useState({ current: "", new: "" });
 
@@ -37,6 +38,7 @@ export default function Settings() {
                 age: user.age || "",
                 bio: user.bio || "",
                 photo: user.photo || null,
+                photos: user.photos || [],
             });
         } else {
             navigate("/auth");
@@ -51,9 +53,30 @@ export default function Settings() {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
-            reader.onloadend = () => setFormData({ ...formData, photo: reader.result as string });
+            reader.onloadend = () => {
+                const base64 = reader.result as string;
+                const newPhotos = [...formData.photos, base64];
+                setFormData({ 
+                    ...formData, 
+                    photos: newPhotos,
+                    // If no primary photo, set this one as primary
+                    photo: formData.photo || base64 
+                });
+            };
             reader.readAsDataURL(file);
         }
+    };
+
+    const removePhoto = (index: number) => {
+        const newPhotos = formData.photos.filter((_, i) => i !== index);
+        setFormData({ 
+            ...formData, 
+            photos: newPhotos,
+            // If we removed the primary photo, update it to the first available in the array or null
+            photo: formData.photo === formData.photos[index] 
+                ? (newPhotos[0] || null) 
+                : formData.photo
+        });
     };
 
     const handleSave = async (e: React.FormEvent) => {
@@ -133,20 +156,34 @@ export default function Settings() {
             <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
                 <form onSubmit={handleSave} className="space-y-6">
 
-                    {/* Photo Upload */}
-                    <div className="flex flex-col items-center">
-                        <div className="relative mb-4 h-32 w-32 overflow-hidden rounded-full border-4 border-muted flex items-center justify-center bg-muted/50">
-                            {formData.photo ? (
-                                <img src={formData.photo} alt="Profil" className="h-full w-full object-cover" />
-                            ) : (
-                                <Camera className="h-10 w-10 text-muted-foreground/50" />
-                            )}
+                    {/* Photos Section */}
+                    <div className="space-y-4">
+                        <label className="text-sm font-medium text-foreground">Photos de profil (ajoutez-en plusieurs !)</label>
+                        <div className="grid grid-cols-3 gap-4 sm:grid-cols-4">
+                            {formData.photos.map((photo, index) => (
+                                <div key={index} className="relative group aspect-square rounded-2xl overflow-hidden border-2 border-muted">
+                                    <img src={photo} alt={`Profil ${index + 1}`} className="h-full w-full object-cover" />
+                                    <button
+                                        type="button"
+                                        onClick={() => removePhoto(index)}
+                                        className="absolute top-1 right-1 rounded-full bg-rose-500 p-1.5 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                    >
+                                        <ArrowLeft className="h-3 w-3 rotate-45" /> {/* Use X icon if available, or just ArrowLeft rotated */}
+                                    </button>
+                                    {formData.photo === photo && (
+                                        <div className="absolute bottom-1 left-1 bg-primary px-1.5 py-0.5 rounded text-[10px] text-white font-bold">
+                                            Principal
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
                             <button
                                 type="button"
                                 onClick={() => fileInputRef.current?.click()}
-                                className="absolute bottom-1 right-1 rounded-full bg-primary p-2 text-white shadow-md hover:bg-primary/90"
+                                className="flex aspect-square flex-col items-center justify-center rounded-2xl border-2 border-dashed border-muted-foreground/30 hover:border-primary hover:bg-primary/5 transition-all text-muted-foreground hover:text-primary"
                             >
-                                <Upload className="h-3 w-3" />
+                                <Camera className="h-6 w-6 mb-1" />
+                                <span className="text-[10px] font-bold">Ajouter</span>
                             </button>
                         </div>
                         <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
