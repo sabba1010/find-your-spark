@@ -5,11 +5,23 @@ import { Input } from "@/components/ui/input";
 import { Heart, ArrowRight, ArrowLeft, Check, Camera, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { API } from "@/lib/api";
-const steps = ["Genre", "À la recherche de", "Tranche d'âge", "Lieu", "Photo de Profil", "À propos de vous", "Détails essentiels", "Trouver des Profils"];
+const steps = ["Genre", "Votre Âge", "À la recherche de", "Tranche d'âge", "Lieu", "Photo de Profil", "À propos de vous", "Détails essentiels", "Trouver des Profils"];
 
 export default function MatchSetup() {
   const [step, setStep] = useState(0);
   const [gender, setGender] = useState("");
+  const [age, setAge] = useState(() => {
+    const rawUser = localStorage.getItem("user");
+    if (rawUser) {
+      try {
+        const user = JSON.parse(rawUser);
+        return user.age ? user.age.toString() : "";
+      } catch (e) {
+        return "";
+      }
+    }
+    return "";
+  });
   const [lookingFor, setLookingFor] = useState("");
   const [ageRange, setAgeRange] = useState("");
   const [location, setLocation] = useState("");
@@ -34,35 +46,47 @@ export default function MatchSetup() {
 
   const canNext = () => {
     if (step === 0) return !!gender;
-    if (step === 1) return !!lookingFor;
-    if (step === 2) return !!ageRange;
-    if (step === 3) return !!location;
-    if (step === 4) return !!profilePic;
+    if (step === 1) return !!age && parseInt(age) >= 18;
+    if (step === 2) return !!lookingFor;
+    if (step === 3) return !!ageRange;
+    if (step === 4) return !!location;
+    if (step === 5) return !!profilePic;
     return true;
   };
 
   const handleNext = async () => {
-    if (step < 7) {
+    if (step < 8) {
       setStep(step + 1);
     } else {
       // Save to DB
       setSaving(true);
+      console.log("[MatchSetup] Starting profile save...");
       try {
         const token = localStorage.getItem("token");
+        const payload = { 
+          gender, lookingFor, ageRange, location, photo: profilePic,
+          bio, hobbies, zodiacSign, religion, height, age: parseInt(age, 10)
+        };
+        console.log("[MatchSetup] Sending payload:", { ...payload, photo: payload.photo ? "present (base64)" : "missing" });
+
         const res = await fetch(`${API}/users/me`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ 
-            gender, lookingFor, ageRange, location, photo: profilePic,
-            bio, hobbies, zodiacSign, religion, height
-          }),
+          body: JSON.stringify(payload),
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
 
+        console.log("[MatchSetup] Response status:", res.status);
+        const data = await res.json();
+        
+        if (!res.ok) {
+          console.error("[MatchSetup] Save failed:", data);
+          throw new Error(data.message || "Erreur lors de la sauvegarde.");
+        }
+
+        console.log("[MatchSetup] Save successful!");
         // Update local user cache
         localStorage.setItem("user", JSON.stringify(data.user));
 
@@ -71,6 +95,7 @@ export default function MatchSetup() {
 
         navigate("/discover");
       } catch (err: unknown) {
+        console.error("[MatchSetup] Error during save:", err);
         toast.error(err instanceof Error ? err.message : "Erreur de sauvegarde. Réessayez.");
       } finally {
         setSaving(false);
@@ -94,7 +119,14 @@ export default function MatchSetup() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 pb-20 md:pt-16">
-      <div className="w-full max-w-lg">
+      <div className="w-full max-w-lg relative">
+        {saving && (
+          <div className="absolute inset-0 z-50 flex flex-col items-center justify-center rounded-2xl bg-background/80 backdrop-blur-sm">
+            <Heart className="mb-4 h-12 w-12 animate-pulse fill-primary text-primary" />
+            <p className="text-lg font-bold text-foreground">Sauvegarde en cours...</p>
+            <p className="text-sm text-muted-foreground text-center px-4 mt-1">Ceci peut prendre quelques secondes si vous avez ajouté une photo de haute qualité.</p>
+          </div>
+        )}
         {/* Progress */}
         <div className="mb-8 flex items-center gap-2">
           {steps.map((_, i) => (
@@ -104,7 +136,7 @@ export default function MatchSetup() {
 
         <div className="rounded-2xl border border-border bg-card p-8 shadow-lg">
           <Heart className="mx-auto mb-4 h-8 w-8 fill-primary text-primary" />
-          <p className="mb-1 text-center text-sm font-medium text-muted-foreground">Étape {step + 1} sur 8</p>
+          <p className="mb-1 text-center text-sm font-medium text-muted-foreground">Étape {step + 1} sur {steps.length}</p>
 
           {step === 0 && (
             <>
@@ -118,6 +150,23 @@ export default function MatchSetup() {
 
           {step === 1 && (
             <>
+              <h2 className="mb-6 text-center text-2xl font-bold text-card-foreground">Votre Âge</h2>
+              <p className="mb-4 text-center text-muted-foreground">Veuillez confirmer votre âge pour de meilleurs matchs.</p>
+              <Input
+                type="number"
+                min={18}
+                max={99}
+                placeholder="ex. 25"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                className="text-center text-2xl h-16 font-bold"
+              />
+              <p className="mt-4 text-center text-xs text-muted-foreground">Vous devez avoir au moins 18 ans.</p>
+            </>
+          )}
+
+          {step === 2 && (
+            <>
               <h2 className="mb-6 text-center text-2xl font-bold text-card-foreground">À la recherche d'un(e)...</h2>
               <div className="grid gap-3">
                 <OptionButton label="Homme" emoji="👨" selected={lookingFor === "man"} onClick={() => setLookingFor("man")} />
@@ -127,7 +176,7 @@ export default function MatchSetup() {
             </>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <>
               <h2 className="mb-6 text-center text-2xl font-bold text-card-foreground">Tranche d'âge préférée</h2>
               <div className="grid gap-3">
@@ -138,7 +187,7 @@ export default function MatchSetup() {
             </>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
             <>
               <h2 className="mb-6 text-center text-2xl font-bold text-card-foreground">Votre ville/lieu</h2>
               <Input
@@ -150,7 +199,7 @@ export default function MatchSetup() {
             </>
           )}
 
-          {step === 4 && (
+          {step === 5 && (
             <div className="text-center">
               <h2 className="mb-6 text-2xl font-bold text-card-foreground">Votre Photo</h2>
               <div className="relative mx-auto mb-6 h-40 w-40 overflow-hidden rounded-full border-4 border-dashed border-muted-foreground/30 flex items-center justify-center bg-muted/50 transition-colors hover:border-primary/50">
@@ -173,7 +222,7 @@ export default function MatchSetup() {
             </div>
           )}
 
-          {step === 5 && (
+          {step === 6 && (
             <div className="space-y-6">
               <h2 className="text-center text-2xl font-bold text-card-foreground">À propos de vous</h2>
               <div className="space-y-4">
@@ -198,7 +247,7 @@ export default function MatchSetup() {
             </div>
           )}
 
-          {step === 6 && (
+          {step === 7 && (
             <div className="space-y-6">
               <h2 className="text-center text-2xl font-bold text-card-foreground">Détails essentiels</h2>
               <div className="grid gap-4">
@@ -227,7 +276,7 @@ export default function MatchSetup() {
             </div>
           )}
 
-          {step === 7 && (
+          {step === 8 && (
             <div className="text-center">
               <h2 className="mb-2 text-2xl font-bold text-card-foreground">Vous êtes prêt ! 🎉</h2>
               <p className="text-muted-foreground">Nous trouverons les meilleurs profils pour vous.</p>
@@ -236,9 +285,9 @@ export default function MatchSetup() {
                   <img src={profilePic} alt="Profil" className="h-24 w-24 rounded-full object-cover shadow-md border-2 border-white" />
                 )}
                 <div className="w-full space-y-2 text-sm text-left">
+                  <p><span className="font-medium text-foreground">Âge :</span> <span className="text-muted-foreground">{age} ans</span></p>
                   <p><span className="font-medium text-foreground">Genre :</span> <span className="text-muted-foreground capitalize">{gender === 'man' ? 'Homme' : (gender === 'woman' ? 'Femme' : 'Autre')}</span></p>
                   <p><span className="font-medium text-foreground">Lieu :</span> <span className="text-muted-foreground">{location}</span></p>
-                  <p><span className="font-medium text-foreground">Signe :</span> <span className="text-muted-foreground">{zodiacSign || 'Non spécifié'}</span></p>
                 </div>
               </div>
             </div>
@@ -252,7 +301,7 @@ export default function MatchSetup() {
               </Button>
             )}
             <Button onClick={handleNext} disabled={!canNext() || saving} className="flex-1">
-              {step === 7 ? (
+              {step === 8 ? (
                 saving ? "Sauvegarde..." : <><span>Trouver des Profils</span> <Heart className="ml-1 h-4 w-4" /></>
               ) : (
                 <>Suivant <ArrowRight className="ml-1 h-4 w-4" /></>

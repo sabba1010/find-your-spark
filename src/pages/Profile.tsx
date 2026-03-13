@@ -59,6 +59,28 @@ export default function Profile() {
         }
     }, [id]);
 
+    const handleLike = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) return navigate("/auth");
+
+        try {
+            const res = await fetch(`${API}/users/like/${id}`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const data = await res.json();
+            if (data.success) {
+                if (data.isMatch) {
+                    toast.success("C'est un Match ! 🎉");
+                } else {
+                    toast.success(`Vous avez aimé ${userName} ! 💕`);
+                }
+            }
+        } catch (err) {
+            toast.error("Erreur lors du like.");
+        }
+    };
+
     const isOwnProfile = !id;
     const userName = isOwnProfile ? (prefs?.name || "Mon Profil") : publicUser?.name;
     const userBio = isOwnProfile
@@ -180,7 +202,7 @@ export default function Profile() {
                                 </>
                             ) : (
                                 <>
-                                    <Button size="lg" className="rounded-xl font-bold bg-primary px-8" onClick={() => toast.success(`Vous avez aimé ${userName} ! 💕`)}>
+                                    <Button size="lg" className="rounded-xl font-bold bg-primary px-8" onClick={handleLike}>
                                         <Heart className="mr-2 h-5 w-5 fill-current" /> J'aime
                                     </Button>
                                     <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" onClick={() => navigate(`/messages?user=${id}`, {

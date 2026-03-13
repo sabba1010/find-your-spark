@@ -11,6 +11,7 @@ import Messages from "./pages/Messages";
 import MatchSetup from "./pages/MatchSetup";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
+import Matches from "./pages/Matches";
 import SubscriptionPlans from "./pages/SubscriptionPlans";
 import ResetPassword from "./pages/ResetPassword";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/discover" element={<Discover />} />
             <Route path="/match-setup" element={<MatchSetup />} />
+            <Route path="/affinities" element={<Matches />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/profile" element={<Profile />} />

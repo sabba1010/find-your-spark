@@ -26,13 +26,20 @@ export default function Discover() {
     radius: "50",
     searchLevel: "worldwide",
     filterCountry: "",
-    filterDept: ""
+    filterDept: "",
+    smoke: "",
+    alcohol: "",
+    children: "",
+    religion: "",
+    zodiacSign: "",
+    minHeight: "",
+    maxHeight: ""
   });
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchMatches();
-  }, [navigate, filters]);
+  }, [navigate]);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -50,7 +57,7 @@ export default function Discover() {
 
     try {
       const user = JSON.parse(localStorage.getItem("user") || "{}");
-      const { radius, searchLevel, filterCountry, filterDept } = filters;
+      const { radius, searchLevel, filterCountry, filterDept, smoke, alcohol, children, religion, zodiacSign, minHeight, maxHeight } = filters;
       
       let url = `${API}/users/matches?searchLevel=${searchLevel}`;
       
@@ -61,6 +68,14 @@ export default function Discover() {
       } else if (searchLevel === 'department') {
         url += `&filterDept=${encodeURIComponent(filterDept || user.department || '')}`;
       }
+
+      if (smoke) url += `&smoke=${smoke}`;
+      if (alcohol) url += `&alcohol=${alcohol}`;
+      if (children) url += `&children=${children}`;
+      if (religion) url += `&religion=${religion}`;
+      if (zodiacSign) url += `&zodiacSign=${zodiacSign}`;
+      if (minHeight) url += `&minHeight=${minHeight}`;
+      if (maxHeight) url += `&maxHeight=${maxHeight}`;
 
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -100,100 +115,198 @@ export default function Discover() {
         <Button 
           variant={showFilters ? "secondary" : "outline"} 
           onClick={() => setShowFilters(!showFilters)}
-          className="rounded-full gap-2"
+          className="rounded-full gap-2 border-primary/20 text-primary hover:bg-primary/5"
         >
           <SlidersHorizontal className="h-4 w-4" />
-          Filtres
+          Filtres avancés
         </Button>
       </div>
 
       {showFilters && (
-        <div className="mb-8 rounded-2xl bg-card p-6 border border-border shadow-sm animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold flex items-center gap-2">
-              <Search className="h-4 w-4 text-primary" />
-              Options de Recherche
+        <div className="mb-8 rounded-2xl bg-card p-6 border border-border shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              <Search className="h-5 w-5 text-primary" />
+              Critères de recherche Meetic
             </h2>
-            <Button variant="ghost" size="icon" onClick={() => setShowFilters(false)}>
+            <Button variant="ghost" size="icon" onClick={() => setShowFilters(false)} className="rounded-full">
               <X className="h-4 w-4" />
             </Button>
           </div>
           
-          <div className="grid gap-6 md:grid-cols-3">
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Rayon de recherche</label>
-              <select 
-                name="searchLevel" 
-                value={filters.searchLevel} 
-                onChange={handleFilterChange}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <option value="worldwide">🌍 Monde entier</option>
-                <option value="country">🇫🇷 Mon Pays</option>
-                <option value="department">🏠 Mon Département</option>
-                <option value="radius">📍 À proximité (Radius)</option>
-              </select>
+          <div className="grid gap-8 md:grid-cols-3">
+            {/* Location Section */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-primary/70">Localisation</h3>
+              <div className="space-y-3">
+                <select 
+                  name="searchLevel" 
+                  value={filters.searchLevel} 
+                  onChange={handleFilterChange}
+                  className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-shadow"
+                >
+                  <option value="worldwide">🌍 Monde entier</option>
+                  <option value="country">🇫🇷 Mon Pays</option>
+                  <option value="department">🏠 Mon Département</option>
+                  <option value="radius">📍 À proximité (Radius)</option>
+                </select>
+
+                {filters.searchLevel === 'radius' && (
+                  <div className="space-y-2">
+                    <label className="text-xs text-muted-foreground">Distance : {filters.radius}km</label>
+                    <input 
+                      type="range" 
+                      name="radius" 
+                      min="1" 
+                      max="500" 
+                      value={filters.radius} 
+                      onChange={handleFilterChange}
+                      className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
-            {filters.searchLevel === 'radius' && (
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Distance (km) : {filters.radius}km</label>
-                <input 
-                  type="range" 
-                  name="radius" 
-                  min="1" 
-                  max="500" 
-                  value={filters.radius} 
+            {/* Lifestyle Section */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-primary/70">Style de vie</h3>
+              <div className="grid grid-cols-1 gap-3">
+                <select 
+                  name="smoke" 
+                  value={filters.smoke} 
                   onChange={handleFilterChange}
-                  className="w-full accent-primary"
-                />
-              </div>
-            )}
+                  className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="">Fumeur ? (Peu importe)</option>
+                  <option value="Non-fumeur">Non-fumeur</option>
+                  <option value="Fumeur occasionnel">Fumeur occasionnel</option>
+                  <option value="Fumeur régulier">Fumeur régulier</option>
+                </select>
 
-            {filters.searchLevel === 'country' && (
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pays Spécifique</label>
-                <Input 
-                  name="filterCountry" 
-                  value={filters.filterCountry} 
-                  onChange={handleFilterChange} 
-                  placeholder="ex: France" 
-                />
-              </div>
-            )}
+                <select 
+                  name="alcohol" 
+                  value={filters.alcohol} 
+                  onChange={handleFilterChange}
+                  className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="">Alcool ? (Peu importe)</option>
+                  <option value="Jamais">Jamais</option>
+                  <option value="Occasionnellement">Occasionnellement</option>
+                  <option value="Régulièrement">Régulièrement</option>
+                </select>
 
-            {filters.searchLevel === 'department' && (
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Département Spécifique</label>
-                <Input 
-                  name="filterDept" 
-                  value={filters.filterDept} 
-                  onChange={handleFilterChange} 
-                  placeholder="ex: Paris" 
-                />
+                <select 
+                  name="children" 
+                  value={filters.children} 
+                  onChange={handleFilterChange}
+                  className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="">Enfants ? (Peu importe)</option>
+                  <option value="Pas d'enfants">Pas d'enfants</option>
+                  <option value="A des enfants">A des enfants</option>
+                  <option value="Souhaite en avoir">Souhaite en avoir</option>
+                </select>
               </div>
-            )}
+            </div>
+
+            {/* Appearance/Traits Section */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-primary/70">Traits & Apparence</h3>
+              <div className="grid grid-cols-1 gap-3">
+                <div className="flex gap-2">
+                  <Input 
+                    type="number"
+                    name="minHeight" 
+                    value={filters.minHeight} 
+                    onChange={handleFilterChange} 
+                    placeholder="Taille min (cm)" 
+                    className="flex-1"
+                  />
+                  <Input 
+                    type="number"
+                    name="maxHeight" 
+                    value={filters.maxHeight} 
+                    onChange={handleFilterChange} 
+                    placeholder="Taille max" 
+                    className="flex-1"
+                  />
+                </div>
+
+                <select 
+                  name="religion" 
+                  value={filters.religion} 
+                  onChange={handleFilterChange}
+                  className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="">Religion (Peu importe)</option>
+                  <option value="Chrétien">Chrétien</option>
+                  <option value="Musulman">Musulman</option>
+                  <option value="Juif">Juif</option>
+                  <option value="Hindou">Hindou</option>
+                  <option value="Bouddhiste">Bouddhiste</option>
+                  <option value="Athée/Agnostique">Athée/Agnostique</option>
+                  <option value="Autre">Autre</option>
+                </select>
+
+                <select 
+                  name="zodiacSign" 
+                  value={filters.zodiacSign} 
+                  onChange={handleFilterChange}
+                  className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="">Signe Astro (Peu importe)</option>
+                  <option value="Bélier">Bélier</option>
+                  <option value="Taureau">Taureau</option>
+                  <option value="Gémeaux">Gémeaux</option>
+                  <option value="Cancer">Cancer</option>
+                  <option value="Lion">Lion</option>
+                  <option value="Vierge">Vierge</option>
+                  <option value="Balance">Balance</option>
+                  <option value="Scorpion">Scorpion</option>
+                  <option value="Sagittaire">Sagittaire</option>
+                  <option value="Capricorne">Capricorne</option>
+                  <option value="Verseau">Verseau</option>
+                  <option value="Poissons">Poissons</option>
+                </select>
+              </div>
+            </div>
           </div>
           
-          <div className="mt-6 flex justify-end">
-            <Button onClick={fetchMatches} className="gap-2">
-              Appliquer les filtres
+          <div className="mt-8 pt-6 border-t flex justify-end gap-3">
+            <Button variant="ghost" onClick={() => setFilters({
+               radius: "50", searchLevel: "worldwide", filterCountry: "", filterDept: "", 
+               smoke: "", alcohol: "", children: "", religion: "", zodiacSign: "", minHeight: "", maxHeight: ""
+            })}>
+              Réinitialiser
+            </Button>
+            <Button onClick={() => { fetchMatches(); setShowFilters(false); }} className="px-8 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20">
+              Appliquer les filtres Meetic
             </Button>
           </div>
         </div>
       )}
 
       {matches.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-lg text-muted-foreground">Aucun profil trouvé pour vos préférences.</p>
-          <a href="/match-setup" className="mt-4 text-sm font-medium text-primary hover:underline">
-            Mettre à jour vos préférences
-          </a>
+        <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in zoom-in duration-500">
+          <div className="h-20 w-20 rounded-full bg-secondary flex items-center justify-center mb-6">
+            <Search className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <h2 className="text-xl font-bold mb-2">Aucun résultat trouvé</h2>
+          <p className="max-w-xs text-muted-foreground">Essayez d'élargir vos filtres de recherche pour plus de possibilités.</p>
+          <Button variant="link" onClick={() => setShowFilters(true)} className="mt-4">
+            Modifier les filtres
+          </Button>
         </div>
       ) : (
-        <div className="grid gap-6 grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 grid-cols-2 lg:grid-cols-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
           {matches.map((user) => (
-            <ProfileCard key={user.id} user={user} matchPercent={user.matchPercent} />
+            <ProfileCard 
+              key={user.id} 
+              user={user} 
+              matchPercent={user.matchPercent} 
+              onAction={fetchMatches}
+            />
           ))}
         </div>
       )}

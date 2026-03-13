@@ -1,0 +1,107 @@
+import { useState, useEffect } from "react";
+import { API } from "@/lib/api";
+import ProfileCard from "@/components/ProfileCard";
+import { toast } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Heart, Sparkles, MessageSquare } from "lucide-react";
+
+export default function Matches() {
+    const [matches, setMatches] = useState<any[]>([]);
+    const [likes, setLikes] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchData = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        try {
+            const res = await fetch(`${API}/users/affinities`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success) {
+                setMatches(data.matches || []);
+                setLikes(data.likedBy || []);
+            }
+        } catch (err) {
+            toast.error("Erreur de chargement.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="flex h-[60vh] items-center justify-center">
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+            </div>
+        );
+    }
+
+    return (
+        <div className="mx-auto max-w-5xl px-4 pb-20 pt-6 md:pt-20">
+            <header className="mb-8 text-center">
+                <h1 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
+                    Mes Connexions<span className="text-rose-500">.</span>
+                </h1>
+                <p className="mt-2 text-muted-foreground">Découvrez qui vous a aimé et vos coups de cœur réciproques.</p>
+            </header>
+
+            <Tabs defaultValue="matches" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-10 rounded-2xl p-1 bg-muted/50 border border-border/50">
+                    <TabsTrigger value="matches" className="rounded-xl flex gap-2 font-bold py-3 transition-all">
+                        <MessageSquare className="h-4 w-4" />
+                        Matchs ({matches.length})
+                    </TabsTrigger>
+                    <TabsTrigger value="likes" className="rounded-xl flex gap-2 font-bold py-3 transition-all">
+                        <Heart className="h-4 w-4" />
+                        Likes Reçus ({likes.length})
+                    </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="matches" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    {matches.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-20 text-center rounded-3xl border-2 border-dashed border-border p-12 bg-muted/10">
+                            <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+                                <Sparkles className="h-10 w-10 text-primary" />
+                            </div>
+                            <h2 className="text-xl font-bold mb-2">Aucun match pour le moment</h2>
+                            <p className="max-w-xs text-muted-foreground mb-6">Continuez à liker des profils dans Découvrir pour créer des connexions !</p>
+                            <a href="/discover" className="rounded-full bg-primary px-8 py-3 font-bold text-white shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
+                                Commencer à Découvrir
+                            </a>
+                        </div>
+                    ) : (
+                        <div className="grid gap-6 grid-cols-2 lg:grid-cols-3">
+                            {matches.map((u) => (
+                                <ProfileCard key={u._id} user={{ ...u, id: u._id }} onAction={fetchData} />
+                            ))}
+                        </div>
+                    )}
+                </TabsContent>
+
+                <TabsContent value="likes" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    {likes.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-20 text-center rounded-3xl border-2 border-dashed border-border p-12 bg-muted/10">
+                            <div className="h-20 w-20 rounded-full bg-rose-500/10 flex items-center justify-center mb-6">
+                                <Heart className="h-10 w-10 text-rose-500" />
+                            </div>
+                            <h2 className="text-xl font-bold mb-2">Personne n'a encore liké votre profil</h2>
+                            <p className="max-w-xs text-muted-foreground">Ajoutez de belles photos et une description pour attirer plus de likes !</p>
+                        </div>
+                    ) : (
+                        <div className="grid gap-6 grid-cols-2 lg:grid-cols-3">
+                            {likes.map((u) => (
+                                <ProfileCard key={u._id} user={{ ...u, id: u._id }} onAction={fetchData} />
+                            ))}
+                        </div>
+                    )}
+                </TabsContent>
+            </Tabs>
+        </div>
+    );
+}

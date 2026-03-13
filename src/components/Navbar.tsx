@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 const navItems = [
   { to: "/", icon: Heart, label: "Accueil" },
   { to: "/discover", icon: Search, label: "Découvrir" },
+  { to: "/affinities", icon: Heart, label: "Matchs" },
   { to: "/plans", icon: CreditCard, label: "Plans" },
   { to: "/messages", icon: MessageCircle, label: "Messages" },
   { to: "/profile", icon: User, label: "Profil" },

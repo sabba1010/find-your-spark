@@ -49,8 +49,11 @@ export default function Auth() {
       }
 
       if (res.status === 201) {
-        toast.success("Compte créé ! Veuillez vérifier votre email. 🎉", { duration: 10000 });
-        setIsLogin(true);
+        // Handle auto-login after registration
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        toast.success("Compte créé ! Bienvenue parmi nous. 🎉");
+        navigate("/match-setup");
         return;
       }
 
