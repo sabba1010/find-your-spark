@@ -8,6 +8,7 @@ import { Heart, Sparkles, MessageSquare } from "lucide-react";
 export default function Matches() {
     const [matches, setMatches] = useState<any[]>([]);
     const [likes, setLikes] = useState<any[]>([]);
+    const [likesSent, setLikesSent] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     const fetchData = async () => {
@@ -22,6 +23,7 @@ export default function Matches() {
             if (data.success) {
                 setMatches(data.matches || []);
                 setLikes(data.likedBy || []);
+                setLikesSent(data.likesSent || []);
             }
         } catch (err) {
             toast.error("Erreur de chargement.");
@@ -52,14 +54,18 @@ export default function Matches() {
             </header>
 
             <Tabs defaultValue="matches" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-10 rounded-2xl p-1 bg-muted/50 border border-border/50">
+                <TabsList className="grid w-full grid-cols-3 max-w-lg mx-auto mb-10 rounded-2xl p-1 bg-muted/50 border border-border/50">
                     <TabsTrigger value="matches" className="rounded-xl flex gap-2 font-bold py-3 transition-all">
                         <MessageSquare className="h-4 w-4" />
                         Matchs ({matches.length})
                     </TabsTrigger>
                     <TabsTrigger value="likes" className="rounded-xl flex gap-2 font-bold py-3 transition-all">
                         <Heart className="h-4 w-4" />
-                        Likes Reçus ({likes.length})
+                        Reçus ({likes.length})
+                    </TabsTrigger>
+                    <TabsTrigger value="likesSent" className="rounded-xl flex gap-2 font-bold py-3 transition-all">
+                        <Heart className="h-4 w-4 fill-current" />
+                        Envoyés ({likesSent.length})
                     </TabsTrigger>
                 </TabsList>
 
@@ -96,6 +102,26 @@ export default function Matches() {
                     ) : (
                         <div className="grid gap-6 grid-cols-2 lg:grid-cols-3">
                             {likes.map((u) => (
+                                <ProfileCard key={u._id} user={{ ...u, id: u._id }} onAction={fetchData} />
+                            ))}
+                        </div>
+                    )}
+                </TabsContent>
+                <TabsContent value="likesSent" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    {likesSent.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-20 text-center rounded-3xl border-2 border-dashed border-border p-12 bg-muted/10">
+                            <div className="h-20 w-20 rounded-full bg-rose-500/10 flex items-center justify-center mb-6">
+                                <Heart className="h-10 w-10 text-rose-500 fill-current" />
+                            </div>
+                            <h2 className="text-xl font-bold mb-2">Vous n'avez encore liké personne</h2>
+                            <p className="max-w-xs text-muted-foreground mb-6">N'hésitez pas à faire le premier pas !</p>
+                            <a href="/discover" className="rounded-full bg-primary px-8 py-3 font-bold text-white shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
+                                Découvrir des profils
+                            </a>
+                        </div>
+                    ) : (
+                        <div className="grid gap-6 grid-cols-2 lg:grid-cols-3">
+                            {likesSent.map((u) => (
                                 <ProfileCard key={u._id} user={{ ...u, id: u._id }} onAction={fetchData} />
                             ))}
                         </div>
