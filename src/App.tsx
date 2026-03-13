@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import SubscriptionPlans from "./pages/SubscriptionPlans";
 import ResetPassword from "./pages/ResetPassword";
 import AdminDashboard from "./pages/AdminDashboard";
+import VerifyEmail from "./pages/VerifyEmail";
 import NotFound from "./pages/NotFound";
 import Terms from "./pages/Terms";
 import { SocketProvider } from "./context/SocketContext";
@@ -31,6 +32,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/verify-email/:token" element={<VerifyEmail />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/discover" element={<Discover />} />
             <Route path="/match-setup" element={<MatchSetup />} />

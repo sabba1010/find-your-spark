@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,11 +48,17 @@ export default function Auth() {
         return;
       }
 
+      if (res.status === 201) {
+        toast.success("Compte créé ! Veuillez vérifier votre email. 🎉", { duration: 10000 });
+        setIsLogin(true);
+        return;
+      }
+
       // Persist auth
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      toast.success(isLogin ? "Bon retour parmi nous ! 💕" : "Compte créé ! Trouvons votre match 🎉");
+      toast.success("Bon retour parmi nous ! 💕");
 
       // If profile is already set up (has gender), go to discover, else go to setup
       if (data.user.gender) {
