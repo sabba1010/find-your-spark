@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles, Moon, Baby, Ruler, Wine, Scissors, Eye, GraduationCap } from "lucide-react";
+import { Share2, Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles, Moon, Baby, Ruler, Wine, Scissors, Eye, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -37,13 +37,16 @@ export default function Profile() {
         if (id) {
             // Fetch public profile from API
             const token = localStorage.getItem("token");
-            fetch(`${API}/users/matches`, {
+            fetch(`${API}/users/profile/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
                 .then(r => r.json())
                 .then(data => {
-                    const found = data.matches?.find((u: any) => u.id === id);
-                    setPublicUser(found || null);
+                    if (data.success) {
+                        setPublicUser(data.user);
+                    } else {
+                        setPublicUser(null);
+                    }
                 })
                 .catch(() => setPublicUser(null))
                 .finally(() => setLoading(false));
@@ -58,6 +61,25 @@ export default function Profile() {
             }
         }
     }, [id]);
+
+    const handleShare = () => {
+        const shareUrl = `${window.location.origin}/profile/${prefs?.id || prefs?._id}`;
+        
+        if (navigator.share) {
+            navigator.share({
+                title: `Découvrez le profil de ${userName} sur Spark`,
+                text: `Regardez ce profil intéressant sur Spark !`,
+                url: shareUrl,
+            }).catch(() => {
+                // Fallback to clipboard
+                navigator.clipboard.writeText(shareUrl);
+                toast.success("Lien copié dans le presse-papier !");
+            });
+        } else {
+            navigator.clipboard.writeText(shareUrl);
+            toast.success("Lien copié dans le presse-papier !");
+        }
+    };
 
     const handleLike = async () => {
         const token = localStorage.getItem("token");
@@ -189,6 +211,9 @@ export default function Profile() {
                         <div className="flex gap-3 justify-center">
                             {isOwnProfile ? (
                                 <>
+                                    <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" onClick={handleShare}>
+                                        <Share2 className="mr-2 h-4 w-4" /> Partager
+                                    </Button>
                                     <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" asChild>
                                         <Link to="/settings">
                                             <Edit className="mr-2 h-4 w-4" /> Modifier le Profil
