@@ -33,7 +33,12 @@ export default function Discover() {
     religion: "",
     zodiacSign: "",
     minHeight: "",
-    maxHeight: ""
+    maxHeight: "",
+    ageMin: "",
+    ageMax: "",
+    eyeColor: "",
+    hairColor: "",
+    keyword: ""
   });
   const navigate = useNavigate();
 
@@ -76,6 +81,11 @@ export default function Discover() {
       if (zodiacSign) url += `&zodiacSign=${zodiacSign}`;
       if (minHeight) url += `&minHeight=${minHeight}`;
       if (maxHeight) url += `&maxHeight=${maxHeight}`;
+      if (filters.ageMin) url += `&ageMin=${filters.ageMin}`;
+      if (filters.ageMax) url += `&ageMax=${filters.ageMax}`;
+      if (filters.eyeColor) url += `&eyeColor=${encodeURIComponent(filters.eyeColor)}`;
+      if (filters.hairColor) url += `&hairColor=${encodeURIComponent(filters.hairColor)}`;
+      if (filters.keyword) url += `&keyword=${encodeURIComponent(filters.keyword)}`;
 
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -210,65 +220,67 @@ export default function Discover() {
               </div>
             </div>
 
-            {/* Appearance/Traits Section */}
+            {/* Advanced Filters Section */}
             <div className="space-y-4">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-primary/70">Traits & Apparence</h3>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-primary/70">Critères Avancés</h3>
               <div className="grid grid-cols-1 gap-3">
                 <div className="flex gap-2">
                   <Input 
                     type="number"
-                    name="minHeight" 
-                    value={filters.minHeight} 
+                    name="ageMin" 
+                    value={filters.ageMin} 
                     onChange={handleFilterChange} 
-                    placeholder="Taille min (cm)" 
+                    placeholder="Âge min" 
                     className="flex-1"
                   />
                   <Input 
                     type="number"
-                    name="maxHeight" 
-                    value={filters.maxHeight} 
+                    name="ageMax" 
+                    value={filters.ageMax} 
                     onChange={handleFilterChange} 
-                    placeholder="Taille max" 
+                    placeholder="Âge max" 
                     className="flex-1"
                   />
                 </div>
 
-                <select 
-                  name="religion" 
-                  value={filters.religion} 
-                  onChange={handleFilterChange}
-                  className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
-                >
-                  <option value="">Religion (Peu importe)</option>
-                  <option value="Chrétien">Chrétien</option>
-                  <option value="Musulman">Musulman</option>
-                  <option value="Juif">Juif</option>
-                  <option value="Hindou">Hindou</option>
-                  <option value="Bouddhiste">Bouddhiste</option>
-                  <option value="Athée/Agnostique">Athée/Agnostique</option>
-                  <option value="Autre">Autre</option>
-                </select>
+                <div className="flex gap-2">
+                  <select 
+                    name="eyeColor" 
+                    value={filters.eyeColor} 
+                    onChange={handleFilterChange}
+                    className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="">Yeux (Tous)</option>
+                    <option value="Bleu">Bleu</option>
+                    <option value="Vert">Vert</option>
+                    <option value="Marron">Marron</option>
+                    <option value="Gris">Gris</option>
+                    <option value="Noisette">Noisette</option>
+                  </select>
+                  <select 
+                    name="hairColor" 
+                    value={filters.hairColor} 
+                    onChange={handleFilterChange}
+                    className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="">Cheveux (Tous)</option>
+                    <option value="Noir">Noir</option>
+                    <option value="Brun">Brun</option>
+                    <option value="Blond">Blond</option>
+                    <option value="Roux">Roux</option>
+                    <option value="Gris">Gris</option>
+                    <option value="Blanc">Blanc</option>
+                  </select>
+                </div>
 
-                <select 
-                  name="zodiacSign" 
-                  value={filters.zodiacSign} 
-                  onChange={handleFilterChange}
-                  className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
-                >
-                  <option value="">Signe Astro (Peu importe)</option>
-                  <option value="Bélier">Bélier</option>
-                  <option value="Taureau">Taureau</option>
-                  <option value="Gémeaux">Gémeaux</option>
-                  <option value="Cancer">Cancer</option>
-                  <option value="Lion">Lion</option>
-                  <option value="Vierge">Vierge</option>
-                  <option value="Balance">Balance</option>
-                  <option value="Scorpion">Scorpion</option>
-                  <option value="Sagittaire">Sagittaire</option>
-                  <option value="Capricorne">Capricorne</option>
-                  <option value="Verseau">Verseau</option>
-                  <option value="Poissons">Poissons</option>
-                </select>
+                <Input 
+                  type="text"
+                  name="keyword" 
+                  value={filters.keyword} 
+                  onChange={handleFilterChange} 
+                  placeholder="Mot-clé (ex: sport, cuisine...)" 
+                  className="w-full"
+                />
               </div>
             </div>
           </div>
@@ -276,7 +288,8 @@ export default function Discover() {
           <div className="mt-8 pt-6 border-t flex justify-end gap-3">
             <Button variant="ghost" onClick={() => setFilters({
                radius: "50", searchLevel: "worldwide", filterCountry: "", filterDept: "", 
-               smoke: "", alcohol: "", children: "", religion: "", zodiacSign: "", minHeight: "", maxHeight: ""
+               smoke: "", alcohol: "", children: "", religion: "", zodiacSign: "", minHeight: "", maxHeight: "",
+               ageMin: "", ageMax: "", eyeColor: "", hairColor: "", keyword: ""
             })}>
               Réinitialiser
             </Button>
