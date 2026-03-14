@@ -26,7 +26,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         if (!userId) return;
 
         // Connect to server
-        const newSocket = io("http://localhost:5000");
+        const newSocket = io("https://amour-et-sincerite.com");
         setSocket(newSocket);
 
         newSocket.on("connect", () => {

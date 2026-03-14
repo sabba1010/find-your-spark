@@ -370,8 +370,8 @@ export default function Discover() {
           <div className="h-20 w-20 rounded-full bg-secondary flex items-center justify-center mb-6">
             <Search className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h2 className="text-xl font-bold mb-2">Aucun résultat trouvé</h2>
-          <p className="max-w-xs text-muted-foreground">Essayez d'élargir vos filtres de recherche pour plus de possibilités.</p>
+          <h2 className="text-xl font-bold mb-2">Aucun match trouvé</h2>
+          <p className="max-w-xs text-muted-foreground">Nous n'avons trouvé personne correspondant à vos critères. Essayez d'élargir votre recherche pour plus de possibilités.</p>
           <Button variant="link" onClick={() => setShowFilters(true)} className="mt-4">
             Modifier les filtres
           </Button>

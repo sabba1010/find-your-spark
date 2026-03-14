@@ -11,7 +11,7 @@ import Footer from "@/components/Footer";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-const API = "http://localhost:5000/api";
+const API = "https://amour-et-sincerite.com/api";
 
 interface MatchedUser {
   id: string;
