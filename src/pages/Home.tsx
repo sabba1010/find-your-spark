@@ -11,7 +11,7 @@ import Footer from "@/components/Footer";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-const API = "https://amour-et-sincerite.com/api";
+import { API } from "@/lib/api";
 
 interface MatchedUser {
   id: string;
@@ -96,7 +96,7 @@ export default function Home() {
   };
 
   return (
-    <div className=" md:pt-16">
+    <div className="pt-16 md:pt-32">
       {/* Hero */}
       <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden px-4 py-20"
         style={{

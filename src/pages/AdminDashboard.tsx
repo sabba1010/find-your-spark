@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { Users, TrendingUp, DollarSign, PieChart, ArrowUpRight, ArrowDownRight, Clock } from "lucide-react";
 import { toast } from "sonner";
 
-const API = "https://amour-et-sincerite.com/api";
-
+import { API } from "@/lib/api";
 
 interface Stats {
     totalUsers: number;
@@ -54,8 +53,8 @@ export default function AdminDashboard() {
         { label: "Total Utilisateurs", value: stats.totalUsers, icon: Users, color: "bg-blue-500", trend: "+12%", up: true },
         { label: "Revenu Total", value: `€${stats.totalRevenue.toFixed(2)}`, icon: DollarSign, color: "bg-green-500", trend: "+8.5%", up: true },
         { label: "Abonnés Actifs", value: stats.planStats.reduce((a, b) => a + (b.price > 0 ? b.count : 0), 0), icon: TrendingUp, color: "bg-purple-500", trend: "+5%", up: true },
-        { label: "Hommes (Men)", value: stats.gender.men, icon: Users, color: "bg-indigo-500", trend: `${Math.round((stats.gender.men / stats.totalUsers) * 100)}%`, up: null },
-        { label: "Femmes (Women)", value: stats.gender.women, icon: Users, color: "bg-rose-500", trend: `${Math.round((stats.gender.women / stats.totalUsers) * 100)}%`, up: null },
+        { label: "Hommes (Men)", value: stats.gender.men, icon: Users, color: "bg-indigo-500", trend: stats.totalUsers > 0 ? `${Math.round((stats.gender.men / stats.totalUsers) * 100)}%` : "0%", up: null },
+        { label: "Femmes (Women)", value: stats.gender.women, icon: Users, color: "bg-rose-500", trend: stats.totalUsers > 0 ? `${Math.round((stats.gender.women / stats.totalUsers) * 100)}%` : "0%", up: null },
     ];
 
     return (
@@ -102,12 +101,12 @@ export default function AdminDashboard() {
                                 <div key={i} className="space-y-2">
                                     <div className="flex justify-between text-sm items-center">
                                         <span className="font-medium text-foreground">{plan.name}</span>
-                                        <span className="text-muted-foreground font-bold">{plan.count} ({Math.round((plan.count / stats.totalUsers) * 100)}%)</span>
+                                        <span className="text-muted-foreground font-bold">{plan.count} ({stats.totalUsers > 0 ? Math.round((plan.count / stats.totalUsers) * 100) : 0}%)</span>
                                     </div>
                                     <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
                                         <div
                                             className={`h-full rounded-full ${i === 0 ? 'bg-primary' : (i === 1 ? 'bg-rose-500' : (i === 2 ? 'bg-amber-500' : 'bg-blue-500'))}`}
-                                            style={{ width: `${(plan.count / stats.totalUsers) * 100}%` }}
+                                            style={{ width: `${stats.totalUsers > 0 ? (plan.count / stats.totalUsers) * 100 : 0}%` }}
                                         ></div>
                                     </div>
                                 </div>
@@ -145,7 +144,7 @@ export default function AdminDashboard() {
                                                         {sub.planName}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 font-bold text-foreground">€{sub.price.toFixed(2)}</td>
+                                                <td className="px-6 py-4 font-bold text-foreground">€{(sub.price ?? 0).toFixed(2)}</td>
                                                 <td className="px-6 py-4 text-muted-foreground">
                                                     {new Date(sub.date).toLocaleDateString()}
                                                 </td>

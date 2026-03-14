@@ -167,7 +167,7 @@ export default function SubscriptionPlans() {
 
     return (
         <PayPalScriptProvider options={{ clientId: PAYPAL_CLIENT_ID, currency: "EUR", intent: "capture" }}>
-            <div className="min-h-screen bg-muted/30 pb-20 pt-8 md:pt-24 cursor-default">
+            <div className="min-h-screen bg-muted/30 pb-20 pt-16 md:pt-32 cursor-default">
                 <div className="mx-auto max-w-7xl px-4">
                     <div className="mb-12 flex flex-col items-center text-center">
                         <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="absolute left-4 top-20 rounded-full md:left-8">
