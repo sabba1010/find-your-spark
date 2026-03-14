@@ -12,7 +12,7 @@ export default function Footer() {
                     <div className="lg:col-span-1">
                         <Link to="/" className="flex items-center gap-2 mb-6">
                             <img src={logo} alt="Amour Et Sincerité logo" className="h-10 w-10 rounded-xl object-cover shadow-lg" />
-                            <span className="text-2xl font-black tracking-tighter text-foreground">
+                            <span className="text-2xl font-black tracking-tighter text-foreground whitespace-nowrap">
                                 Amour Et Sincerité<span className="text-primary">.</span>
                             </span>
                         </Link>
