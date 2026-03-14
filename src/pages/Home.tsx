@@ -273,8 +273,8 @@ export default function Home() {
                 </div>
               ))
             ) : (
-              <div className="col-span-full rounded-3xl border border-dashed border-border p-12 text-center">
-                <p className="text-muted-foreground">Aucun match trouvé pour le moment. Essayez d'ajuster vos préférences !</p>
+              <div className="col-span-full rounded-3xl border border-dashed border-border p-8 text-center bg-muted/5">
+                <p className="text-sm text-muted-foreground">Aucun match pour le moment. Essayez d'élargir vos préférences dans Découvrir !</p>
               </div>
             )}
           </div>

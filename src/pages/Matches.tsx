@@ -73,13 +73,15 @@ export default function Matches() {
 
                 <TabsContent value="matches" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {matches.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-20 text-center rounded-3xl border-2 border-dashed border-border p-12 bg-muted/10">
-                            <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-                                <Sparkles className="h-10 w-10 text-primary" />
+                        <div className="flex flex-col items-center justify-center py-16 text-center rounded-3xl border-2 border-dashed border-border p-10 bg-muted/5">
+                            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                                <Sparkles className="h-8 w-8 text-primary" />
                             </div>
-                            <h2 className="text-xl font-bold mb-2">Aucun match pour le moment</h2>
-                            <p className="max-w-xs text-muted-foreground mb-6">Continuez à liker des profils dans Découvrir pour créer des connexions !</p>
-                            <a href="/discover" className="rounded-full bg-primary px-8 py-3 font-bold text-white shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
+                            <h2 className="text-xl font-bold mb-2">Aucun match trouvé</h2>
+                            <p className="max-w-xs text-muted-foreground text-sm mb-6">
+                                No matches found at the moment. Try expanding your preferences in Discover!
+                            </p>
+                            <a href="/discover" className="rounded-xl bg-primary px-8 py-3 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:scale-105 transition-all">
                                 Commencer à Découvrir
                             </a>
                         </div>

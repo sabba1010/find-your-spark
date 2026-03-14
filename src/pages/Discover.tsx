@@ -155,7 +155,7 @@ export default function Discover() {
         </Button>
       </div>
 
-      {!showFilters && perfectMatches.length > 0 && (
+      {!showFilters && (
         <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-500">
            <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold flex items-center gap-2">
@@ -163,16 +163,22 @@ export default function Discover() {
               </h2>
            </div>
            
-           <div className="grid gap-6 grid-cols-2 lg:grid-cols-3">
-              {perfectMatches.map((user) => (
-                <ProfileCard 
-                  key={user.id} 
-                  user={user} 
-                  matchPercent={user.matchPercent} 
-                  onAction={() => { fetchPerfectMatches(); fetchMatches(); }}
-                />
-              ))}
-           </div>
+           {perfectMatches.length > 0 ? (
+             <div className="grid gap-6 grid-cols-2 lg:grid-cols-3">
+                {perfectMatches.map((user) => (
+                  <ProfileCard 
+                    key={user.id} 
+                    user={user} 
+                    matchPercent={user.matchPercent} 
+                    onAction={() => { fetchPerfectMatches(); fetchMatches(); }}
+                  />
+                ))}
+             </div>
+           ) : (
+             <div className="rounded-2xl border border-dashed border-border p-8 text-center bg-muted/5">
+                <p className="text-sm text-muted-foreground">No matches found at the moment. Try expanding your preferences in Discover!</p>
+             </div>
+           )}
            
            <div className="my-8 border-t border-border" />
            
@@ -366,14 +372,16 @@ export default function Discover() {
       )}
 
       {matches.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in zoom-in duration-500">
-          <div className="h-20 w-20 rounded-full bg-secondary flex items-center justify-center mb-6">
-            <Search className="h-8 w-8 text-muted-foreground" />
+        <div className="flex flex-col items-center justify-center py-16 text-center border-2 border-dashed border-border rounded-3xl bg-muted/5 animate-in fade-in zoom-in duration-500">
+          <div className="h-16 w-16 rounded-full bg-secondary flex items-center justify-center mb-4">
+            <Search className="h-6 w-6 text-muted-foreground" />
           </div>
           <h2 className="text-xl font-bold mb-2">Aucun match trouvé</h2>
-          <p className="max-w-xs text-muted-foreground">Nous n'avons trouvé personne correspondant à vos critères. Essayez d'élargir votre recherche pour plus de possibilités.</p>
-          <Button variant="link" onClick={() => setShowFilters(true)} className="mt-4">
-            Modifier les filtres
+          <p className="max-w-xs text-muted-foreground text-sm">
+            No matches found at the moment. Try expanding your preferences in Discover!
+          </p>
+          <Button variant="outline" onClick={() => setShowFilters(true)} className="mt-6 rounded-xl">
+            Modifier mes filtres
           </Button>
         </div>
       ) : (
