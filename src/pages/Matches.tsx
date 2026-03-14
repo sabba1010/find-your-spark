@@ -10,6 +10,8 @@ export default function Matches() {
     const [likes, setLikes] = useState<any[]>([]);
     const [likesSent, setLikesSent] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const isFreeTier = currentUser.planName?.includes('Gratuit') || currentUser.planName?.includes('Free') || !currentUser.planName;
 
     const fetchData = async () => {
         const token = localStorage.getItem("token");
@@ -98,6 +100,27 @@ export default function Matches() {
                             </div>
                             <h2 className="text-xl font-bold mb-2">Personne n'a encore liké votre profil</h2>
                             <p className="max-w-xs text-muted-foreground">Ajoutez de belles photos et une description pour attirer plus de likes !</p>
+                        </div>
+                    ) : isFreeTier ? (
+                        <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-8 text-center shadow-sm">
+                            <div className="absolute inset-0 bg-background/60 backdrop-blur-sm z-10 flex flex-col items-center justify-center p-6 text-center">
+                                <div className="h-16 w-16 rounded-full bg-primary/20 flex items-center justify-center mb-4 text-primary shadow-lg border border-primary/30">
+                                    <Heart className="h-8 w-8 fill-current" />
+                                </div>
+                                <h3 className="text-2xl font-black mb-2 text-foreground">Découvrez qui vous aime</h3>
+                                <p className="text-muted-foreground mb-6 max-w-sm font-medium">
+                                    {likes.length} personne{likes.length > 1 ? 's' : ''} {likes.length > 1 ? 'ont' : 'a'} déjà craqué pour vous ! Passez à l'Essentiel pour voir leurs profils et matcher instantanément.
+                                </p>
+                                <a href="/plans" className="rounded-xl bg-primary px-8 py-4 font-bold text-white shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                                    Voir les Forfaits
+                                </a>
+                            </div>
+                            
+                            <div className="grid gap-6 grid-cols-2 lg:grid-cols-3 opacity-30 select-none pointer-events-none filter blur-sm">
+                                {likes.slice(0, 3).map((u, idx) => (
+                                    <div key={idx} className="h-72 rounded-2xl bg-muted/50 border border-border animate-pulse"></div>
+                                ))}
+                            </div>
                         </div>
                     ) : (
                         <div className="grid gap-6 grid-cols-2 lg:grid-cols-3">

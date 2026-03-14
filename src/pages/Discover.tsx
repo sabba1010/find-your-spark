@@ -42,6 +42,8 @@ export default function Discover() {
     keyword: ""
   });
   const navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const canUseAdvanced = currentUser.planName?.includes('Premium') || currentUser.planName?.includes('Prestige');
 
   useEffect(() => {
     fetchPerfectMatches();
@@ -269,66 +271,81 @@ export default function Discover() {
             </div>
 
             {/* Advanced Filters Section */}
-            <div className="space-y-4">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-primary/70">Critères Avancés</h3>
-              <div className="grid grid-cols-1 gap-3">
-                <div className="flex gap-2">
+            <div className="space-y-4 relative">
+              {!canUseAdvanced && (
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/60 backdrop-blur-[2px] rounded-xl border border-primary/20 p-4 text-center">
+                   <div className="bg-background p-4 rounded-xl shadow-lg border flex flex-col items-center">
+                     <span className="text-2xl mb-2">⭐</span>
+                     <h4 className="font-bold text-sm mb-1">Critères Avancés verrouillés</h4>
+                     <p className="text-xs text-muted-foreground mb-3 max-w-[200px]">Passez à Premium pour affiner votre recherche par taille, couleur des yeux, mot-clé, etc.</p>
+                     <Button size="sm" onClick={() => navigate('/plans')} className="w-full text-xs font-bold rounded-lg h-8">
+                       Débloquer (Premium)
+                     </Button>
+                   </div>
+                </div>
+              )}
+              
+              <div className={`transition-opacity duration-300 ${!canUseAdvanced ? 'opacity-30 pointer-events-none blur-[1px]' : ''}`}>
+                <h3 className="text-xs font-bold uppercase tracking-widest text-primary/70 mb-4">Critères Avancés</h3>
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="flex gap-2">
+                    <Input 
+                      type="number"
+                      name="ageMin" 
+                      value={filters.ageMin} 
+                      onChange={handleFilterChange} 
+                      placeholder="Âge min" 
+                      className="flex-1"
+                    />
+                    <Input 
+                      type="number"
+                      name="ageMax" 
+                      value={filters.ageMax} 
+                      onChange={handleFilterChange} 
+                      placeholder="Âge max" 
+                      className="flex-1"
+                    />
+                  </div>
+
+                  <div className="flex gap-2">
+                    <select 
+                      name="eyeColor" 
+                      value={filters.eyeColor} 
+                      onChange={handleFilterChange}
+                      className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                    >
+                      <option value="">Yeux (Tous)</option>
+                      <option value="Bleu">Bleu</option>
+                      <option value="Vert">Vert</option>
+                      <option value="Marron">Marron</option>
+                      <option value="Gris">Gris</option>
+                      <option value="Noisette">Noisette</option>
+                    </select>
+                    <select 
+                      name="hairColor" 
+                      value={filters.hairColor} 
+                      onChange={handleFilterChange}
+                      className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                    >
+                      <option value="">Cheveux (Tous)</option>
+                      <option value="Noir">Noir</option>
+                      <option value="Brun">Brun</option>
+                      <option value="Blond">Blond</option>
+                      <option value="Roux">Roux</option>
+                      <option value="Gris">Gris</option>
+                      <option value="Blanc">Blanc</option>
+                    </select>
+                  </div>
+
                   <Input 
-                    type="number"
-                    name="ageMin" 
-                    value={filters.ageMin} 
+                    type="text"
+                    name="keyword" 
+                    value={filters.keyword} 
                     onChange={handleFilterChange} 
-                    placeholder="Âge min" 
-                    className="flex-1"
-                  />
-                  <Input 
-                    type="number"
-                    name="ageMax" 
-                    value={filters.ageMax} 
-                    onChange={handleFilterChange} 
-                    placeholder="Âge max" 
-                    className="flex-1"
+                    placeholder="Mot-clé (ex: sport, cuisine...)" 
+                    className="w-full"
                   />
                 </div>
-
-                <div className="flex gap-2">
-                  <select 
-                    name="eyeColor" 
-                    value={filters.eyeColor} 
-                    onChange={handleFilterChange}
-                    className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
-                  >
-                    <option value="">Yeux (Tous)</option>
-                    <option value="Bleu">Bleu</option>
-                    <option value="Vert">Vert</option>
-                    <option value="Marron">Marron</option>
-                    <option value="Gris">Gris</option>
-                    <option value="Noisette">Noisette</option>
-                  </select>
-                  <select 
-                    name="hairColor" 
-                    value={filters.hairColor} 
-                    onChange={handleFilterChange}
-                    className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
-                  >
-                    <option value="">Cheveux (Tous)</option>
-                    <option value="Noir">Noir</option>
-                    <option value="Brun">Brun</option>
-                    <option value="Blond">Blond</option>
-                    <option value="Roux">Roux</option>
-                    <option value="Gris">Gris</option>
-                    <option value="Blanc">Blanc</option>
-                  </select>
-                </div>
-
-                <Input 
-                  type="text"
-                  name="keyword" 
-                  value={filters.keyword} 
-                  onChange={handleFilterChange} 
-                  placeholder="Mot-clé (ex: sport, cuisine...)" 
-                  className="w-full"
-                />
               </div>
             </div>
           </div>
