@@ -20,6 +20,7 @@ export interface MatchedUser {
 
 export default function Discover() {
   const [matches, setMatches] = useState<MatchedUser[]>([]);
+  const [perfectMatches, setPerfectMatches] = useState<MatchedUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
@@ -43,12 +44,32 @@ export default function Discover() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    fetchPerfectMatches();
     fetchMatches();
   }, [navigate]);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
+  };
+
+  const fetchPerfectMatches = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      // Fetch without mode=discover to get strict mutual matches (defaults to searchLevel=worldwide or user pref)
+      const res = await fetch(`${API}/users/matches`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        // Only take the top 5 for the horizontal slider
+        setPerfectMatches(data.matches.slice(0, 5));
+      }
+    } catch (err) {
+      console.error("Failed to fetch perfect matches:", err);
+    }
   };
 
   const fetchMatches = async () => {
@@ -64,7 +85,7 @@ export default function Discover() {
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       const { radius, searchLevel, filterCountry, filterDept, smoke, alcohol, children, religion, zodiacSign, minHeight, maxHeight } = filters;
       
-      let url = `${API}/users/matches?searchLevel=${searchLevel}`;
+      let url = `${API}/users/matches?searchLevel=${searchLevel}&mode=discover`;
       
       if (searchLevel === 'radius' && user.locationCoords?.coordinates) {
         url += `&radius=${radius}&lat=${user.locationCoords.coordinates[1]}&lng=${user.locationCoords.coordinates[0]}`;
@@ -131,6 +152,33 @@ export default function Discover() {
           Filtres avancés
         </Button>
       </div>
+
+      {!showFilters && perfectMatches.length > 0 && (
+        <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-500">
+           <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                 <span className="text-xl">✨</span> Matchs Parfaits
+              </h2>
+           </div>
+           
+           <div className="grid gap-6 grid-cols-2 lg:grid-cols-3">
+              {perfectMatches.map((user) => (
+                <ProfileCard 
+                  key={user.id} 
+                  user={user} 
+                  matchPercent={user.matchPercent} 
+                  onAction={() => { fetchPerfectMatches(); fetchMatches(); }}
+                />
+              ))}
+           </div>
+           
+           <div className="my-8 border-t border-border" />
+           
+           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+               <Globe className="h-5 w-5 text-primary" /> Explorer
+           </h2>
+        </div>
+      )}
 
       {showFilters && (
         <div className="mb-8 rounded-2xl bg-card p-6 border border-border shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
@@ -318,7 +366,7 @@ export default function Discover() {
               key={user.id} 
               user={user} 
               matchPercent={user.matchPercent} 
-              onAction={fetchMatches}
+              onAction={() => { fetchPerfectMatches(); fetchMatches(); }}
             />
           ))}
         </div>
