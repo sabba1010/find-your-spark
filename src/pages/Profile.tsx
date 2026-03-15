@@ -151,6 +151,14 @@ export default function Profile() {
 
     const isOwnProfile = !id;
     const userName = isOwnProfile ? (prefs?.name || "Mon Profil") : publicUser?.name;
+    
+    // Safety check: plan might be an ID or an object
+    const getPlanName = () => {
+        if (!isOwnProfile && publicUser?.planName) return publicUser.planName;
+        if (prefs?.plan && typeof prefs.plan === 'object') return prefs.plan.name;
+        return prefs?.planName || "Gratuit";
+    };
+
     const userBio = isOwnProfile
         ? (prefs?.bio || "Passionné par la création de belles interfaces et la recherche de connexions significatives.")
         : publicUser?.bio;
@@ -450,11 +458,11 @@ export default function Profile() {
                             <div className="rounded-2xl bg-gradient-to-br from-primary to-rose-600 p-6 text-white shadow-lg shadow-primary/20">
                                 <Heart className="h-10 w-10 fill-white mb-4" />
                                 <h3 className="text-xl font-bold mb-2">
-                                    {prefs?.planName || "Passer au Premium"}
+                                    {getPlanName() !== "Gratuit" ? getPlanName() : "Passer au Premium"}
                                 </h3>
                                 <p className="text-white/80 text-sm mb-4">
-                                    {prefs?.planName
-                                        ? `Votre forfait ${prefs.planName} est actif.`
+                                    {getPlanName() !== "Gratuit"
+                                        ? `Votre forfait ${getPlanName()} est actif.`
                                         : "Obtenez des matchs illimités, voyez qui vous aime, et bien plus encore !"}
                                 </p>
                                 <Button

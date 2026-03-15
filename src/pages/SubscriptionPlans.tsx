@@ -107,12 +107,15 @@ export default function SubscriptionPlans() {
     };
 
     const updateUserLocal = (userData: any) => {
+        const freshUser = JSON.parse(localStorage.getItem("user") || "{}");
+        const planObj = userData.plan && typeof userData.plan === 'object' ? userData.plan : freshUser.plan;
+        
         localStorage.setItem("user", JSON.stringify({
-            ...currentUser,
-            plan: userData.plan._id || userData.plan,
-            planName: userData.plan.name || userData.planName,
-            subscriptionStatus: userData.subscriptionStatus,
-            subscriptionExpiry: userData.subscriptionExpiry
+            ...freshUser,
+            plan: planObj,
+            planName: planObj?.name || userData.planName || freshUser.planName,
+            subscriptionStatus: userData.subscriptionStatus || freshUser.subscriptionStatus,
+            subscriptionExpiry: userData.subscriptionExpiry || freshUser.subscriptionExpiry
         }));
     };
 
