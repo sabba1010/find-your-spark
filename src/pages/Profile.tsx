@@ -34,6 +34,9 @@ export default function Profile() {
     const [loading, setLoading] = useState(!!id);
     const [showGallery, setShowGallery] = useState(false);
     const [galleryIndex, setGalleryIndex] = useState(0);
+    const [showBlockConfirm, setShowBlockConfirm] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
+    const [reportReason, setReportReason] = useState("");
 
     const openGallery = (index: number) => {
         setGalleryIndex(index);
@@ -111,7 +114,11 @@ export default function Profile() {
     };
 
     const handleBlock = async () => {
-        if (!window.confirm(`Êtes-vous sûr de vouloir bloquer ${userName} ? Vous ne vous verrez plus mutuellement.`)) return;
+        setShowBlockConfirm(true);
+    };
+
+    const confirmBlock = async () => {
+        setShowBlockConfirm(false);
 
         const token = localStorage.getItem("token");
         if (!token) return navigate("/auth");
@@ -131,9 +138,15 @@ export default function Profile() {
         }
     };
 
-    const handleReport = async () => {
-        const reason = window.prompt(`Pourquoi signalez-vous ${userName} ? (ex: Comportement inapproprié, Fake profile...)`);
-        if (!reason) return;
+    const handleReport = () => {
+        setShowReportModal(true);
+    };
+
+    const submitReport = async () => {
+        if (!reportReason.trim()) {
+            toast.error("Veuillez saisir une raison.");
+            return;
+        }
 
         const token = localStorage.getItem("token");
         if (!token) return navigate("/auth");
@@ -145,11 +158,13 @@ export default function Profile() {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ reportedUserId: id, reason })
+                body: JSON.stringify({ reportedUserId: id, reason: reportReason })
             });
             const data = await res.json();
             if (data.success) {
                 toast.success("Signalement envoyé. Merci de nous aider à garder la communauté sûre.");
+                setShowReportModal(false);
+                setReportReason("");
             }
         } catch (err) {
             toast.error("Erreur lors du signalement.");
@@ -505,59 +520,53 @@ export default function Profile() {
                     </div>
                 </div>
             </div>
-            {/* Fullscreen Gallery Modal */}
-            {showGallery && photos.length > 0 && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xl animate-in fade-in duration-300">
-                    <button 
-                        onClick={() => setShowGallery(false)}
-                        className="absolute right-6 top-6 z-[110] rounded-full bg-white/10 p-3 text-white backdrop-blur-md hover:bg-white/20 transition-all"
-                    >
-                        <UserX className="h-6 w-6 rotate-45" /> {/* Using UserX rotated as a close button */}
-                    </button>
-                    
-                    <div className="relative h-full w-full flex items-center justify-center p-4">
-                        <img 
-                            src={photos[galleryIndex]} 
-                            alt={`Gallery ${galleryIndex + 1}`} 
-                            className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl animate-in zoom-in-95 duration-300"
+            {/* Block Confirmation Modal */}
+            {showBlockConfirm && (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="w-full max-w-sm rounded-3xl bg-card p-8 shadow-2xl border border-border animate-in zoom-in-95 duration-300">
+                        <div className="h-16 w-16 rounded-full bg-rose-500/10 flex items-center justify-center mb-6 mx-auto text-rose-500">
+                            <UserX className="h-8 w-8" />
+                        </div>
+                        <h3 className="text-xl font-bold text-center mb-2">Bloquer {userName} ?</h3>
+                        <p className="text-muted-foreground text-center mb-8">
+                            Vous ne vous verrez plus mutuellement sur la plateforme. Cette action est réversible dans vos paramètres.
+                        </p>
+                        <div className="grid gap-3">
+                            <Button variant="destructive" className="rounded-xl h-12 font-bold" onClick={confirmBlock}>
+                                Bloquer l'utilisateur
+                            </Button>
+                            <Button variant="ghost" className="rounded-xl h-12 font-bold" onClick={() => setShowBlockConfirm(false)}>
+                                Annuler
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Report Modal */}
+            {showReportModal && (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="w-full max-w-md rounded-3xl bg-card p-8 shadow-2xl border border-border animate-in zoom-in-95 duration-300">
+                        <div className="h-16 w-16 rounded-full bg-amber-500/10 flex items-center justify-center mb-6 mx-auto text-amber-500">
+                            <ShieldAlert className="h-8 w-8" />
+                        </div>
+                        <h3 className="text-xl font-bold text-center mb-2">Signaler {userName}</h3>
+                        <p className="text-muted-foreground text-center mb-6">
+                            Veuillez expliquer brièvement pourquoi vous signalez cet utilisateur.
+                        </p>
+                        <textarea
+                            className="w-full min-h-[120px] rounded-2xl border border-border bg-muted/30 p-4 text-foreground focus:ring-2 focus:ring-primary/20 outline-none transition-all mb-6"
+                            placeholder="Comportement inapproprié, faux profil, spam..."
+                            value={reportReason}
+                            onChange={(e) => setReportReason(e.target.value)}
                         />
-                        
-                        {photos.length > 1 && (
-                            <>
-                                <button 
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setGalleryIndex((prev) => (prev > 0 ? prev - 1 : photos.length - 1));
-                                    }}
-                                    className="absolute left-4 rounded-full bg-white/10 p-4 text-white backdrop-blur-md hover:bg-white/20 transition-all md:left-10"
-                                >
-                                    <ChevronRight className="h-8 w-8 rotate-180" />
-                                </button>
-                                <button 
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setGalleryIndex((prev) => (prev < photos.length - 1 ? prev + 1 : 0));
-                                    }}
-                                    className="absolute right-4 rounded-full bg-white/10 p-4 text-white backdrop-blur-md hover:bg-white/20 transition-all md:right-10"
-                                >
-                                    <ChevronRight className="h-8 w-8" />
-                                </button>
-                            </>
-                        )}
-                        
-                        <div className="absolute bottom-10 flex flex-col items-center gap-4">
-                            <div className="flex gap-2">
-                                {photos.map((_, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => setGalleryIndex(i)}
-                                        className={`h-2 rounded-full transition-all ${i === galleryIndex ? "w-8 bg-primary" : "w-2 bg-white/30"}`}
-                                    />
-                                ))}
-                            </div>
-                            <p className="text-white/60 font-medium text-sm">
-                                {galleryIndex + 1} / {photos.length}
-                            </p>
+                        <div className="flex gap-3">
+                            <Button variant="ghost" className="flex-1 rounded-xl h-12 font-bold" onClick={() => { setShowReportModal(false); setReportReason(""); }}>
+                                Annuler
+                            </Button>
+                            <Button className="flex-1 rounded-xl h-12 font-bold bg-primary shadow-lg shadow-primary/20" onClick={submitReport}>
+                                Envoyer
+                            </Button>
                         </div>
                     </div>
                 </div>
