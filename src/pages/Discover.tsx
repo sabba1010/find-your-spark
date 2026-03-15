@@ -193,7 +193,7 @@ export default function Discover() {
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-bold text-lg flex items-center gap-2">
               <Search className="h-5 w-5 text-primary" />
-              Critères de recherche Meetic
+              Critères de recherche
             </h2>
             <Button variant="ghost" size="icon" onClick={() => setShowFilters(false)} className="rounded-full">
               <X className="h-4 w-4" />
@@ -365,7 +365,7 @@ export default function Discover() {
               Réinitialiser
             </Button>
             <Button onClick={() => { fetchMatches(); setShowFilters(false); }} className="px-8 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20">
-              Appliquer les filtres Meetic
+              Appliquer les filtres
             </Button>
           </div>
         </div>

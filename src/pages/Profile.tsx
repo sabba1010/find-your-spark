@@ -63,21 +63,21 @@ export default function Profile() {
     }, [id]);
 
     const handleShare = () => {
-        const shareUrl = `${window.location.origin}/profile/${prefs?.id || prefs?._id}`;
+        const shareUrl = "https://amour-et-sincerite.com/";
         
         if (navigator.share) {
             navigator.share({
-                title: `Découvrez le profil de ${userName} sur Spark`,
-                text: `Regardez ce profil intéressant sur Spark !`,
+                title: `Amour et Sincérité`,
+                text: `Découvrez Amour et Sincérité !`,
                 url: shareUrl,
             }).catch(() => {
                 // Fallback to clipboard
                 navigator.clipboard.writeText(shareUrl);
-                toast.success("Lien copié dans le presse-papier !");
+                toast.success("Lien de l'accueil copié !");
             });
         } else {
             navigator.clipboard.writeText(shareUrl);
-            toast.success("Lien copié dans le presse-papier !");
+            toast.success("Lien de l'accueil copié !");
         }
     };
 
