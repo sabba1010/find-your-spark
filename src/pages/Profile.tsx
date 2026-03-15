@@ -32,6 +32,13 @@ export default function Profile() {
     const [prefs, setPrefs] = useState<any>(null);
     const [publicUser, setPublicUser] = useState<any>(null);
     const [loading, setLoading] = useState(!!id);
+    const [showGallery, setShowGallery] = useState(false);
+    const [galleryIndex, setGalleryIndex] = useState(0);
+
+    const openGallery = (index: number) => {
+        setGalleryIndex(index);
+        setShowGallery(true);
+    };
 
     useEffect(() => {
         if (id) {
@@ -199,7 +206,8 @@ export default function Profile() {
                         <img
                             src={photos[activePhoto]}
                             alt={`Photo ${activePhoto + 1}`}
-                            className="h-full w-full object-cover transition-all duration-500"
+                            className="h-full w-full object-cover transition-all duration-500 cursor-zoom-in"
+                            onClick={() => openGallery(activePhoto)}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                         
@@ -246,7 +254,8 @@ export default function Profile() {
                                 <img
                                     src={displayPic}
                                     alt="Profile"
-                                    className="h-32 w-32 rounded-3xl border-4 border-card object-cover shadow-lg md:h-40 md:w-40 ring-1 ring-black/5"
+                                    className="h-32 w-32 rounded-3xl border-4 border-card object-cover shadow-lg md:h-40 md:w-40 ring-1 ring-black/5 cursor-pointer hover:opacity-90 transition-opacity"
+                                    onClick={() => openGallery(0)}
                                 />
                                 <div className="absolute -bottom-2 -right-2 rounded-full bg-green-500 p-1.5 border-4 border-card">
                                     <div className="h-3 w-3 rounded-full bg-white animate-pulse"></div>
@@ -496,6 +505,63 @@ export default function Profile() {
                     </div>
                 </div>
             </div>
+            {/* Fullscreen Gallery Modal */}
+            {showGallery && photos.length > 0 && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xl animate-in fade-in duration-300">
+                    <button 
+                        onClick={() => setShowGallery(false)}
+                        className="absolute right-6 top-6 z-[110] rounded-full bg-white/10 p-3 text-white backdrop-blur-md hover:bg-white/20 transition-all"
+                    >
+                        <UserX className="h-6 w-6 rotate-45" /> {/* Using UserX rotated as a close button */}
+                    </button>
+                    
+                    <div className="relative h-full w-full flex items-center justify-center p-4">
+                        <img 
+                            src={photos[galleryIndex]} 
+                            alt={`Gallery ${galleryIndex + 1}`} 
+                            className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl animate-in zoom-in-95 duration-300"
+                        />
+                        
+                        {photos.length > 1 && (
+                            <>
+                                <button 
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setGalleryIndex((prev) => (prev > 0 ? prev - 1 : photos.length - 1));
+                                    }}
+                                    className="absolute left-4 rounded-full bg-white/10 p-4 text-white backdrop-blur-md hover:bg-white/20 transition-all md:left-10"
+                                >
+                                    <ChevronRight className="h-8 w-8 rotate-180" />
+                                </button>
+                                <button 
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setGalleryIndex((prev) => (prev < photos.length - 1 ? prev + 1 : 0));
+                                    }}
+                                    className="absolute right-4 rounded-full bg-white/10 p-4 text-white backdrop-blur-md hover:bg-white/20 transition-all md:right-10"
+                                >
+                                    <ChevronRight className="h-8 w-8" />
+                                </button>
+                            </>
+                        )}
+                        
+                        <div className="absolute bottom-10 flex flex-col items-center gap-4">
+                            <div className="flex gap-2">
+                                {photos.map((_, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => setGalleryIndex(i)}
+                                        className={`h-2 rounded-full transition-all ${i === galleryIndex ? "w-8 bg-primary" : "w-2 bg-white/30"}`}
+                                    />
+                                ))}
+                            </div>
+                            <p className="text-white/60 font-medium text-sm">
+                                {galleryIndex + 1} / {photos.length}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
