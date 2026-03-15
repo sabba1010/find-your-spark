@@ -12,7 +12,9 @@ export default function Matches() {
     const [loading, setLoading] = useState(true);
     const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
     const planTier = currentUser.plan?.tier || 'Free';
-    const isFreeTier = planTier === 'Free';
+    // Can see who liked them: Essential, Premium, Prestige
+    const canSeeLikes = planTier === 'Essential' || planTier === 'Premium' || planTier === 'Prestige';
+    const isFreeTier = !canSeeLikes;
 
     const fetchData = async () => {
         const token = localStorage.getItem("token");

@@ -43,7 +43,11 @@ export default function Discover() {
   });
   const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-  const canUseAdvanced = currentUser.planName?.includes('Premium') || currentUser.planName?.includes('Prestige');
+  const planTier = currentUser.plan?.tier || 'Free';
+  // Advanced filters: Premium or Prestige only
+  const canUseAdvanced = planTier === 'Premium' || planTier === 'Prestige';
+  // Unlimited browsing: Essential, Premium, or Prestige
+  const hasUnlimitedBrowsing = planTier !== 'Free';
 
   useEffect(() => {
     fetchPerfectMatches();
@@ -117,8 +121,7 @@ export default function Discover() {
 
       if (!res.ok) throw new Error(data.message);
 
-      const planTier = user.plan?.tier || 'Free';
-      const isFree = planTier === 'Free';
+      const isFree = !hasUnlimitedBrowsing;
       setMatches(isFree ? data.matches.slice(0, 5) : data.matches);
 
     } catch (err: unknown) {

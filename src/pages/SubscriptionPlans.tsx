@@ -94,8 +94,9 @@ const TIER_FEATURES: Record<string, string[]> = {
         "See who viewed your profile",
         "Unlock advanced search filters",
         "View all profiles in your search",
-        "Send 6 Super Likes per week",
-        "See when your messages are read"
+        "Send 3 Super Likes per week",
+        "See when your messages are read",
+        "Send 6 Super Likes per week"
     ]
 };
 
