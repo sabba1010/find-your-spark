@@ -26,7 +26,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         if (!userId) return;
 
         // Connect to server
-        const socketUrl = "https://amour-et-sincerite.com";
+        const socketUrl = import.meta.env.PROD ? "https://amour-et-sincerite.com" : "http://localhost:5000";
         const newSocket = io(socketUrl);
         setSocket(newSocket);
 
