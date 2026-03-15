@@ -19,22 +19,22 @@ interface Plan {
     priority: number;
 }
 
-const TIER_ORDER = ["Free", "Essentiel", "Premium", "Prestige"];
+const TIER_ORDER = ["Free", "Weekly", "Monthly", "6-Month"];
 const TIER_ICONS: Record<string, any> = {
     Free: <Heart className="h-6 w-6" />,
-    Essentiel: <Shield className="h-6 w-6" />,
-    Premium: <Star className="h-6 w-6" />,
-    Prestige: <Crown className="h-6 w-6" />
+    Weekly: <Shield className="h-6 w-6" />,
+    Monthly: <Star className="h-6 w-6" />,
+    "6-Month": <Crown className="h-6 w-6" />
 };
 const TIER_COLORS: Record<string, string> = {
     Free: "bg-gray-100 text-gray-700 ring-gray-200",
-    Essentiel: "bg-green-100 text-green-700 ring-green-200",
-    Premium: "bg-purple-100 text-purple-700 ring-purple-500/20 shadow-purple-500/10 z-10 scale-[1.02]",
-    Prestige: "bg-blue-100 text-blue-700 ring-blue-500/30 shadow-blue-500/20 z-10 scale-[1.02]"
+    Weekly: "bg-green-100 text-green-700 ring-green-200",
+    Monthly: "bg-purple-100 text-purple-700 ring-purple-500/20 shadow-purple-500/10 z-10 scale-[1.02]",
+    "6-Month": "bg-blue-100 text-blue-700 ring-blue-500/30 shadow-blue-500/20 z-10 scale-[1.02]"
 };
 const TIER_BADGES: Record<string, string> = {
-    Premium: "Plus Populaire",
-    Prestige: "VIP"
+    Monthly: "Plus Populaire",
+    "6-Month": "Meilleure Valeur"
 };
 
 export default function SubscriptionPlans() {
