@@ -1,3 +1,3 @@
-export const API = "http://localhost:5000/api";
+export const API = "https://amour-et-sincerite.com/api";
 
 export default API;
