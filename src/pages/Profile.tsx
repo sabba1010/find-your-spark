@@ -333,6 +333,26 @@ export default function Profile() {
                             )}
 
                             {isOwnProfile && (
+                                <div className="mb-8">
+                                    <h2 className="text-xl font-bold text-foreground mb-4">Infos Rapides</h2>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                        <div className="rounded-2xl bg-muted/50 p-4 border border-border/50">
+                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Âge</p>
+                                            <p className="text-lg font-bold text-foreground">{prefs?.age || 25} ans</p>
+                                        </div>
+                                        <div className="rounded-2xl bg-muted/50 p-4 border border-border/50">
+                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Genre</p>
+                                            <p className="text-lg font-bold text-foreground capitalize">{prefs?.gender === 'man' ? 'Homme' : 'Femme'}</p>
+                                        </div>
+                                        <div className="rounded-2xl bg-muted/50 p-4 border border-border/50">
+                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Forfait</p>
+                                            <p className="text-lg font-bold text-foreground">{getPlanName()}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {isOwnProfile && (
                                 <div>
                                     <h2 className="text-xl font-bold text-foreground mb-4">Mes Préférences</h2>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

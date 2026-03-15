@@ -117,7 +117,8 @@ export default function Discover() {
 
       if (!res.ok) throw new Error(data.message);
 
-      const isFree = user.planName === 'Free Registration' || !user.planName;
+      const planTier = user.plan?.tier || 'Free';
+      const isFree = planTier === 'Free';
       setMatches(isFree ? data.matches.slice(0, 5) : data.matches);
 
     } catch (err: unknown) {

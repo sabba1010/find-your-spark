@@ -11,7 +11,8 @@ export default function Matches() {
     const [likesSent, setLikesSent] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-    const isFreeTier = currentUser.planName?.includes('Gratuit') || currentUser.planName?.includes('Free') || !currentUser.planName;
+    const planTier = currentUser.plan?.tier || 'Free';
+    const isFreeTier = planTier === 'Free';
 
     const fetchData = async () => {
         const token = localStorage.getItem("token");
