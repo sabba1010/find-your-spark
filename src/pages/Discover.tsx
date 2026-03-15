@@ -257,9 +257,9 @@ export default function Discover() {
                   className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
                 >
                   <option value="">Alcool ? (Peu importe)</option>
-                  <option value="Jamais">Jamais</option>
-                  <option value="Occasionnellement">Occasionnellement</option>
-                  <option value="Régulièrement">Régulièrement</option>
+                  <option value="never">Jamais</option>
+                  <option value="occasionally">Occasionnellement</option>
+                  <option value="regularly">Régulièrement</option>
                 </select>
 
                 <select 
