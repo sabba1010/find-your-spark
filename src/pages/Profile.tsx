@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Share2, Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles, Moon, Baby, Ruler, Wine, Scissors, Eye, GraduationCap } from "lucide-react";
+import { Share2, Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles, Moon, Baby, Ruler, Wine, Scissors, Eye, GraduationCap, UserX, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -100,6 +100,52 @@ export default function Profile() {
             }
         } catch (err) {
             toast.error("Erreur lors du like.");
+        }
+    };
+
+    const handleBlock = async () => {
+        if (!window.confirm(`Êtes-vous sûr de vouloir bloquer ${userName} ? Vous ne vous verrez plus mutuellement.`)) return;
+
+        const token = localStorage.getItem("token");
+        if (!token) return navigate("/auth");
+
+        try {
+            const res = await fetch(`${API}/users/block/${id}`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const data = await res.json();
+            if (data.success) {
+                toast.success(`${userName} a été bloqué.`);
+                navigate("/discover");
+            }
+        } catch (err) {
+            toast.error("Erreur lors du blocage.");
+        }
+    };
+
+    const handleReport = async () => {
+        const reason = window.prompt(`Pourquoi signalez-vous ${userName} ? (ex: Comportement inapproprié, Fake profile...)`);
+        if (!reason) return;
+
+        const token = localStorage.getItem("token");
+        if (!token) return navigate("/auth");
+
+        try {
+            const res = await fetch(`${API}/users/report`, {
+                method: "POST",
+                headers: { 
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ reportedUserId: id, reason })
+            });
+            const data = await res.json();
+            if (data.success) {
+                toast.success("Signalement envoyé. Merci de nous aider à garder la communauté sûre.");
+            }
+        } catch (err) {
+            toast.error("Erreur lors du signalement.");
         }
     };
 
@@ -239,6 +285,14 @@ export default function Profile() {
                                     })}>
                                         <MessageCircle className="mr-2 h-5 w-5" /> Message
                                     </Button>
+                                    <div className="flex gap-2">
+                                        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-rose-500 rounded-xl" onClick={handleBlock} title="Bloquer">
+                                            <UserX className="h-5 w-5" />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-amber-500 rounded-xl" onClick={handleReport} title="Signaler">
+                                            <ShieldAlert className="h-5 w-5" />
+                                        </Button>
+                                    </div>
                                 </>
                             )}
                         </div>
