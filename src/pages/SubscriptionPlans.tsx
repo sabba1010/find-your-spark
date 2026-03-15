@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, ArrowLeft, Star, Zap, Shield, Heart, Crown } from "lucide-react";
+import { Check, ArrowLeft, Star, Shield, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
@@ -19,30 +19,99 @@ interface Plan {
     priority: number;
 }
 
-const TIER_ORDER = ["Free", "Essential", "Premium", "Prestige"];
-const TIER_ICONS: Record<string, any> = {
-    Free: <Heart className="h-6 w-6" />,
-    Essential: <Shield className="h-6 w-6" />,
-    Premium: <Star className="h-6 w-6" />,
-    Prestige: <Crown className="h-6 w-6" />
+const TIERS = ["Essential", "Premium", "Prestige"];
+
+const TIER_CONFIG: Record<string, { icon: any; tabColor: string; badgeColor: string; buttonClass: string; badge: string; tagline: string }> = {
+    Essential: {
+        icon: <Shield className="h-5 w-5" />,
+        tabColor: "bg-green-500 text-white",
+        badgeColor: "bg-green-500",
+        buttonClass: "bg-green-500 hover:bg-green-600 text-white",
+        badge: "",
+        tagline: "The essentials to get started with peace of mind"
+    },
+    Premium: {
+        icon: <Star className="h-5 w-5" />,
+        tabColor: "bg-pink-500 text-white",
+        badgeColor: "bg-pink-500",
+        buttonClass: "bg-pink-500 hover:bg-pink-600 text-white",
+        badge: "Recommandé",
+        tagline: "Multiply your contacts, upgrade to the Premium experience"
+    },
+    Prestige: {
+        icon: <Crown className="h-5 w-5" />,
+        tabColor: "bg-slate-800 text-white",
+        badgeColor: "bg-slate-800",
+        buttonClass: "bg-slate-800 hover:bg-slate-900 text-white",
+        badge: "VIP",
+        tagline: "Enjoy the best with Prestige"
+    }
 };
-const TIER_COLORS: Record<string, string> = {
-    Free: "bg-gray-100 text-gray-700 ring-gray-200",
-    Essential: "bg-green-100 text-green-700 ring-green-500/20 shadow-green-500/10",
-    Premium: "bg-pink-100 text-pink-700 ring-pink-500/20 shadow-pink-500/10 z-10 scale-[1.02]",
-    Prestige: "bg-slate-900 text-white ring-slate-700 shadow-xl z-20 scale-[1.05]"
+
+const ALL_FEATURES = [
+    "Explore unlimited profiles",
+    "Go back to previous profiles",
+    "See who liked your profile",
+    "Read all your received messages",
+    "Browse ad-free",
+    "Send unlimited messages",
+    "See who viewed your profile",
+    "Unlock advanced search filters",
+    "View all profiles in your search",
+    "Send 3 Super Likes per week",
+    "See when your messages are read",
+    "Send 6 Super Likes per week"
+];
+
+const TIER_FEATURES: Record<string, string[]> = {
+    Essential: [
+        "Explore unlimited profiles",
+        "Go back to previous profiles",
+        "See who liked your profile",
+        "Read all your received messages",
+        "Browse ad-free"
+    ],
+    Premium: [
+        "Explore unlimited profiles",
+        "Go back to previous profiles",
+        "See who liked your profile",
+        "Read all your received messages",
+        "Browse ad-free",
+        "Send unlimited messages",
+        "See who viewed your profile",
+        "Unlock advanced search filters",
+        "View all profiles in your search",
+        "Send 3 Super Likes per week",
+        "See when your messages are read"
+    ],
+    Prestige: [
+        "Explore unlimited profiles",
+        "Go back to previous profiles",
+        "See who liked your profile",
+        "Read all your received messages",
+        "Browse ad-free",
+        "Send unlimited messages",
+        "See who viewed your profile",
+        "Unlock advanced search filters",
+        "View all profiles in your search",
+        "Send 6 Super Likes per week",
+        "See when your messages are read"
+    ]
 };
-const TIER_BADGES: Record<string, string> = {
-    Premium: "Recommandé",
-    Prestige: "VIP"
+
+const DURATION_LABEL: Record<string, string> = {
+    "1-week": "1 week",
+    "1-month": "1 month",
+    "6-month": "6 months"
 };
 
 export default function SubscriptionPlans() {
     const [groupedPlans, setGroupedPlans] = useState<Record<string, Plan[]>>({});
     const [loading, setLoading] = useState(true);
-    const [submitting, setSubmitting] = useState<string | null>(null);
-    const [selectedDurations, setSelectedDurations] = useState<Record<string, number>>({});
-    const [selectedPlanForPaypal, setSelectedPlanForPaypal] = useState<Plan | null>(null);
+    const [activeTier, setActiveTier] = useState("Essential");
+    const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+    const [showPaypal, setShowPaypal] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const navigate = useNavigate();
     const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -56,60 +125,32 @@ export default function SubscriptionPlans() {
                         if (!groups[p.tier]) groups[p.tier] = [];
                         groups[p.tier].push(p);
                     });
-                    
-                    // Sort durations ascending (1 month, 6 month)
                     Object.values(groups).forEach(tierPlans => {
-                        tierPlans.sort((a, b) => a.duration - b.duration);
+                        tierPlans.sort((a, b) => b.duration - a.duration); // 6 month first
                     });
-
-                    // Set default duration to 1 for all tiers if not specified
-                    const defaultDurations: Record<string, number> = {};
-                    Object.keys(groups).forEach(tier => {
-                        if (groups[tier].length > 0) {
-                            defaultDurations[tier] = groups[tier][0].duration;
-                        }
-                    });
-
                     setGroupedPlans(groups);
-                    setSelectedDurations(defaultDurations);
+                    // Default selection: recommended plan for each tier
+                    const defaultPlan = groups["Essential"]?.find(p => p.duration === 1 && p.durationUnit === "month") || groups["Essential"]?.[0];
+                    setSelectedPlan(defaultPlan || null);
                 }
             })
-            .catch(err => console.error("Error fetching plans:", err))
+            .catch(() => toast.error("Erreur lors du chargement des plans."))
             .finally(() => setLoading(false));
     }, []);
 
-    const handleFreeSubscribe = async (planId: string) => {
-        setSubmitting(planId);
-        try {
-            const token = localStorage.getItem("token");
-            const res = await fetch(`${API}/plans/subscribe`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ planId })
-            });
-
-            const data = await res.json();
-            if (data.success) {
-                toast.success(`Abonnement ${data.user.plan?.name || "Gratuit"} activé ! 🎉`);
-                updateUserLocal(data.user);
-                setTimeout(() => navigate("/profile"), 1500);
-            } else {
-                toast.error(data.message || "Erreur lors de l'abonnement.");
-            }
-        } catch (err) {
-            toast.error("Erreur serveur lors de l'abonnement.");
-        } finally {
-            setSubmitting(null);
+    // Update selected plan when tier changes
+    useEffect(() => {
+        const tierPlans = groupedPlans[activeTier];
+        if (tierPlans && tierPlans.length > 0) {
+            const rec = tierPlans.find(p => p.duration === 1 && p.durationUnit === "month") || tierPlans[0];
+            setSelectedPlan(rec);
+            setShowPaypal(false);
         }
-    };
+    }, [activeTier, groupedPlans]);
 
     const updateUserLocal = (userData: any) => {
         const freshUser = JSON.parse(localStorage.getItem("user") || "{}");
         const planObj = userData.plan && typeof userData.plan === 'object' ? userData.plan : freshUser.plan;
-        
         localStorage.setItem("user", JSON.stringify({
             ...freshUser,
             plan: planObj,
@@ -119,207 +160,238 @@ export default function SubscriptionPlans() {
         }));
     };
 
-    const createOrder = async (data: any, actions: any) => {
-        if (!selectedPlanForPaypal) return "";
+    const handleSubscribe = async () => {
+        if (!selectedPlan) return;
+        setSubmitting(true);
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${API}/paypal/create-order`, {
+            const res = await fetch(`${API}/plans/subscribe`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                body: JSON.stringify({ planId: selectedPlanForPaypal._id })
+                body: JSON.stringify({ planId: selectedPlan._id })
             });
-            const orderData = await res.json();
-            if (!orderData.success || !orderData.id) throw new Error(orderData.message || "Order creation failed");
-            return orderData.id;
-        } catch (err: any) {
-            toast.error("Erreur réseau lors de la création de la commande PayPal.");
-            throw err;
+            const data = await res.json();
+            if (data.success) {
+                toast.success(`Abonnement activé ! 🎉`);
+                updateUserLocal(data.user);
+                setTimeout(() => navigate("/profile"), 1500);
+            } else {
+                toast.error(data.message || "Erreur lors de l'abonnement.");
+            }
+        } catch {
+            toast.error("Erreur serveur.");
+        } finally {
+            setSubmitting(false);
         }
     };
 
-    const onApprove = async (data: any, actions: any) => {
-        try {
-            const token = localStorage.getItem("token");
-            const res = await fetch(`${API}/paypal/capture-order`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                body: JSON.stringify({ orderId: data.orderID, planId: selectedPlanForPaypal?._id })
-            });
-            const captureData = await res.json();
-            if (captureData.success) {
-                toast.success(captureData.message);
-                updateUserLocal(captureData.user);
-                setTimeout(() => navigate("/profile"), 1500);
-            } else {
-                toast.error(captureData.message || "Erreur lors de la capture du paiement.");
-            }
-        } catch (err) {
-            toast.error("Erreur lors du traitement du paiement.");
+    const createOrder = async (_data: any, _actions: any) => {
+        if (!selectedPlan) return "";
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API}/paypal/create-order`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ planId: selectedPlan._id })
+        });
+        const orderData = await res.json();
+        if (!orderData.success || !orderData.id) throw new Error(orderData.message);
+        return orderData.id;
+    };
+
+    const onApprove = async (data: any, _actions: any) => {
+        const token = localStorage.getItem("token");
+        const res = await fetch(`${API}/paypal/capture-order`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ orderId: data.orderID, planId: selectedPlan?._id })
+        });
+        const captureData = await res.json();
+        if (captureData.success) {
+            toast.success(captureData.message);
+            updateUserLocal(captureData.user);
+            setTimeout(() => navigate("/profile"), 1500);
+        } else {
+            toast.error(captureData.message || "Erreur lors du paiement.");
         }
+    };
+
+    const formatDurationLabel = (p: Plan) => {
+        if (p.durationUnit === "week") return `1 week`;
+        if (p.duration === 6) return `6 months`;
+        return `1 month`;
+    };
+
+    const monthlyPrice = (p: Plan) => {
+        if (p.durationUnit === "week") return p.price.toFixed(2);
+        if (p.duration === 6) return (p.price / 6).toFixed(2);
+        return p.price.toFixed(2);
+    };
+
+    const savings = (p: Plan, plans: Plan[]) => {
+        const monthly = plans.find(x => x.duration === 1 && x.durationUnit === "month");
+        if (!monthly || p._id === monthly._id) return null;
+        if (p.durationUnit === "week") return null;
+        const saved = Math.round((1 - (p.price / 6) / monthly.price) * 100);
+        return saved > 0 ? saved : null;
     };
 
     if (loading) {
         return (
-            <div className="flex h-screen items-center justify-center bg-muted/30">
+            <div className="flex h-screen items-center justify-center">
                 <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
             </div>
         );
     }
 
-    const availableTiers = TIER_ORDER.filter(tier => groupedPlans[tier] && groupedPlans[tier].length > 0);
+    const tierPlans = groupedPlans[activeTier] || [];
+    const cfg = TIER_CONFIG[activeTier];
 
     return (
         <PayPalScriptProvider options={{ clientId: PAYPAL_CLIENT_ID, currency: "EUR", intent: "capture" }}>
-            <div className="min-h-screen bg-muted/30 pb-20 pt-16 md:pt-32 cursor-default">
-                <div className="mx-auto max-w-7xl px-4">
-                    <div className="mb-12 flex flex-col items-center text-center">
-                        <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="absolute left-4 top-20 rounded-full md:left-8">
-                            <ArrowLeft className="h-5 w-5" />
-                        </Button>
-                        <h1 className="text-4xl font-black tracking-tight text-foreground md:text-5xl">
-                            Passez à la <span className="text-primary">vitesse supérieure.</span>
-                        </h1>
-                        <p className="text-muted-foreground font-medium mt-3 text-lg max-w-2xl">
-                            Débloquez des fonctionnalités exclusives et trouvez l'amour plus rapidement avec nos formules Premium.
-                        </p>
-                    </div>
+            <div className="min-h-screen bg-gray-50 pb-20 pt-16 md:pt-24">
+                <div className="mx-auto max-w-6xl px-4">
+                    {/* Back button */}
+                    <button onClick={() => navigate(-1)} className="mb-6 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        <ArrowLeft className="h-4 w-4" />
+                        Retour
+                    </button>
 
-                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 items-stretch px-2 pb-10">
-                        {availableTiers.map(tier => {
-                            const tierPlans = groupedPlans[tier];
-                            const currentDuration = selectedDurations[tier] || tierPlans[0].duration;
-                            const activePlan = tierPlans.find(p => p.duration === currentDuration) || tierPlans[0];
-                            
-                            const isCurrent = currentUser.plan === activePlan._id || currentUser.plan?._id === activePlan._id;
-                            const isCurrentTier = currentUser.plan?.tier === tier || (!currentUser.plan?.tier && tier === 'Free');
-                            const isSelected = selectedPlanForPaypal?._id === activePlan._id;
-                            const badge = TIER_BADGES[tier];
-                            const isHighlighted = tier === 'Premium' || tier === 'Prestige';
-                            const monthlyPrice = activePlan.duration > 1 ? (activePlan.price / activePlan.duration).toFixed(2) : activePlan.price.toFixed(2);
-
-                            return (
-                                <div
+                    {/* Tier Tabs */}
+                    <div className="flex justify-center mb-8">
+                        <div className="inline-flex gap-0 rounded-full bg-gray-200 p-1">
+                            {TIERS.filter(t => groupedPlans[t]).map(tier => (
+                                <button
                                     key={tier}
-                                    className={`relative flex flex-col rounded-3xl border bg-card p-6 pb-8 transition-all duration-300 ${isHighlighted ? 'border-primary/20 shadow-xl z-10' : 'border-border shadow-sm hover:shadow-md'} ${TIER_COLORS[tier]?.split(' ')[2] || ''}`}
+                                    onClick={() => setActiveTier(tier)}
+                                    className={`px-6 py-2 rounded-full text-sm font-semibold transition-all ${activeTier === tier ? TIER_CONFIG[tier].tabColor : 'text-gray-600 hover:text-gray-900'}`}
                                 >
-                                    {badge && (
-                                        <div className={`absolute -top-4 left-1/2 -translate-x-1/2 rounded-full px-4 py-1 text-xs font-bold uppercase tracking-widest text-white shadow-md ${tier === 'Prestige' ? 'bg-blue-600' : 'bg-primary'}`}>
-                                            {badge}
-                                        </div>
-                                    )}
-
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${TIER_COLORS[tier]?.split(' ').slice(0,2).join(' ') || 'bg-primary/10 text-primary'}`}>
-                                            {TIER_ICONS[tier]}
-                                        </div>
-                                        <h3 className="text-xl font-bold text-foreground capitalize tracking-tight">{tier}</h3>
-                                    </div>
-
-                                    {/* Pricing Display */}
-                                    <div className="mb-6">
-                                        <div className="flex items-baseline gap-1">
-                                            <span className="text-4xl font-black text-foreground">
-                                                €{monthlyPrice}
-                                            </span>
-                                            <span className="text-sm font-medium text-muted-foreground">/ mois</span>
-                                        </div>
-                                        {activePlan.duration > 1 && (
-                                            <div className="text-xs font-medium text-muted-foreground mt-1">
-                                                Facturé €{activePlan.price.toFixed(2)} tous les {activePlan.duration} {activePlan.durationUnit}s
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Duration Toggles if multiple options exist */}
-                                    {tierPlans.length > 1 && (
-                                        <div className="flex justify-center mb-6 mt-auto">
-                                            <div className="flex rounded-lg bg-muted p-1 border shadow-inner">
-                                                {tierPlans.map(p => (
-                                                    <button
-                                                        key={p._id}
-                                                        onClick={() => setSelectedDurations(prev => ({ ...prev, [tier]: p.duration }))}
-                                                        className={`px-4 py-1.5 text-xs font-bold transition-all rounded-md whitespace-nowrap ${currentDuration === p.duration ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-                                                    >
-                                                        {p.duration} Mois
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <div className="my-6 border-b border-border" />
-
-                                    {/* Features List */}
-                                    <ul className="mb-8 flex-1 space-y-3">
-                                        {activePlan.features.map((feature, i) => (
-                                            <li key={i} className="flex items-start gap-3 text-sm font-medium text-muted-foreground">
-                                                <div className={`mt-0.5 rounded-full p-0.5 ${tier === 'Free' ? 'bg-gray-200' : 'bg-green-500/10'}`}>
-                                                    <Check className={`h-3 w-3 ${tier === 'Free' ? 'text-gray-500' : 'text-green-600'}`} />
-                                                </div>
-                                                {feature}
-                                            </li>
-                                        ))}
-                                    </ul>
-
-                                    {/* Action Buttons */}
-                                    <div className="mt-auto">
-                                        {activePlan.price === 0 ? (
-                                            <Button
-                                                onClick={() => handleFreeSubscribe(activePlan._id)}
-                                                disabled={submitting !== null || isCurrentTier}
-                                                className="w-full rounded-xl py-6 font-bold"
-                                                variant={isCurrentTier ? "outline" : "secondary"}
-                                            >
-                                                {isCurrentTier ? "Votre Forfait" : "Passer à Gratuit"}
-                                            </Button>
-                                        ) : isCurrentTier ? (
-                                            isCurrent ? (
-                                                <Button disabled variant="outline" className="w-full rounded-xl py-6 font-bold border-primary text-primary bg-primary/5">
-                                                    Forfait Actuel
-                                                </Button>
-                                            ) : (
-                                                <Button
-                                                    onClick={() => setSelectedPlanForPaypal(activePlan)}
-                                                    variant="secondary"
-                                                    className="w-full rounded-xl py-6 font-bold"
-                                                >
-                                                    Changer la durée
-                                                </Button>
-                                            )
-                                        ) : (
-                                            <div className="space-y-3">
-                                                {!isSelected ? (
-                                                    <Button
-                                                        onClick={() => setSelectedPlanForPaypal(activePlan)}
-                                                        className={`w-full rounded-xl py-6 font-bold transition-all ${isHighlighted ? 'shadow-lg shadow-primary/20' : ''} ${tier === 'Prestige' ? 'bg-blue-600 hover:bg-blue-700 text-white' : ''}`}
-                                                    >
-                                                        Choisir {tier}
-                                                    </Button>
-                                                ) : (
-                                                    <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 bg-background rounded-xl p-2 shadow-inner border border-primary/20 mt-4">
-                                                        <PayPalButtons
-                                                            style={{ layout: "vertical", shape: "pill", label: "pay" }}
-                                                            createOrder={createOrder}
-                                                            onApprove={onApprove}
-                                                            onCancel={() => setSelectedPlanForPaypal(null)}
-                                                        />
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="w-full mt-2 text-xs text-muted-foreground hover:text-foreground"
-                                                            onClick={() => setSelectedPlanForPaypal(null)}
-                                                        >
-                                                            Annuler
-                                                        </Button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })}
+                                    {tier}
+                                </button>
+                            ))}
+                        </div>
                     </div>
+
+                    {/* Tagline */}
+                    <div className="text-center mb-8">
+                        <p className="text-2xl font-bold text-gray-800 max-w-md mx-auto">{cfg.tagline}</p>
+                        <p className="text-gray-500 mt-2 font-medium">Choose a subscription</p>
+                    </div>
+
+                    <div className="flex flex-col lg:flex-row gap-8 items-start justify-center">
+                        {/* Left: Duration Cards */}
+                        <div className="w-full lg:w-80 flex flex-col gap-3">
+                            {tierPlans.map(plan => {
+                                const isSelected = selectedPlan?._id === plan._id;
+                                const rec = plan.duration === 1 && plan.durationUnit === "month";
+                                const best = plan.duration === 6;
+                                const saved = savings(plan, tierPlans);
+
+                                return (
+                                    <button
+                                        key={plan._id}
+                                        onClick={() => { setSelectedPlan(plan); setShowPaypal(false); }}
+                                        className={`relative w-full text-left rounded-2xl border-2 px-5 py-4 transition-all ${isSelected ? 'border-gray-800 bg-white shadow-md' : 'border-gray-200 bg-white hover:border-gray-400'}`}
+                                    >
+                                        {best && (
+                                            <span className="absolute -top-3 left-4 bg-gray-800 text-white text-xs font-bold px-3 py-0.5 rounded-full uppercase tracking-wide">
+                                                Best Price
+                                            </span>
+                                        )}
+                                        {rec && (
+                                            <span className={`absolute -top-3 left-4 text-white text-xs font-bold px-3 py-0.5 rounded-full uppercase tracking-wide ${cfg.badgeColor}`}>
+                                                Recommended
+                                            </span>
+                                        )}
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-lg font-bold text-gray-900">{formatDurationLabel(plan)}</span>
+                                            <div className="text-right">
+                                                <div className="text-base font-bold text-gray-900">€{monthlyPrice(plan)}/{plan.durationUnit === "week" ? "week" : "month"}*</div>
+                                                {saved && <div className="text-xs font-semibold text-green-600">SAVE {saved}%**</div>}
+                                            </div>
+                                        </div>
+                                        {isSelected && (
+                                            <div className={`absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full flex items-center justify-center ${cfg.badgeColor}`}>
+                                                <Check className="h-3 w-3 text-white" />
+                                            </div>
+                                        )}
+                                    </button>
+                                );
+                            })}
+
+                            {/* Subscribe button */}
+                            {selectedPlan && !showPaypal && (
+                                <Button
+                                    onClick={() => setShowPaypal(true)}
+                                    disabled={submitting}
+                                    className={`w-full mt-2 rounded-full py-6 text-base font-bold ${cfg.buttonClass}`}
+                                >
+                                    Continue
+                                </Button>
+                            )}
+
+                            {showPaypal && selectedPlan && (
+                                <div className="mt-2 rounded-2xl bg-white border p-4 shadow">
+                                    <PayPalButtons
+                                        style={{ layout: "vertical", shape: "pill", label: "pay" }}
+                                        createOrder={createOrder}
+                                        onApprove={onApprove}
+                                        onCancel={() => setShowPaypal(false)}
+                                    />
+                                    <button onClick={() => setShowPaypal(false)} className="w-full mt-2 text-xs text-gray-400 hover:text-gray-600">
+                                        Annuler
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Right: Feature comparison table */}
+                        <div className="w-full lg:max-w-md bg-white rounded-2xl border p-6 shadow-sm">
+                            <table className="w-full">
+                                <thead>
+                                    <tr>
+                                        <th className="text-left text-sm font-medium text-gray-400 pb-4 w-1/2"></th>
+                                        {TIERS.filter(t => groupedPlans[t]).map(t => (
+                                            <th key={t} className="text-center pb-4">
+                                                <div className="flex flex-col items-center gap-1">
+                                                    <div className={`h-8 w-8 rounded-full flex items-center justify-center text-white text-xs ${TIER_CONFIG[t].badgeColor}`}>
+                                                        {TIER_CONFIG[t].icon}
+                                                    </div>
+                                                    <span className={`text-xs font-bold ${activeTier === t ? 'text-gray-900' : 'text-gray-500'}`}>{t}</span>
+                                                </div>
+                                            </th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {ALL_FEATURES.map((feature, i) => (
+                                        <tr key={i} className="border-t border-gray-100">
+                                            <td className={`py-3 text-sm pr-4 ${["Send unlimited messages", "See who viewed your profile", "Unlock advanced search filters", "See when your messages are read"].includes(feature) ? 'text-blue-500 font-medium' : 'text-gray-700'}`}>
+                                                {feature}
+                                            </td>
+                                            {TIERS.filter(t => groupedPlans[t]).map(t => (
+                                                <td key={t} className="text-center py-3">
+                                                    {TIER_FEATURES[t]?.includes(feature) ? (
+                                                        <div className={`inline-flex h-5 w-5 items-center justify-center rounded-full ${activeTier === t ? cfg.badgeColor + ' text-white' : 'bg-gray-100 text-gray-400'}`}>
+                                                            <Check className="h-3 w-3" />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gray-100">
+                                                            <span className="text-gray-300 text-xs">–</span>
+                                                        </div>
+                                                    )}
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {/* Disclaimer */}
+                    <p className="text-center text-xs text-gray-400 mt-8">
+                        *Prix par mois. **Économies par rapport au tarif mensuel. Renouvellement automatique.
+                    </p>
                 </div>
             </div>
         </PayPalScriptProvider>
