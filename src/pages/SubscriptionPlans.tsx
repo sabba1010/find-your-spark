@@ -69,7 +69,8 @@ const TIER_FEATURES: Record<string, string[]> = {
         "Go back to previous profiles",
         "See who liked your profile",
         "Read all your received messages",
-        "Browse ad-free"
+        "Browse ad-free",
+        "Send unlimited messages"
     ],
     Premium: [
         "Explore unlimited profiles",
