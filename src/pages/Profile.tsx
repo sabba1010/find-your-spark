@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { Share2, Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles, Moon, Baby, Ruler, Wine, Scissors, Eye, GraduationCap, UserX, ShieldAlert } from "lucide-react";
+import { Share2, Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles, Moon, Baby, Ruler, Wine, Scissors, Eye, GraduationCap, UserX, ShieldAlert, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -569,6 +569,54 @@ export default function Profile() {
                             </Button>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {/* Gallery Modal */}
+            {showGallery && (
+                <div 
+                    className="fixed inset-0 z-[120] flex items-center justify-center bg-black/95 p-4 animate-in fade-in duration-300"
+                    onClick={() => setShowGallery(false)}
+                >
+                    <button 
+                        className="absolute top-6 right-6 text-white/70 hover:text-white p-3 rounded-full bg-black/40 hover:bg-black/60 transition-colors z-50"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setShowGallery(false);
+                        }}
+                    >
+                        <X className="h-6 w-6" />
+                    </button>
+                    
+                    <img
+                        src={photos[galleryIndex] || displayPic}
+                        alt="Gallery"
+                        className="max-h-[90vh] max-w-full object-contain rounded-lg animate-in zoom-in-95 duration-300 shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    />
+                    
+                    {photos.length > 1 && (
+                        <>
+                            <button 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setGalleryIndex((prev) => (prev > 0 ? prev - 1 : photos.length - 1));
+                                }}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-4 text-white backdrop-blur-md hover:bg-black/60 transition-colors"
+                            >
+                                <ChevronRight className="h-8 w-8 rotate-180" />
+                            </button>
+                            <button 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setGalleryIndex((prev) => (prev < photos.length - 1 ? prev + 1 : 0));
+                                }}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-4 text-white backdrop-blur-md hover:bg-black/60 transition-colors"
+                            >
+                                <ChevronRight className="h-8 w-8" />
+                            </button>
+                        </>
+                    )}
                 </div>
             )}
         </div>
