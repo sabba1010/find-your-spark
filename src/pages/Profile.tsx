@@ -224,7 +224,7 @@ export default function Profile() {
                             className="h-full w-full object-cover transition-all duration-500 cursor-zoom-in"
                             onClick={() => openGallery(activePhoto)}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                         
                         {/* Dots for carousel */}
                         <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-1.5 z-20">
