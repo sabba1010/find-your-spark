@@ -10,6 +10,7 @@ import SuccessStories from "@/components/SuccessStories";
 import Footer from "@/components/Footer";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { getDefaultAvatar } from "@/lib/utils";
 
 import { API } from "@/lib/api";
 
@@ -251,11 +252,11 @@ export default function Home() {
               matches.map((match) => (
                 <div key={match.id} className="group relative h-[400px] overflow-hidden rounded-3xl border border-border bg-card shadow-lg transition-all hover:scale-[1.02]">
                   <img
-                    src={match.photo || "https://images.unsplash.com/photo-1544005313-94ddf0286df2"}
+                    src={match.photo || getDefaultAvatar(match.gender)}
                     alt={match.name}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2";
+                      (e.target as HTMLImageElement).src = getDefaultAvatar(match.gender);
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Users, TrendingUp, DollarSign, PieChart, ArrowUpRight, ArrowDownRight, Clock, Search, Eye, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { getDefaultAvatar } from "@/lib/utils";
 
 import { API } from "@/lib/api";
 
@@ -255,11 +256,13 @@ export default function AdminDashboard() {
                                         <tr key={user.id} className="hover:bg-muted/30 transition-colors">
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-3">
-                                                    <img 
-                                                        src={user.photo || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop"} 
-                                                        alt={user.name} 
-                                                        className="h-10 w-10 rounded-xl object-cover border border-border shadow-sm"
-                                                    />
+                                                    <div className="relative h-10 w-10 overflow-hidden rounded-xl ring-2 ring-primary/20">
+                                                        <img 
+                                                            src={user.photo || getDefaultAvatar(user.gender)} 
+                                                            alt={user.name} 
+                                                            className="h-full w-full object-cover"
+                                                        />
+                                                    </div>
                                                     <div>
                                                         <div className="font-bold text-foreground">{user.name}</div>
                                                         <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Inscrit le {new Date(user.createdAt).toLocaleDateString()}</div>

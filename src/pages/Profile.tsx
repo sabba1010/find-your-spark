@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { Share2, Heart, MapPin, Edit, Settings, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles, Moon, Baby, Ruler, Wine, Scissors, Eye, GraduationCap, UserX, ShieldAlert, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { getDefaultAvatar } from "@/lib/utils";
 
 import { API } from "@/lib/api";
 
@@ -185,8 +186,8 @@ export default function Profile() {
         ? (prefs?.bio || "Passionné par la création de belles interfaces et la recherche de connexions significatives.")
         : publicUser?.bio;
     const displayPic = isOwnProfile
-        ? (prefs?.photo || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop")
-        : publicUser?.photo;
+        ? (prefs?.photo || getDefaultAvatar(prefs?.gender))
+        : (publicUser?.photo || getDefaultAvatar(publicUser?.gender));
     const location = isOwnProfile ? (prefs?.location || "Paris, France") : publicUser?.location;
     const rawPhotos = isOwnProfile ? (prefs?.photos || []) : (publicUser?.photos || []);
     

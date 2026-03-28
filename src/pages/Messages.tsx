@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useSocket } from "../context/SocketContext";
+import { getDefaultAvatar } from "@/lib/utils";
 import { API } from "@/lib/api";
 
 interface Message {
@@ -19,6 +20,7 @@ interface Chat {
   userId: string;
   userName: string;
   userPhoto: string;
+  userGender?: string;
   userLocation: string;
   lastMessage: string;
   lastMessageTime: string;
@@ -164,6 +166,7 @@ export default function Messages() {
   const fallbackData = location.state ? {
     userName: location.state.userName,
     userPhoto: location.state.userPhoto,
+    userGender: location.state.userGender || undefined,
     userLocation: location.state.userLocation,
   } : null;
   const displayChatData = activeChatData || fallbackData;
@@ -199,7 +202,7 @@ export default function Messages() {
                 className={`flex w-full items-center gap-3 p-4 text-left transition-colors hover:bg-muted ${activeChat === chat.userId ? "bg-muted" : ""}`}
               >
                 <div className="relative">
-                  <img src={chat.userPhoto || "https://ui-avatars.com/api/?name=User&background=random"} alt={chat.userName} className="h-12 w-12 rounded-full object-cover" />
+                  <img src={chat.userPhoto || getDefaultAvatar(chat.userGender)} alt={chat.userName} className="h-12 w-12 rounded-full object-cover border border-border/50" />
                   {onlineUsers.includes(chat.userId) && (
                     <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-background"></span>
                   )}
@@ -227,7 +230,7 @@ export default function Messages() {
               {displayChatData ? (
                 <>
                   <div className="relative">
-                    <img src={displayChatData.userPhoto || "https://ui-avatars.com/api/?name=User"} alt={displayChatData.userName || "Utilisateur"} className="h-10 w-10 rounded-full object-cover" />
+                    <img src={displayChatData.userPhoto || getDefaultAvatar(displayChatData.userGender)} alt={displayChatData.userName || "Utilisateur"} className="h-10 w-10 rounded-full object-cover border border-border/50" />
                     {onlineUsers.includes(activeChat as string) && (
                       <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-background"></span>
                     )}

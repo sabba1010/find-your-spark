@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import type { MatchedUser } from "@/pages/Discover";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
+import { getDefaultAvatar } from "@/lib/utils";
 import { API } from "@/lib/api";
 
 export default function ProfileCard({ 
@@ -69,12 +70,12 @@ export default function ProfileCard({
         <div className="relative">
           <div className="h-20 w-20 sm:h-24 sm:w-24 overflow-hidden rounded-full border-2 border-primary/20 bg-muted/50 transition-all duration-300 group-hover:border-primary group-hover:scale-105 group-hover:shadow-lg">
             <img
-              src={user.photo || "https://images.unsplash.com/photo-1544005313-94ddf0286df2"}
+              src={user.photo || getDefaultAvatar(user.gender)}
               alt={user.name}
               className="h-full w-full object-cover"
               loading="lazy"
               onError={(e) => {
-                (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2";
+                (e.target as HTMLImageElement).src = getDefaultAvatar(user.gender);
               }}
             />
           </div>
@@ -103,12 +104,12 @@ export default function ProfileCard({
       )}
       <Link to={`/profile/${user.id}`} className="block aspect-[3/4] overflow-hidden relative">
         <img
-          src={user.photo || "https://images.unsplash.com/photo-1544005313-94ddf0286df2"}
+          src={user.photo || getDefaultAvatar(user.gender)}
           alt={user.name}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
           loading="lazy"
           onError={(e) => {
-            (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2";
+            (e.target as HTMLImageElement).src = getDefaultAvatar(user.gender);
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
