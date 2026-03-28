@@ -66,12 +66,19 @@ export default function AdminDashboard() {
                     const res = await fetch(`${API}/admin/users`, { 
                         headers: { Authorization: `Bearer ${token}` } 
                     });
-                    const data = await res.json();
-                    if (data.success) {
-                        setUsers(data.users);
-                    } else {
-                        console.error("Users API Error:", data);
-                        toast.error(data.message || "Erreur utilisateurs");
+                    
+                    const text = await res.text();
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.success) {
+                            setUsers(data.users);
+                        } else {
+                            console.error("Users API Error:", data);
+                            toast.error(data.message || "Erreur utilisateurs");
+                        }
+                    } catch (parseErr) {
+                        console.error("Backend non déployé - HTML reçu");
+                        toast.error("Veuillez uploader adminController.js et adminRoutes.js sur votre serveur ! (Le code backend n'est pas à jour)", { duration: 10000 });
                     }
                 } catch (err) {
                     console.error("Users Fetch Error:", err);
