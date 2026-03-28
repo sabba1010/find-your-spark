@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Heart, MapPin, Edit, Settings as SettingsIcon, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles, ArrowLeft, Save, Camera, Upload, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { API } from "@/lib/api";
+import { getDefaultAvatar, compressImage } from "@/lib/utils";
 
 export default function Settings() {
     const navigate = useNavigate();
@@ -106,21 +107,20 @@ export default function Settings() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const base64 = reader.result as string;
+            try {
+                const base64 = await compressImage(file);
                 const newPhotos = [...formData.photos, base64];
-                setFormData({ 
-                    ...formData, 
+                setFormData(prev => ({ 
+                    ...prev, 
                     photos: newPhotos,
-                    // If no primary photo, set this one as primary
-                    photo: formData.photo || base64 
-                });
-            };
-            reader.readAsDataURL(file);
+                    photo: prev.photo || base64 
+                }));
+            } catch (err) {
+                toast.error("Erreur de traitement de l'image.");
+            }
         }
     };
 

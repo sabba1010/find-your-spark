@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Heart, ArrowRight, ArrowLeft, Check, Camera, Upload, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { API } from "@/lib/api";
+import { compressImage } from "@/lib/utils";
+
 const steps = ["Genre", "Votre Âge", "À la recherche de", "Tranche d'âge", "Lieu", "Photo de Profil", "À propos de vous", "Détails essentiels", "Trouver des Profils"];
 
 export default function MatchSetup() {
@@ -35,12 +37,15 @@ export default function MatchSetup() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setProfilePic(reader.result as string);
-      reader.readAsDataURL(file);
+      try {
+        const base64 = await compressImage(file);
+        setProfilePic(base64);
+      } catch (err) {
+        toast.error("Erreur de traitement de l'image.");
+      }
     }
   };
 
