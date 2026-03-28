@@ -44,6 +44,13 @@ export default function Settings() {
         const rawUser = localStorage.getItem("user");
         if (rawUser) {
             const user = JSON.parse(rawUser);
+            // Ensure photo is in photos array if it's the only one
+            const currentPhoto = user.photo || null;
+            let currentPhotos = user.photos || [];
+            if (currentPhoto && !currentPhotos.includes(currentPhoto)) {
+                currentPhotos = [currentPhoto, ...currentPhotos];
+            }
+
             setFormData({
                 name: user.name || "",
                 gender: user.gender || "",
@@ -52,8 +59,8 @@ export default function Settings() {
                 location: user.location || "",
                 age: user.age || "",
                 bio: user.bio || "",
-                photo: user.photo || null,
-                photos: user.photos || [],
+                photo: currentPhoto,
+                photos: currentPhotos,
                 hobbies: user.hobbies || "",
                 favoriteActivities: user.favoriteActivities || "",
                 zodiacSign: user.zodiacSign || "",
@@ -118,22 +125,33 @@ export default function Settings() {
     };
 
     const removePhoto = (index: number) => {
+        console.log("Removing photo at index:", index);
+        const photoToRemove = formData.photos[index];
         const newPhotos = formData.photos.filter((_, i) => i !== index);
-        setFormData({ 
-            ...formData, 
+        
+        let newPrimaryPhoto = formData.photo;
+        if (formData.photo === photoToRemove) {
+            newPrimaryPhoto = newPhotos.length > 0 ? newPhotos[0] : null;
+        }
+
+        console.log("New photos array length:", newPhotos.length);
+        console.log("New primary photo:", newPrimaryPhoto ? "present" : "null");
+
+        setFormData(prev => ({ 
+            ...prev, 
             photos: newPhotos,
-            // If we removed the primary photo, update it to the first available in the array or null
-            photo: formData.photo === formData.photos[index] 
-                ? (newPhotos[0] || null) 
-                : formData.photo
-        });
+            photo: newPrimaryPhoto
+        }));
+        toast.info("Photo retirée de la liste. N'oubliez pas d'enregistrer.");
     };
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
+        console.log("Saving profile with data:", { ...formData, photos: formData.photos.length, photo: formData.photo ? "present" : "null" });
         setSaving(true);
         try {
             const token = localStorage.getItem("token");
+            console.log("Using API:", `${API}/users/me`);
             const res = await fetch(`${API}/users/me`, {
                 method: "PATCH",
                 headers: {
@@ -144,6 +162,7 @@ export default function Settings() {
             });
 
             const data = await res.json();
+            console.log("Save Response:", data);
             if (!res.ok) throw new Error(data.message);
 
             // Update local storage so changes persist instantly everywhere
@@ -153,8 +172,9 @@ export default function Settings() {
 
             toast.success("Profil mis à jour avec succès ! 🎉");
             setTimeout(() => navigate("/profile"), 1000);
-        } catch (err: unknown) {
-            toast.error(err instanceof Error ? err.message : "Erreur lors de la sauvegarde.");
+        } catch (err: any) {
+            console.error("Save Error Detail:", err);
+            toast.error(`Erreur: ${err.message || "Impossible d'enregistrer"}`);
         } finally {
             setSaving(false);
         }
