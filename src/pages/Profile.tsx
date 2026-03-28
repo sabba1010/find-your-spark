@@ -188,7 +188,12 @@ export default function Profile() {
         ? (prefs?.photo || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop")
         : publicUser?.photo;
     const location = isOwnProfile ? (prefs?.location || "Paris, France") : publicUser?.location;
-    const photos = isOwnProfile ? (prefs?.photos || [displayPic]) : (publicUser?.photos || [displayPic]);
+    const rawPhotos = isOwnProfile ? (prefs?.photos || []) : (publicUser?.photos || []);
+    
+    // Create a master gallery ensuring displayPic is always included, usually at index 0.
+    const allGalleryPhotos = Array.from(new Set([displayPic, ...rawPhotos].filter(Boolean)));
+    // For the cover banner specifically, we can use the raw uploaded photos or the master list.
+    const coverPhotos = rawPhotos.length > 0 ? rawPhotos : [displayPic];
 
     const [activePhoto, setActivePhoto] = useState(0);
 
@@ -216,19 +221,22 @@ export default function Profile() {
         <div className="min-h-screen bg-muted/30 pb-20 md:pt-16">
             {/* Header / Cover / Photo Carousel */}
             <div className="relative h-64 w-full bg-muted md:h-96">
-                {photos.length > 0 ? (
+                {coverPhotos.length > 0 ? (
                     <div className="h-full w-full relative overflow-hidden">
                         <img
-                            src={photos[activePhoto]}
+                            src={coverPhotos[activePhoto]}
                             alt={`Photo ${activePhoto + 1}`}
                             className="h-full w-full object-cover transition-all duration-500 cursor-zoom-in"
-                            onClick={() => openGallery(activePhoto)}
+                            onClick={() => {
+                                const picIndex = allGalleryPhotos.indexOf(coverPhotos[activePhoto]);
+                                openGallery(picIndex >= 0 ? picIndex : 0);
+                            }}
                         />
                         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                         
                         {/* Dots for carousel */}
                         <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-1.5 z-20">
-                            {photos.map((_, i) => (
+                            {coverPhotos.map((_, i) => (
                                 <button
                                     key={i}
                                     onClick={() => setActivePhoto(i)}
@@ -238,16 +246,16 @@ export default function Profile() {
                         </div>
 
                         {/* Arrows for carousel */}
-                        {photos.length > 1 && (
+                        {coverPhotos.length > 1 && (
                             <>
                                 <button 
-                                    onClick={() => setActivePhoto((prev) => (prev > 0 ? prev - 1 : photos.length - 1))}
+                                    onClick={() => setActivePhoto((prev) => (prev > 0 ? prev - 1 : coverPhotos.length - 1))}
                                     className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/20 p-2 text-white backdrop-blur-md hover:bg-black/40 transition-colors"
                                 >
                                     <ChevronRight className="h-6 w-6 rotate-180" />
                                 </button>
                                 <button 
-                                    onClick={() => setActivePhoto((prev) => (prev < photos.length - 1 ? prev + 1 : 0))}
+                                    onClick={() => setActivePhoto((prev) => (prev < coverPhotos.length - 1 ? prev + 1 : 0))}
                                     className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/20 p-2 text-white backdrop-blur-md hover:bg-black/40 transition-colors"
                                 >
                                     <ChevronRight className="h-6 w-6" />
@@ -270,7 +278,10 @@ export default function Profile() {
                                     src={displayPic}
                                     alt="Profile"
                                     className="h-32 w-32 rounded-3xl border-4 border-card object-cover shadow-lg md:h-40 md:w-40 ring-1 ring-black/5 cursor-pointer hover:opacity-90 transition-opacity"
-                                    onClick={() => openGallery(0)}
+                                    onClick={() => {
+                                        const picIndex = allGalleryPhotos.indexOf(displayPic);
+                                        openGallery(picIndex >= 0 ? picIndex : 0);
+                                    }}
                                 />
                                 <div className="absolute -bottom-2 -right-2 rounded-full bg-green-500 p-1.5 border-4 border-card">
                                     <div className="h-3 w-3 rounded-full bg-white animate-pulse"></div>
@@ -589,18 +600,18 @@ export default function Profile() {
                     </button>
                     
                     <img
-                        src={photos[galleryIndex] || displayPic}
+                        src={allGalleryPhotos[galleryIndex] || displayPic}
                         alt="Gallery"
                         className="max-h-[90vh] max-w-full object-contain rounded-lg animate-in zoom-in-95 duration-300 shadow-2xl"
                         onClick={(e) => e.stopPropagation()}
                     />
                     
-                    {photos.length > 1 && (
+                    {allGalleryPhotos.length > 1 && (
                         <>
                             <button 
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    setGalleryIndex((prev) => (prev > 0 ? prev - 1 : photos.length - 1));
+                                    setGalleryIndex((prev) => (prev > 0 ? prev - 1 : allGalleryPhotos.length - 1));
                                 }}
                                 className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-4 text-white backdrop-blur-md hover:bg-black/60 transition-colors"
                             >
@@ -609,7 +620,7 @@ export default function Profile() {
                             <button 
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    setGalleryIndex((prev) => (prev < photos.length - 1 ? prev + 1 : 0));
+                                    setGalleryIndex((prev) => (prev < allGalleryPhotos.length - 1 ? prev + 1 : 0));
                                 }}
                                 className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-4 text-white backdrop-blur-md hover:bg-black/60 transition-colors"
                             >
