@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, MapPin, Edit, Settings as SettingsIcon, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles, ArrowLeft, Save, Camera, Upload } from "lucide-react";
+import { Heart, MapPin, Edit, Settings as SettingsIcon, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles, ArrowLeft, Save, Camera, Upload, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { API } from "@/lib/api";
 
@@ -216,9 +216,10 @@ export default function Settings() {
                                     <button
                                         type="button"
                                         onClick={() => removePhoto(index)}
-                                        className="absolute top-1 right-1 rounded-full bg-rose-500 p-1.5 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="absolute top-1 right-1 rounded-full bg-rose-500 p-2 text-white shadow-lg z-10"
+                                        title="Delete"
                                     >
-                                        <ArrowLeft className="h-3 w-3 rotate-45" /> {/* Use X icon if available, or just ArrowLeft rotated */}
+                                        <Trash2 className="h-4 w-4" />
                                     </button>
                                     {formData.photo === photo && (
                                         <div className="absolute bottom-1 left-1 bg-primary px-1.5 py-0.5 rounded text-[10px] text-white font-bold">

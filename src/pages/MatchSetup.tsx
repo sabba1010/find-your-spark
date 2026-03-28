@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Heart, ArrowRight, ArrowLeft, Check, Camera, Upload } from "lucide-react";
+import { Heart, ArrowRight, ArrowLeft, Check, Camera, Upload, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { API } from "@/lib/api";
 const steps = ["Genre", "Votre Âge", "À la recherche de", "Tranche d'âge", "Lieu", "Photo de Profil", "À propos de vous", "Détails essentiels", "Trouver des Profils"];
@@ -204,7 +204,19 @@ export default function MatchSetup() {
               <h2 className="mb-6 text-2xl font-bold text-card-foreground">Votre Photo</h2>
               <div className="relative mx-auto mb-6 h-40 w-40 overflow-hidden rounded-full border-4 border-dashed border-muted-foreground/30 flex items-center justify-center bg-muted/50 transition-colors hover:border-primary/50">
                 {profilePic ? (
-                  <img src={profilePic} alt="Aperçu" className="h-full w-full object-cover" />
+                  <div className="relative h-full w-full">
+                    <img src={profilePic} alt="Aperçu" className="h-full w-full object-cover" />
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setProfilePic(null);
+                      }}
+                      className="absolute top-2 right-2 rounded-full bg-rose-500 p-2 text-white shadow-lg z-10"
+                      title="Delete"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 ) : (
                   <Camera className="h-12 w-12 text-muted-foreground/50" />
                 )}
