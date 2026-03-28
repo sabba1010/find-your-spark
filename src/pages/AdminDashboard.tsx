@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Users, TrendingUp, DollarSign, PieChart, ArrowUpRight, ArrowDownRight, Clock } from "lucide-react";
+import { Users, TrendingUp, DollarSign, PieChart, ArrowUpRight, ArrowDownRight, Clock, Search, Eye, MapPin } from "lucide-react";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 import { API } from "@/lib/api";
 
@@ -12,32 +13,84 @@ interface Stats {
     recentSubscribers: { id: string; name: string; email: string; planName: string; price: number; date: string }[];
 }
 
+interface UserRow {
+    id: string;
+    name: string;
+    email: string;
+    gender: string;
+    age: number;
+    location: string;
+    photo: string;
+    planName: string;
+    subscriptionStatus: string;
+    createdAt: string;
+}
+
 export default function AdminDashboard() {
     const [stats, setStats] = useState<Stats | null>(null);
+    const [users, setUsers] = useState<UserRow[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                const res = await fetch(`${API}/admin/stats`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                const data = await res.json();
-                if (data.success) {
-                    setStats(data.stats);
-                } else {
-                    toast.error(data.message);
-                }
-            } catch (err) {
-                toast.error("Erreur lors du chargement des statistiques.");
-            } finally {
+        const fetchData = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                toast.error("Session expirée. Veuillez vous reconnecter.");
                 setLoading(false);
+                return;
             }
+
+            // Stats Fetch
+            const fetchStats = async () => {
+                try {
+                    const res = await fetch(`${API}/admin/stats`, { 
+                        headers: { Authorization: `Bearer ${token}` } 
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        setStats(data.stats);
+                    } else {
+                        console.error("Stats API Error:", data);
+                        toast.error(data.message || "Erreur statistiques");
+                    }
+                } catch (err) {
+                    console.error("Stats Fetch Error:", err);
+                    toast.error("Impossible de charger les statistiques.");
+                }
+            };
+
+            // Users Fetch
+            const fetchUsers = async () => {
+                try {
+                    const res = await fetch(`${API}/admin/users`, { 
+                        headers: { Authorization: `Bearer ${token}` } 
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        setUsers(data.users);
+                    } else {
+                        console.error("Users API Error:", data);
+                        toast.error(data.message || "Erreur utilisateurs");
+                    }
+                } catch (err) {
+                    console.error("Users Fetch Error:", err);
+                    toast.error("Impossible de charger la liste des utilisateurs.");
+                }
+            };
+
+            await Promise.all([fetchStats(), fetchUsers()]);
+            setLoading(false);
         };
 
-        fetchStats();
+        fetchData();
     }, []);
+
+    const filteredUsers = users.filter(u => 
+        u.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        u.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        u.location?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     if (loading) {
         return (
@@ -158,6 +211,93 @@ export default function AdminDashboard() {
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* All Users Section */}
+                <div className="mt-12 space-y-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <h2 className="text-2xl font-black text-foreground">Tous les Utilisateurs<span className="text-primary font-black">.</span></h2>
+                        <div className="relative w-full md:w-96">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <input 
+                                type="text"
+                                placeholder="Rechercher par nom, email ou lieu..."
+                                className="w-full h-12 pl-12 pr-4 rounded-2xl bg-card border border-border outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-sm text-foreground"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-sm">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left text-sm">
+                                <thead className="bg-muted/50 text-muted-foreground uppercase text-[10px] font-black tracking-widest">
+                                    <tr>
+                                        <th className="px-6 py-4">Utilisateur</th>
+                                        <th className="px-6 py-4">Infos/Âge</th>
+                                        <th className="px-6 py-4">Localisation</th>
+                                        <th className="px-6 py-4">Plan / Statut</th>
+                                        <th className="px-6 py-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-border">
+                                    {filteredUsers.map((user) => (
+                                        <tr key={user.id} className="hover:bg-muted/30 transition-colors">
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-3">
+                                                    <img 
+                                                        src={user.photo || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop"} 
+                                                        alt={user.name} 
+                                                        className="h-10 w-10 rounded-xl object-cover border border-border shadow-sm"
+                                                    />
+                                                    <div>
+                                                        <div className="font-bold text-foreground">{user.name}</div>
+                                                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">Inscrit le {new Date(user.createdAt).toLocaleDateString()}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="text-foreground font-medium">{user.email}</div>
+                                                <div className="text-xs text-muted-foreground capitalize">{user.gender === 'man' ? 'Homme' : 'Femme'}, {user.age} ans</div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-1.5 text-muted-foreground">
+                                                    <MapPin className="h-3.5 w-3.5" />
+                                                    <span className="font-medium">{user.location || "Non spécifié"}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="space-y-1">
+                                                    <span className="px-2 py-0.5 rounded-lg bg-primary/10 text-primary font-bold text-[10px] uppercase tracking-tight block w-fit">
+                                                        {user.planName}
+                                                    </span>
+                                                    <span className={`text-[10px] font-bold uppercase tracking-widest ${user.subscriptionStatus === 'active' ? 'text-green-500' : 'text-muted-foreground'}`}>
+                                                        {user.subscriptionStatus}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <Link 
+                                                    to={`/profile/${user.id}`}
+                                                    className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-muted text-foreground hover:bg-primary hover:text-white transition-all font-bold text-xs"
+                                                >
+                                                    <Eye className="h-3.5 w-3.5" /> Voir Profile
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {filteredUsers.length === 0 && (
+                                        <tr>
+                                            <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground">
+                                                Aucun utilisateur trouvé.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
