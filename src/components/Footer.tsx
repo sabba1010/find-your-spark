@@ -66,7 +66,7 @@ export default function Footer() {
                 </div>
 
                 <div className="mt-8 border-t border-border pt-6 text-center text-sm text-muted-foreground">
-                    <p>© {currentYear} Find Your Spark. Tous droits réservés.</p>
+                    <p>© {currentYear} Amour Et Sincerité. Tous droits réservés.</p>
                 </div>
             </div>
         </footer>
