@@ -123,7 +123,7 @@ export default function MatchSetup() {
   );
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 pb-20 md:pt-16">
+    <div className="flex min-h-screen items-center justify-center px-4 pb-20 pt-20 md:pt-16">
       <div className="w-full max-w-lg relative">
         {saving && (
           <div className="absolute inset-0 z-50 flex flex-col items-center justify-center rounded-2xl bg-background/80 backdrop-blur-sm">

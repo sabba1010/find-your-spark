@@ -179,7 +179,7 @@ export default function Messages() {
   };
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-[var(--navbar-height)])] max-w-5xl pb-16 pt-[70px] md:pt-[80px]">
+    <div className="mx-auto flex h-[calc(100vh-var(--navbar-height))] max-w-5xl pb-16 pt-20 md:pt-24">
       {/* Chat list Sidebar */}
       <div className={`w-full border-r border-border md:w-80 flex flex-col ${activeChat ? "hidden md:flex" : "flex"}`}>
         <div className="border-b border-border p-4">

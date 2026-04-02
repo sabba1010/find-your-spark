@@ -119,7 +119,7 @@ export default function AdminDashboard() {
     ];
 
     return (
-        <div className="min-h-screen bg-muted/30 pb-20 pt-8 md:pt-24 px-4">
+        <div className="min-h-screen bg-muted/30 pb-20 pt-20 md:pt-24 px-4">
             <div className="mx-auto max-w-7xl">
                 <div className="mb-8">
                     <h1 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">

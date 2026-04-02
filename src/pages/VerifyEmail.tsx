@@ -37,7 +37,7 @@ export default function VerifyEmail() {
   }, [token]);
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center px-4">
+    <div className="flex min-h-[80vh] items-center justify-center px-4 pt-20">
       <div className="w-full max-w-md rounded-3xl bg-card p-8 text-center shadow-xl border border-border">
         {status === "loading" && (
           <div className="flex flex-col items-center gap-4">
