@@ -219,7 +219,7 @@ export default function Profile() {
     }
 
     return (
-        <div className="min-h-screen bg-muted/30 pb-20 md:pt-16">
+        <div className="min-h-screen bg-muted/30 pt-14 pb-20 md:pt-16">
             {/* Header / Cover / Photo Carousel */}
             <div className="relative h-64 w-full bg-muted md:h-96">
                 {coverPhotos.length > 0 ? (
@@ -270,57 +270,58 @@ export default function Profile() {
             </div>
 
             {/* Profile Info Card */}
-            <div className="mx-auto -mt-20 max-w-4xl px-4 relative z-10">
-                <div className="rounded-3xl border border-border bg-card p-6 shadow-xl md:p-8">
+            <div className="mx-auto -mt-16 max-w-4xl px-4 relative z-10">
+                <div className="rounded-3xl border border-border bg-card p-5 shadow-xl md:p-8">
                     <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-                        <div className="flex flex-col md:flex-row items-center md:items-end gap-6 text-center md:text-left">
+                        <div className="flex flex-col md:flex-row items-center md:items-end gap-5 text-center md:text-left">
                             <div className="relative">
                                 <img
                                     src={displayPic}
                                     alt="Profile"
-                                    className="h-32 w-32 rounded-3xl border-4 border-card object-cover shadow-lg md:h-40 md:w-40 ring-1 ring-black/5 cursor-pointer hover:opacity-90 transition-opacity"
+                                    className="h-28 w-28 rounded-3xl border-4 border-card object-cover shadow-lg md:h-40 md:w-40 ring-1 ring-black/5 cursor-pointer hover:opacity-90 transition-opacity"
                                     onClick={() => {
                                         const picIndex = allGalleryPhotos.indexOf(displayPic);
                                         openGallery(picIndex >= 0 ? picIndex : 0);
                                     }}
                                 />
-                                <div className="absolute -bottom-2 -right-2 rounded-full bg-green-500 p-1.5 border-4 border-card">
+                                <div className="absolute -bottom-1 -right-1 rounded-full bg-green-500 p-1.5 border-4 border-card">
                                     <div className="h-3 w-3 rounded-full bg-white animate-pulse"></div>
                                 </div>
                             </div>
-                            <div className="pb-2">
-                                <h1 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
+                            <div className="pb-1">
+                                <h1 className="text-2xl font-black tracking-tight text-foreground md:text-4xl">
                                     {userName}<span className="text-rose-500">.</span>
                                 </h1>
-                                <p className="flex items-center justify-center md:justify-start gap-1 text-muted-foreground font-medium mt-1">
+                                <p className="flex items-center justify-center md:justify-start gap-1 text-muted-foreground font-medium mt-1 text-sm md:text-base">
                                     <MapPin className="h-4 w-4" />
                                     {location}
                                 </p>
                             </div>
                         </div>
-                        <div className="flex gap-3 justify-center">
+                        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                             {isOwnProfile ? (
                                 <>
-                                    <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" onClick={handleShare}>
+                                    <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold w-full sm:w-auto order-2 sm:order-1" onClick={handleShare}>
                                         <Share2 className="mr-2 h-4 w-4" /> Partager
                                     </Button>
-                                    <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" asChild>
+                                    <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold w-full sm:w-auto order-3 sm:order-2" asChild>
                                         <Link to="/settings">
-                                            <Edit className="mr-2 h-4 w-4" /> Modifier le Profil
+                                            <Edit className="mr-2 h-4 w-4" /> Modifier
                                         </Link>
                                     </Button>
-                                    <Button size="lg" className="rounded-xl font-bold shadow-lg shadow-primary/20" asChild>
+                                    <Button size="lg" className="rounded-xl font-bold shadow-lg shadow-primary/20 w-full sm:w-auto order-1 sm:order-3" asChild>
                                         <Link to="/settings">
-                                            <Settings className="h-5 w-5" />
+                                            <Settings className="mr-2 h-5 w-5 sm:mr-0" />
+                                            <span className="sm:hidden">Paramètres</span>
                                         </Link>
                                     </Button>
                                 </>
                             ) : (
                                 <>
-                                    <Button size="lg" className="rounded-xl font-bold bg-primary px-8" onClick={handleLike}>
+                                    <Button size="lg" className="rounded-xl font-bold bg-primary w-full sm:w-auto" onClick={handleLike}>
                                         <Heart className="mr-2 h-5 w-5 fill-current" /> J'aime
                                     </Button>
-                                    <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold" onClick={() => navigate(`/messages?user=${id}`, {
+                                    <Button variant="outline" size="lg" className="rounded-xl border-2 font-bold w-full sm:w-auto" onClick={() => navigate(`/messages?user=${id}`, {
                                         state: {
                                             userName,
                                             userPhoto: displayPic,
@@ -329,11 +330,11 @@ export default function Profile() {
                                     })}>
                                         <MessageCircle className="mr-2 h-5 w-5" /> Message
                                     </Button>
-                                    <div className="flex gap-2">
-                                        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-rose-500 rounded-xl" onClick={handleBlock} title="Bloquer">
+                                    <div className="flex gap-2 w-full sm:w-auto justify-center">
+                                        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-rose-500 rounded-xl h-12 w-12 border border-border sm:border-0" onClick={handleBlock} title="Bloquer">
                                             <UserX className="h-5 w-5" />
                                         </Button>
-                                        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-amber-500 rounded-xl" onClick={handleReport} title="Signaler">
+                                        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-amber-500 rounded-xl h-12 w-12 border border-border sm:border-0" onClick={handleReport} title="Signaler">
                                             <ShieldAlert className="h-5 w-5" />
                                         </Button>
                                     </div>
@@ -342,27 +343,27 @@ export default function Profile() {
                         </div>
                     </div>
 
-                    <div className="mt-10 grid gap-10 lg:grid-cols-3">
+                    <div className="mt-8 grid gap-8 lg:grid-cols-3">
                         {/* Main Content */}
                         <div className="lg:col-span-2 space-y-8">
                             <div>
-                                <h2 className="text-xl font-bold text-foreground mb-4">À propos de {isOwnProfile ? 'moi' : userName}</h2>
-                                <p className="text-lg text-muted-foreground leading-relaxed">
+                                <h2 className="text-lg font-bold text-foreground mb-3">À propos de {isOwnProfile ? 'moi' : userName}</h2>
+                                <p className="text-base text-muted-foreground leading-relaxed">
                                     {userBio}
                                 </p>
                             </div>
 
                             {!isOwnProfile && (
                                 <div>
-                                    <h2 className="text-xl font-bold text-foreground mb-4">Infos Rapides</h2>
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <h2 className="text-lg font-bold text-foreground mb-3">Infos Rapides</h2>
+                                    <div className="grid grid-cols-1 xs:grid-cols-2 gap-3">
                                         <div className="rounded-2xl bg-muted/50 p-4 border border-border/50">
-                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Âge</p>
-                                            <p className="text-lg font-bold text-foreground">{publicUser?.age} ans</p>
+                                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Âge</p>
+                                            <p className="text-base font-bold text-foreground">{publicUser?.age} ans</p>
                                         </div>
                                         <div className="rounded-2xl bg-muted/50 p-4 border border-border/50">
-                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Genre</p>
-                                            <p className="text-lg font-bold text-foreground capitalize">{publicUser?.gender === 'man' ? 'Homme' : 'Femme'}</p>
+                                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Genre</p>
+                                            <p className="text-base font-bold text-foreground capitalize">{publicUser?.gender === 'man' ? 'Homme' : 'Femme'}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -370,19 +371,19 @@ export default function Profile() {
 
                             {isOwnProfile && (
                                 <div className="mb-8">
-                                    <h2 className="text-xl font-bold text-foreground mb-4">Infos Rapides</h2>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    <h2 className="text-lg font-bold text-foreground mb-3">Infos Rapides</h2>
+                                    <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3">
                                         <div className="rounded-2xl bg-muted/50 p-4 border border-border/50">
-                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Âge</p>
-                                            <p className="text-lg font-bold text-foreground">{prefs?.age || 25} ans</p>
+                                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Âge</p>
+                                            <p className="text-base font-bold text-foreground">{prefs?.age || 25} ans</p>
                                         </div>
                                         <div className="rounded-2xl bg-muted/50 p-4 border border-border/50">
-                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Genre</p>
-                                            <p className="text-lg font-bold text-foreground capitalize">{prefs?.gender === 'man' ? 'Homme' : 'Femme'}</p>
+                                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Genre</p>
+                                            <p className="text-base font-bold text-foreground capitalize">{prefs?.gender === 'man' ? 'Homme' : 'Femme'}</p>
                                         </div>
-                                        <div className="rounded-2xl bg-muted/50 p-4 border border-border/50">
-                                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Forfait</p>
-                                            <p className="text-lg font-bold text-foreground">{getPlanName()}</p>
+                                        <div className="rounded-2xl bg-muted/50 p-4 border border-border/50 xs:col-span-2 sm:col-span-1 text-center sm:text-left">
+                                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Forfait</p>
+                                            <p className="text-base font-bold text-foreground">{getPlanName()}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -390,16 +391,16 @@ export default function Profile() {
 
                             {isOwnProfile && (
                                 <div>
-                                    <h2 className="text-xl font-bold text-foreground mb-4">Mes Préférences</h2>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <h2 className="text-lg font-bold text-foreground mb-3">Mes Préférences</h2>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         {[
                                             { label: "Je suis", value: (prefs?.gender === 'man' ? 'Homme' : (prefs?.gender === 'woman' ? 'Femme' : 'Non spécifié')) },
                                             { label: "Recherche", value: (prefs?.lookingFor === 'man' ? 'Homme' : (prefs?.lookingFor === 'woman' ? 'Femme' : 'Non spécifié')) },
                                             { label: "Tranche d'âge", value: prefs?.ageRange || "Non spécifié" },
                                             { label: "Lieu", value: prefs?.location || "Non spécifié" },
                                         ].map((attr, i) => (
-                                            <div key={i} className="flex items-center justify-between rounded-2xl bg-muted/50 p-4 border border-border/50">
-                                                <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{attr.label}</span>
+                                            <div key={i} className="flex items-center justify-between rounded-2xl bg-muted/50 p-4 border border-border/50 text-sm">
+                                                <span className="font-medium text-muted-foreground uppercase tracking-wider text-[10px]">{attr.label}</span>
                                                 <span className="font-bold text-foreground capitalize">{attr.value}</span>
                                             </div>
                                         ))}
@@ -407,31 +408,31 @@ export default function Profile() {
                                 </div>
                             )}
 
-                            <div className="rounded-2xl bg-primary/5 border border-primary/10 p-6">
+                            <div className="rounded-2xl bg-primary/5 border border-primary/10 p-5">
                                 <div className="flex items-start gap-4">
-                                    <div className="rounded-full bg-primary/20 p-3">
-                                        <Shield className="h-6 w-6 text-primary" />
+                                    <div className="rounded-full bg-primary/20 p-2.5 mt-0.5">
+                                        <Shield className="h-5 w-5 text-primary" />
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-foreground text-lg mb-1">Restez en Sécurité</h3>
-                                        <p className="text-muted-foreground">Suivez toujours nos conseils de communauté et donnez la priorité à votre sécurité lors de rencontres avec de nouvelles personnes.</p>
+                                        <h3 className="font-bold text-foreground text-base mb-1">Restez en Sécurité</h3>
+                                        <p className="text-muted-foreground text-sm leading-relaxed">Suivez nos conseils et donnez la priorité à votre sécurité avec de nouvelles personnes.</p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Detailed Info Grid */}
                             <div>
-                                <h2 className="text-xl font-bold text-foreground mb-6">Détails Personnels</h2>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <h2 className="text-lg font-bold text-foreground mb-5">Détails Personnels</h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {[
-                                        { label: "Loisirs", value: (isOwnProfile ? prefs?.hobbies : publicUser?.hobbies), icon: Heart, placeholder: "Ajouter vos loisirs" },
-                                        { label: "Activités", value: (isOwnProfile ? prefs?.favoriteActivities : publicUser?.favoriteActivities), icon: Activity, placeholder: "Ajouter des activités" },
-                                        { label: "Zodiaque", value: (isOwnProfile ? prefs?.zodiacSign : publicUser?.zodiacSign), icon: Moon, placeholder: "Signe astrologique" },
-                                        { label: "Religion", value: (isOwnProfile ? prefs?.religion : publicUser?.religion), icon: Sparkles, placeholder: "Ajouter votre religion" },
-                                        { label: "Enfants", value: (isOwnProfile ? (prefs?.children === 'none' ? 'Aucun' : (prefs?.children === 'want' ? 'En veut' : (prefs?.children === 'have' ? 'En a' : (prefs?.children === 'dont_want' ? "N'en veut pas" : prefs?.children)))) : (publicUser?.children === 'none' ? 'Aucun' : (publicUser?.children === 'want' ? 'En veut' : (publicUser?.children === 'have' ? 'En a' : (publicUser?.children === 'dont_want' ? "N'en veut pas" : publicUser?.children))))), icon: Baby, placeholder: "Préférence enfants" },
-                                        { label: "Taille", value: (isOwnProfile ? (prefs?.height ? `${prefs.height} cm` : null) : (publicUser?.height ? `${publicUser.height} cm` : null)), icon: Ruler, placeholder: "Ajouter votre taille" },
-                                        { label: "Yeux", value: (isOwnProfile ? prefs?.eyeColor : publicUser?.eyeColor), icon: Eye, placeholder: "Couleur des yeux" },
-                                        { label: "Cheveux", value: (isOwnProfile ? prefs?.hairColor : publicUser?.hairColor), icon: Scissors, placeholder: "Couleur des cheveux" },
+                                        { label: "Loisirs", value: (isOwnProfile ? prefs?.hobbies : publicUser?.hobbies), icon: Heart, placeholder: "Ajouter" },
+                                        { label: "Activités", value: (isOwnProfile ? prefs?.favoriteActivities : publicUser?.favoriteActivities), icon: Activity, placeholder: "Ajouter" },
+                                        { label: "Zodiaque", value: (isOwnProfile ? prefs?.zodiacSign : publicUser?.zodiacSign), icon: Moon, placeholder: "Signe" },
+                                        { label: "Religion", value: (isOwnProfile ? prefs?.religion : publicUser?.religion), icon: Sparkles, placeholder: "Ajouter" },
+                                        { label: "Enfants", value: (isOwnProfile ? (prefs?.children === 'none' ? 'Aucun' : (prefs?.children === 'want' ? 'En veut' : (prefs?.children === 'have' ? 'En a' : (prefs?.children === 'dont_want' ? "N'en veut pas" : prefs?.children)))) : (publicUser?.children === 'none' ? 'Aucun' : (publicUser?.children === 'want' ? 'En veut' : (publicUser?.children === 'have' ? 'En a' : (publicUser?.children === 'dont_want' ? "N'en veut pas" : publicUser?.children))))), icon: Baby, placeholder: "Préférence" },
+                                        { label: "Taille", value: (isOwnProfile ? (prefs?.height ? `${prefs.height} cm` : null) : (publicUser?.height ? `${publicUser.height} cm` : null)), icon: Ruler, placeholder: "Ajouter" },
+                                        { label: "Yeux", value: (isOwnProfile ? prefs?.eyeColor : publicUser?.eyeColor), icon: Eye, placeholder: "Couleur" },
+                                        { label: "Cheveux", value: (isOwnProfile ? prefs?.hairColor : publicUser?.hairColor), icon: Scissors, placeholder: "Couleur" },
                                         { label: "Fumeur", value: (isOwnProfile ? (prefs?.smoke === 'yes' ? 'Oui' : (prefs?.smoke === 'no' ? 'Non' : (prefs?.smoke === 'occasionally' ? 'Parfois' : null))) : (publicUser?.smoke === 'yes' ? 'Oui' : (publicUser?.smoke === 'no' ? 'Non' : (publicUser?.smoke === 'occasionally' ? 'Parfois' : null)))), icon: Sparkles, placeholder: "Tabac" },
                                         { label: "Alcool", value: (isOwnProfile ? (prefs?.alcohol === 'never' ? 'Jamais' : (prefs?.alcohol === 'occasionally' ? 'Occasionnellement' : (prefs?.alcohol === 'regularly' ? 'Régulièrement' : null))) : (publicUser?.alcohol === 'never' ? 'Jamais' : (publicUser?.alcohol === 'occasionally' ? 'Occasionnellement' : (publicUser?.alcohol === 'regularly' ? 'Régulièrement' : null)))), icon: Wine, placeholder: "Alcool" },
                                     ].filter(item => isOwnProfile || item.value).map((item, i) => (
@@ -442,9 +443,9 @@ export default function Profile() {
                                             <div className={`rounded-full p-2 ${isOwnProfile && !item.value ? 'bg-primary/20 text-primary' : 'bg-primary/10 text-primary'}`}>
                                                 <item.icon className="h-4 w-4" />
                                             </div>
-                                            <div>
+                                            <div className="min-w-0 flex-1">
                                                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{item.label}</p>
-                                                <p className={`font-bold text-sm ${!item.value ? 'text-primary/60 italic font-medium' : 'text-foreground'}`}>
+                                                <p className={`font-bold text-sm truncate ${!item.value ? 'text-primary/60 italic font-medium' : 'text-foreground'}`}>
                                                     {item.value || item.placeholder}
                                                 </p>
                                             </div>
@@ -461,12 +462,12 @@ export default function Profile() {
                         <div className="space-y-6">
                             {isOwnProfile ? (
                                 <div className="rounded-2xl border border-border bg-card p-6">
-                                    <h3 className="font-bold text-foreground mb-4">Menu</h3>
-                                    <nav className="space-y-2">
+                                    <h3 className="font-bold text-foreground mb-4">Actions</h3>
+                                    <nav className="space-y-1">
                                         {[
-                                            { label: "Paramètres du Compte", icon: Settings, path: "/settings" },
-                                            { label: "Conditions d'Utilisation", icon: Shield, path: "/terms" },
-                                            { label: "Se Déconnecter", icon: LogOut, danger: true },
+                                            { label: "Paramètres", icon: Settings, path: "/settings" },
+                                            { label: "Conditions", icon: Shield, path: "/terms" },
+                                            { label: "Déconnexion", icon: LogOut, danger: true },
                                         ].map((item, i) => (
                                             <button
                                                 key={i}
@@ -485,7 +486,7 @@ export default function Profile() {
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <item.icon className="h-5 w-5" />
-                                                    <span className="font-medium">{item.label}</span>
+                                                    <span className="font-medium text-sm">{item.label}</span>
                                                 </div>
                                                 <ChevronRight className="h-4 w-4 opacity-30" />
                                             </button>
@@ -503,7 +504,7 @@ export default function Profile() {
                                             { en: "Fitness", fr: "Fitness" },
                                             { en: "Art", fr: "Art" }
                                         ].map((interest, i) => (
-                                            <span key={i} className="px-3 py-1 rounded-full bg-muted text-sm font-medium text-muted-foreground">
+                                            <span key={i} className="px-3 py-1 rounded-full bg-muted text-xs font-medium text-muted-foreground">
                                                 #{interest.fr}
                                             </span>
                                         ))}
@@ -512,20 +513,20 @@ export default function Profile() {
                             )}
 
                             <div className="rounded-2xl bg-gradient-to-br from-primary to-rose-600 p-6 text-white shadow-lg shadow-primary/20">
-                                <Heart className="h-10 w-10 fill-white mb-4" />
-                                <h3 className="text-xl font-bold mb-2">
-                                    {getPlanName() !== "Gratuit" ? getPlanName() : "Passer au Premium"}
+                                <Heart className="h-8 w-8 fill-white mb-4" />
+                                <h3 className="text-lg font-bold mb-1">
+                                    {getPlanName() !== "Gratuit" ? getPlanName() : "Premium"}
                                 </h3>
-                                <p className="text-white/80 text-sm mb-4">
+                                <p className="text-white/80 text-xs mb-4">
                                     {getPlanName() !== "Gratuit"
-                                        ? `Votre forfait ${getPlanName()} est actif.`
-                                        : "Obtenez des matchs illimités, voyez qui vous aime, et bien plus encore !"}
+                                        ? `Forfait ${getPlanName()} actif.`
+                                        : "Matchs illimités, voyez qui vous aime, et plus !"}
                                 </p>
                                 <Button
-                                    className="w-full bg-white text-primary hover:bg-white/90 font-bold rounded-xl h-12"
+                                    className="w-full bg-white text-primary hover:bg-white/90 font-bold rounded-xl h-11 text-sm transition-transform active:scale-[0.98]"
                                     asChild
                                 >
-                                    <Link to="/plans">Voir les Forfaits</Link>
+                                    <Link to="/plans">Voir Forfaits</Link>
                                 </Button>
                             </div>
                         </div>
@@ -541,11 +542,11 @@ export default function Profile() {
                         </div>
                         <h3 className="text-xl font-bold text-center mb-2">Bloquer {userName} ?</h3>
                         <p className="text-muted-foreground text-center mb-8">
-                            Vous ne vous verrez plus mutuellement sur la plateforme. Cette action est réversible dans vos paramètres.
+                            Action réversible dans vos paramètres.
                         </p>
                         <div className="grid gap-3">
                             <Button variant="destructive" className="rounded-xl h-12 font-bold" onClick={confirmBlock}>
-                                Bloquer l'utilisateur
+                                Bloquer
                             </Button>
                             <Button variant="ghost" className="rounded-xl h-12 font-bold" onClick={() => setShowBlockConfirm(false)}>
                                 Annuler
@@ -559,16 +560,16 @@ export default function Profile() {
             {showReportModal && (
                 <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
                     <div className="w-full max-w-md rounded-3xl bg-card p-8 shadow-2xl border border-border animate-in zoom-in-95 duration-300">
-                        <div className="h-16 w-16 rounded-full bg-amber-500/10 flex items-center justify-center mb-6 mx-auto text-amber-500">
-                            <ShieldAlert className="h-8 w-8" />
+                        <div className="h-14 w-14 rounded-full bg-amber-500/10 flex items-center justify-center mb-6 mx-auto text-amber-500">
+                            <ShieldAlert className="h-7 w-7" />
                         </div>
-                        <h3 className="text-xl font-bold text-center mb-2">Signaler {userName}</h3>
-                        <p className="text-muted-foreground text-center mb-6">
+                        <h3 className="text-xl font-bold text-center mb-2">Signaler</h3>
+                        <p className="text-muted-foreground text-center mb-6 text-sm">
                             Veuillez expliquer brièvement pourquoi vous signalez cet utilisateur.
                         </p>
                         <textarea
-                            className="w-full min-h-[120px] rounded-2xl border border-border bg-muted/30 p-4 text-foreground focus:ring-2 focus:ring-primary/20 outline-none transition-all mb-6"
-                            placeholder="Comportement inapproprié, faux profil, spam..."
+                            className="w-full min-h-[100px] rounded-2xl border border-border bg-muted/30 p-4 text-foreground text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all mb-6"
+                            placeholder="Raison..."
                             value={reportReason}
                             onChange={(e) => setReportReason(e.target.value)}
                         />
@@ -576,7 +577,7 @@ export default function Profile() {
                             <Button variant="ghost" className="flex-1 rounded-xl h-12 font-bold" onClick={() => { setShowReportModal(false); setReportReason(""); }}>
                                 Annuler
                             </Button>
-                            <Button className="flex-1 rounded-xl h-12 font-bold bg-primary shadow-lg shadow-primary/20" onClick={submitReport}>
+                            <Button className="flex-1 rounded-xl h-12 font-bold bg-primary" onClick={submitReport}>
                                 Envoyer
                             </Button>
                         </div>

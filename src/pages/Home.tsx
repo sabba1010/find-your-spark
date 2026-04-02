@@ -97,9 +97,9 @@ export default function Home() {
   };
 
   return (
-    <div className="md:pt-20">
+    <div>
       {/* Hero */}
-      <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden px-4 py-12 md:py-20"
+      <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden px-4 pt-28 pb-12 md:pt-32 md:pb-20"
         style={{
           background: "radial-gradient(circle at 20% 30%, rgba(217, 70, 239, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(244, 63, 94, 0.15) 0%, transparent 40%), var(--gradient-hero)"
         }}

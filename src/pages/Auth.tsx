@@ -97,7 +97,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 pb-20 md:pt-16">
+    <div className="flex min-h-screen items-center justify-center px-4 pt-20 pb-20 md:pt-16">
       <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-lg">
         <div className="mb-6 text-center">
           <Heart className="mx-auto mb-2 h-10 w-10 fill-primary text-primary" />
