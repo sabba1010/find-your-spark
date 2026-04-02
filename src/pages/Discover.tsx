@@ -143,7 +143,7 @@ export default function Discover() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-4 pb-20 pt-16 md:pt-32">
+    <div className="mx-auto max-w-5xl px-4 pb-20 pt-20 md:pt-32">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Découvrir</h1>

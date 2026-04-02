@@ -6,7 +6,7 @@ export default function Terms() {
     const navigate = useNavigate();
 
     return (
-        <div className="mx-auto max-w-3xl px-4 pb-20 pt-8 md:pt-24">
+        <div className="mx-auto max-w-3xl px-4 pb-20 pt-20 md:pt-24">
             <div className="mb-6 flex items-center gap-3">
                 <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="rounded-full">
                     <ArrowLeft className="h-5 w-5" />

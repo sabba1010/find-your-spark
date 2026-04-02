@@ -250,7 +250,7 @@ export default function SubscriptionPlans() {
 
     return (
         <PayPalScriptProvider options={{ clientId: PAYPAL_CLIENT_ID, currency: "EUR", intent: "capture" }}>
-            <div className="min-h-screen bg-gray-50 pb-20 pt-16 md:pt-24">
+            <div className="min-h-screen bg-gray-50 pb-20 pt-20 md:pt-24">
                 <div className="mx-auto max-w-6xl px-4">
                     {/* Back button */}
                     <button onClick={() => navigate(-1)} className="mb-6 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">

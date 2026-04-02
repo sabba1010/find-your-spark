@@ -50,7 +50,7 @@ export default function Matches() {
     }
 
     return (
-        <div className="mx-auto max-w-5xl px-4 pb-20 pt-16 md:pt-32">
+        <div className="mx-auto max-w-5xl px-4 pb-20 pt-20 md:pt-32">
             <header className="mb-8 text-center">
                 <h1 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
                     Mes Connexions<span className="text-rose-500">.</span>
