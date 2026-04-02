@@ -42,6 +42,8 @@ export default function AdminDashboard() {
                 return;
             }
 
+            
+
             // Stats Fetch
             const fetchStats = async () => {
                 try {
