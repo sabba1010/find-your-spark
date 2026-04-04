@@ -5,6 +5,8 @@ import { useState } from "react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useEffect } from "react";
+import { API } from "@/lib/api";
 
 const navItems = [
   { to: "/", icon: Heart, label: "Accueil" },
@@ -22,6 +24,26 @@ export default function Navbar() {
   const userString = localStorage.getItem("user");
   const user = userString ? JSON.parse(userString) : {};
   const isAdmin = user.role === 'admin';
+ 
+  // Global Profile Sync: Keeps role and plan updated across the app
+  useEffect(() => {
+    const syncProfile = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      try {
+        const res = await fetch(`${API}/users/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success && data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
+      } catch (err) {
+        console.error("Global profile sync failed:", err);
+      }
+    };
+    syncProfile();
+  }, [pathname]); // Refresh on every page navigation for maximum accuracy
 
   const fullNavItems = [
     ...navItems,

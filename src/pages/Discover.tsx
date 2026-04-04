@@ -42,7 +42,7 @@ export default function Discover() {
     keyword: ""
   });
   const navigate = useNavigate();
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("user") || "{}"));
   const planTier = currentUser.plan?.tier || 'Free';
   // Advanced filters: Premium or Prestige only
   const canUseAdvanced = currentUser.role === 'admin' || planTier === 'Premium' || planTier === 'Prestige';
@@ -50,6 +50,27 @@ export default function Discover() {
   const hasUnlimitedBrowsing = currentUser.role === 'admin' || planTier !== 'Free';
 
   useEffect(() => {
+    // Refresh user profile on mount to ensure permissions (admin/premium) are current
+    const refreshToken = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      try {
+        const res = await fetch(`${API}/users/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success && data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+          setCurrentUser(data.user);
+          // Re-fetch matches if permissions changed
+          fetchMatches(); 
+        }
+      } catch (err) {
+        console.error("Profile refresh failed:", err);
+      }
+    };
+    
+    refreshToken();
     fetchPerfectMatches();
     fetchMatches();
   }, [navigate]);
