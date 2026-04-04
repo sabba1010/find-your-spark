@@ -45,9 +45,9 @@ export default function Discover() {
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
   const planTier = currentUser.plan?.tier || 'Free';
   // Advanced filters: Premium or Prestige only
-  const canUseAdvanced = planTier === 'Premium' || planTier === 'Prestige';
+  const canUseAdvanced = currentUser.role === 'admin' || planTier === 'Premium' || planTier === 'Prestige';
   // Unlimited browsing: Essential, Premium, or Prestige
-  const hasUnlimitedBrowsing = planTier !== 'Free';
+  const hasUnlimitedBrowsing = currentUser.role === 'admin' || planTier !== 'Free';
 
   useEffect(() => {
     fetchPerfectMatches();

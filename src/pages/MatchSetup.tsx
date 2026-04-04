@@ -68,7 +68,7 @@ export default function MatchSetup() {
       console.log("[MatchSetup] Starting profile save...");
       try {
         const token = localStorage.getItem("token");
-        const payload = { 
+        const payload = {
           gender, lookingFor, ageRange, location, photo: profilePic,
           bio, hobbies, zodiacSign, religion, height, age: parseInt(age, 10)
         };
@@ -85,7 +85,7 @@ export default function MatchSetup() {
 
         console.log("[MatchSetup] Response status:", res.status);
         const data = await res.json();
-        
+
         if (!res.ok) {
           console.error("[MatchSetup] Save failed:", data);
           throw new Error(data.message || "Erreur lors de la sauvegarde.");
@@ -121,6 +121,9 @@ export default function MatchSetup() {
       {selected && <Check className="ml-auto h-5 w-5 text-primary" />}
     </button>
   );
+
+
+
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 pb-20 pt-20 md:pt-16">

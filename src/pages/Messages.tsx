@@ -115,7 +115,10 @@ export default function Messages() {
     if (!newMsg.trim() || !activeChat) return;
 
     // Plan restriction: Free users cannot send messages
-    if (currentUser.planName === 'Free Registration' || !currentUser.planName) {
+    const isFree = currentUser.planName === 'Free Registration' || !currentUser.planName;
+    const isAdmin = currentUser.role === 'admin';
+
+    if (!isAdmin && isFree) {
       toast.error("Veuillez passer à un forfait payant pour envoyer des messages.", {
         action: {
           label: "Voir les Forfaits",

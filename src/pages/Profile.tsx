@@ -173,10 +173,12 @@ export default function Profile() {
     };
 
     const isOwnProfile = !id;
+    const isAdmin = prefs?.role === 'admin';
     const userName = isOwnProfile ? (prefs?.name || "Mon Profil") : publicUser?.name;
     
     // Safety check: plan might be an ID or an object
     const getPlanName = () => {
+        if (isAdmin) return "Admin Lifetime";
         if (!isOwnProfile && publicUser?.planName) return publicUser.planName;
         if (prefs?.plan && typeof prefs.plan === 'object') return prefs.plan.name;
         return prefs?.planName || "Gratuit";
@@ -515,19 +517,23 @@ export default function Profile() {
                             <div className="rounded-2xl bg-gradient-to-br from-primary to-rose-600 p-6 text-white shadow-lg shadow-primary/20">
                                 <Heart className="h-8 w-8 fill-white mb-4" />
                                 <h3 className="text-lg font-bold mb-1">
-                                    {getPlanName() !== "Gratuit" ? getPlanName() : "Premium"}
+                                    {isAdmin ? "Accès Admin" : (getPlanName() !== "Gratuit" ? getPlanName() : "Premium")}
                                 </h3>
                                 <p className="text-white/80 text-xs mb-4">
-                                    {getPlanName() !== "Gratuit"
-                                        ? `Forfait ${getPlanName()} actif.`
-                                        : "Matchs illimités, voyez qui vous aime, et plus !"}
+                                    {isAdmin 
+                                        ? "Vous avez un accès complet à toutes les fonctionnalités."
+                                        : (getPlanName() !== "Gratuit"
+                                            ? `Forfait ${getPlanName()} actif.`
+                                            : "Matchs illimités, voyez qui vous aime, et plus !")}
                                 </p>
-                                <Button
-                                    className="w-full bg-white text-primary hover:bg-white/90 font-bold rounded-xl h-11 text-sm transition-transform active:scale-[0.98]"
-                                    asChild
-                                >
-                                    <Link to="/plans">Voir Forfaits</Link>
-                                </Button>
+                                {!isAdmin && (
+                                    <Button
+                                        className="w-full bg-white text-primary hover:bg-white/90 font-bold rounded-xl h-11 text-sm transition-transform active:scale-[0.98]"
+                                        asChild
+                                    >
+                                        <Link to="/plans">Voir Forfaits</Link>
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     </div>

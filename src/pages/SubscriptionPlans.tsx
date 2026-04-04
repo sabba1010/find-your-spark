@@ -116,6 +116,7 @@ export default function SubscriptionPlans() {
     const [submitting, setSubmitting] = useState(false);
     const navigate = useNavigate();
     const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const isAdmin = currentUser.role === 'admin';
 
     useEffect(() => {
         fetch(`${API}/plans`)
@@ -275,8 +276,12 @@ export default function SubscriptionPlans() {
 
                     {/* Tagline */}
                     <div className="text-center mb-8">
-                        <p className="text-2xl font-bold text-gray-800 max-w-md mx-auto">{cfg.tagline}</p>
-                        <p className="text-gray-500 mt-2 font-medium">Choose a subscription</p>
+                        <p className="text-2xl font-bold text-gray-800 max-w-md mx-auto">
+                            {isAdmin ? "Admin Lifetime Access" : cfg.tagline}
+                        </p>
+                        <p className="text-gray-500 mt-2 font-medium">
+                            {isAdmin ? "You have full access to all features as an administrator." : "Choose a subscription"}
+                        </p>
                     </div>
 
                     <div className="flex flex-col lg:flex-row gap-8 items-start justify-center">
@@ -321,28 +326,38 @@ export default function SubscriptionPlans() {
                             })}
 
                             {/* Subscribe button */}
-                            {selectedPlan && !showPaypal && (
-                                <Button
-                                    onClick={() => setShowPaypal(true)}
-                                    disabled={submitting}
-                                    className={`w-full mt-2 rounded-full py-6 text-base font-bold ${cfg.buttonClass}`}
-                                >
-                                    Continue
-                                </Button>
-                            )}
-
-                            {showPaypal && selectedPlan && (
-                                <div className="mt-2 rounded-2xl bg-white border p-4 shadow">
-                                    <PayPalButtons
-                                        style={{ layout: "vertical", shape: "pill", label: "pay" }}
-                                        createOrder={createOrder}
-                                        onApprove={onApprove}
-                                        onCancel={() => setShowPaypal(false)}
-                                    />
-                                    <button onClick={() => setShowPaypal(false)} className="w-full mt-2 text-xs text-gray-400 hover:text-gray-600">
-                                        Annuler
-                                    </button>
+                            {isAdmin ? (
+                                <div className="mt-4 p-6 rounded-2xl bg-slate-800 text-white text-center shadow-xl">
+                                    <Crown className="h-10 w-10 mx-auto mb-3 text-yellow-400" />
+                                    <h3 className="text-xl font-bold mb-1">Accès Admin Actif</h3>
+                                    <p className="text-sm text-slate-300">Vous bénéficiez de tous les avantages Prestige à vie.</p>
                                 </div>
+                            ) : (
+                                <>
+                                    {selectedPlan && !showPaypal && (
+                                        <Button
+                                            onClick={() => setShowPaypal(true)}
+                                            disabled={submitting}
+                                            className={`w-full mt-2 rounded-full py-6 text-base font-bold ${cfg.buttonClass}`}
+                                        >
+                                            Continue
+                                        </Button>
+                                    )}
+
+                                    {showPaypal && selectedPlan && (
+                                        <div className="mt-2 rounded-2xl bg-white border p-4 shadow">
+                                            <PayPalButtons
+                                                style={{ layout: "vertical", shape: "pill", label: "pay" }}
+                                                createOrder={createOrder}
+                                                onApprove={onApprove}
+                                                onCancel={() => setShowPaypal(false)}
+                                            />
+                                            <button onClick={() => setShowPaypal(false)} className="w-full mt-2 text-xs text-gray-400 hover:text-gray-600">
+                                                Annuler
+                                            </button>
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
 
