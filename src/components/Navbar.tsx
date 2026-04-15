@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useEffect } from "react";
-import { API } from "@/lib/api";
+import { API, apiFetch } from "@/lib/api";
 
 const navItems = [
   { to: "/", icon: Heart, label: "Accueil" },
@@ -31,7 +31,7 @@ export default function Navbar() {
       const token = localStorage.getItem("token");
       if (!token) return;
       try {
-        const res = await fetch(`${API}/users/me`, {
+        const res = await apiFetch(`${API}/users/me`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();

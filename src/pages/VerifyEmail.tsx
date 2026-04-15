@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
-import { API } from "@/lib/api";
+import { API, apiFetch } from "@/lib/api";
 
 export default function VerifyEmail() {
   const { token } = useParams();
@@ -14,7 +14,7 @@ export default function VerifyEmail() {
   useEffect(() => {
     const verify = async () => {
       try {
-        const res = await fetch(`${API}/auth/verify-email/${token}`);
+        const res = await apiFetch(`${API}/auth/verify-email/${token}`);
         const data = await res.json();
 
         if (res.ok) {

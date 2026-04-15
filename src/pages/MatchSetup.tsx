@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Heart, ArrowRight, ArrowLeft, Check, Camera, Upload, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { API } from "@/lib/api";
+import { API, apiFetch } from "@/lib/api";
 import { compressImage } from "@/lib/utils";
 
 const steps = ["Genre", "Votre Âge", "À la recherche de", "Tranche d'âge", "Lieu", "Photo de Profil", "À propos de vous", "Détails essentiels", "Trouver des Profils"];
@@ -74,7 +74,7 @@ export default function MatchSetup() {
         };
         console.log("[MatchSetup] Sending payload:", { ...payload, photo: payload.photo ? "present (base64)" : "missing" });
 
-        const res = await fetch(`${API}/users/me`, {
+        const res = await apiFetch(`${API}/users/me`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",

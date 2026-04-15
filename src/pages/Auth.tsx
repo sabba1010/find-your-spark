@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { API } from "@/lib/api";
+import { API, apiFetch } from "@/lib/api";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -80,7 +80,7 @@ export default function Auth() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${API}/auth/forgot-password`, {
+      const res = await apiFetch(`${API}/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: form.email }),

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ProfileCard from "@/components/ProfileCard";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { API } from "@/lib/api";
+import { API, apiFetch } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, Globe, SlidersHorizontal, X } from "lucide-react";
@@ -55,7 +55,7 @@ export default function Discover() {
       const token = localStorage.getItem("token");
       if (!token) return;
       try {
-        const res = await fetch(`${API}/users/me`, {
+        const res = await apiFetch(`${API}/users/me`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();
@@ -86,7 +86,7 @@ export default function Discover() {
 
     try {
       // Fetch without mode=discover to get strict mutual matches (defaults to searchLevel=worldwide or user pref)
-      const res = await fetch(`${API}/users/matches`, {
+      const res = await apiFetch(`${API}/users/matches`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();

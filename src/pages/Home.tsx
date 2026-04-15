@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { getDefaultAvatar } from "@/lib/utils";
 
-import { API } from "@/lib/api";
+import { API, apiFetch } from "@/lib/api";
 
 interface MatchedUser {
   id: string;
@@ -66,7 +66,7 @@ export default function Home() {
       const prefs = JSON.parse(localStorage.getItem("matchPrefs") || "{}");
       const ageParam = prefs.ageRange ? `?ageRange=${encodeURIComponent(prefs.ageRange)}` : "";
 
-      const res = await fetch(`${API}/users/matches${ageParam}`, {
+      const res = await apiFetch(`${API}/users/matches${ageParam}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();

@@ -4,7 +4,7 @@ import { Check, ArrowLeft, Star, Shield, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { API } from "@/lib/api";
+import { API, apiFetch } from "@/lib/api";
 
 const PAYPAL_CLIENT_ID = "AfUE0E35GfN__bPrGA5C5kXFefBHtu2dVJJL_UK-xqf8q70YPYnjTIV6Cc84WyIdPOid_xjyUSOpUvA4";
 
@@ -168,7 +168,7 @@ export default function SubscriptionPlans() {
         setSubmitting(true);
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${API}/plans/subscribe`, {
+            const res = await apiFetch(`${API}/plans/subscribe`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ planId: selectedPlan._id })
@@ -191,7 +191,7 @@ export default function SubscriptionPlans() {
     const createOrder = async (_data: any, _actions: any) => {
         if (!selectedPlan) return "";
         const token = localStorage.getItem("token");
-        const res = await fetch(`${API}/paypal/create-order`, {
+        const res = await apiFetch(`${API}/paypal/create-order`, {
             method: "POST",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
             body: JSON.stringify({ planId: selectedPlan._id })
@@ -203,7 +203,7 @@ export default function SubscriptionPlans() {
 
     const onApprove = async (data: any, _actions: any) => {
         const token = localStorage.getItem("token");
-        const res = await fetch(`${API}/paypal/capture-order`, {
+        const res = await apiFetch(`${API}/paypal/capture-order`, {
             method: "POST",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
             body: JSON.stringify({ orderId: data.orderID, planId: selectedPlan?._id })

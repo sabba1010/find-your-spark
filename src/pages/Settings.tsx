@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Heart, MapPin, Edit, Settings as SettingsIcon, LogOut, Shield, ChevronRight, MessageCircle, User, Activity, Sparkles, ArrowLeft, Save, Camera, Upload, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
-import { API } from "@/lib/api";
+import { API, apiFetch } from "@/lib/api";
 import { getDefaultAvatar, compressImage } from "@/lib/utils";
 
 export default function Settings() {
@@ -152,7 +152,7 @@ export default function Settings() {
         try {
             const token = localStorage.getItem("token");
             console.log("Using API:", `${API}/users/me`);
-            const res = await fetch(`${API}/users/me`, {
+            const res = await apiFetch(`${API}/users/me`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -185,7 +185,7 @@ export default function Settings() {
         setSaving(true);
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${API}/auth/change-password`, {
+            const res = await apiFetch(`${API}/auth/change-password`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

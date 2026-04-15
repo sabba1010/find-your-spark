@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useSocket } from "../context/SocketContext";
 import { getDefaultAvatar } from "@/lib/utils";
-import { API } from "@/lib/api";
+import { API, apiFetch } from "@/lib/api";
 
 interface Message {
   _id: string;
@@ -44,7 +44,7 @@ export default function Messages() {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
-      const res = await fetch(`${API}/messages/chats`, {
+      const res = await apiFetch(`${API}/messages/chats`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -61,7 +61,7 @@ export default function Messages() {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
-      const res = await fetch(`${API}/messages/${userId}`, {
+      const res = await apiFetch(`${API}/messages/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -130,7 +130,7 @@ export default function Messages() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API}/messages`, {
+      const res = await apiFetch(`${API}/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

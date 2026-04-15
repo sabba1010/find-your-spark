@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Users, TrendingUp, DollarSign, PieChart, ArrowUpRight, ArrowDownRight, Clock, Search, Eye, MapPin } from "lucide-react";
+import { Users, TrendingUp, DollarSign, PieChart, ArrowUpRight, ArrowDownRight, Clock, Search, Eye, MapPin, Trash2, Ban, Unlock } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { getDefaultAvatar } from "@/lib/utils";
 
-import { API } from "@/lib/api";
+import { API, apiFetch } from "@/lib/api";
 
 interface Stats {
     totalUsers: number;
@@ -24,6 +24,7 @@ interface UserRow {
     photo: string;
     planName: string;
     subscriptionStatus: string;
+    isSuspended: boolean;
     createdAt: string;
 }
 
@@ -32,6 +33,52 @@ export default function AdminDashboard() {
     const [users, setUsers] = useState<UserRow[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+    const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+    const handleDeleteUser = async (userId: string, userName: string) => {
+        if (!confirm(`Êtes-vous sûr de vouloir supprimer "${userName}" ? Cette action est irréversible.`)) return;
+        const token = localStorage.getItem("token");
+        setActionLoading(userId + '-delete');
+        try {
+            const res = await apiFetch(`${API}/admin/users/${userId}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success) {
+                setUsers(prev => prev.filter(u => u.id !== userId));
+                toast.success('Utilisateur supprimé avec succès.');
+            } else {
+                toast.error(data.message || 'Erreur lors de la suppression.');
+            }
+        } catch {
+            toast.error('Erreur réseau.');
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
+    const handleSuspendUser = async (userId: string, isSuspended: boolean) => {
+        const token = localStorage.getItem("token");
+        setActionLoading(userId + '-suspend');
+        try {
+            const res = await apiFetch(`${API}/admin/users/${userId}/suspend`, {
+                method: 'PUT',
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success) {
+                setUsers(prev => prev.map(u => u.id === userId ? { ...u, isSuspended: data.isSuspended } : u));
+                toast.success(data.message);
+            } else {
+                toast.error(data.message || 'Erreur lors de la suspension.');
+            }
+        } catch {
+            toast.error('Erreur réseau.');
+        } finally {
+            setActionLoading(null);
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,7 +94,7 @@ export default function AdminDashboard() {
             // Stats Fetch
             const fetchStats = async () => {
                 try {
-                    const res = await fetch(`${API}/admin/stats`, { 
+                    const res = await apiFetch(`${API}/admin/stats`, { 
                         headers: { Authorization: `Bearer ${token}` } 
                     });
                     const data = await res.json();
@@ -66,7 +113,7 @@ export default function AdminDashboard() {
             // Users Fetch
             const fetchUsers = async () => {
                 try {
-                    const res = await fetch(`${API}/admin/users`, { 
+                    const res = await apiFetch(`${API}/admin/users`, { 
                         headers: { Authorization: `Bearer ${token}` } 
                     });
                     
@@ -291,13 +338,34 @@ export default function AdminDashboard() {
                                                     </span>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 text-center">
-                                                <Link 
-                                                    to={`/profile/${user.id}`}
-                                                    className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-muted text-foreground hover:bg-primary hover:text-white transition-all font-bold text-xs"
-                                                >
-                                                    <Eye className="h-3.5 w-3.5" /> Voir Profile
-                                                </Link>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    <Link 
+                                                        to={`/profile/${user.id}`}
+                                                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-muted text-foreground hover:bg-primary hover:text-white transition-all font-bold text-xs whitespace-nowrap"
+                                                    >
+                                                        <Eye className="h-3.5 w-3.5" /> Voir
+                                                    </Link>
+                                                    <button
+                                                        onClick={() => handleSuspendUser(user.id, user.isSuspended)}
+                                                        disabled={actionLoading === user.id + '-suspend'}
+                                                        className={`flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-xs transition-all whitespace-nowrap ${
+                                                            user.isSuspended
+                                                                ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                                                : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                                                        } disabled:opacity-50`}
+                                                    >
+                                                        {user.isSuspended ? <Unlock className="h-3.5 w-3.5" /> : <Ban className="h-3.5 w-3.5" />}
+                                                        {user.isSuspended ? 'Réactiver' : 'Suspendre'}
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteUser(user.id, user.name)}
+                                                        disabled={actionLoading === user.id + '-delete'}
+                                                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-100 text-rose-700 hover:bg-rose-200 font-bold text-xs transition-all whitespace-nowrap disabled:opacity-50"
+                                                    >
+                                                        <Trash2 className="h-3.5 w-3.5" /> Supprimer
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

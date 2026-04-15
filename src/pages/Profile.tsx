@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getDefaultAvatar } from "@/lib/utils";
 
-import { API } from "@/lib/api";
+import { API, apiFetch } from "@/lib/api";
 
 interface UserPrefs {
     gender: string;
@@ -97,7 +97,7 @@ export default function Profile() {
         if (!token) return navigate("/auth");
 
         try {
-            const res = await fetch(`${API}/users/like/${id}`, {
+            const res = await apiFetch(`${API}/users/like/${id}`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -125,7 +125,7 @@ export default function Profile() {
         if (!token) return navigate("/auth");
 
         try {
-            const res = await fetch(`${API}/users/block/${id}`, {
+            const res = await apiFetch(`${API}/users/block/${id}`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -153,7 +153,7 @@ export default function Profile() {
         if (!token) return navigate("/auth");
 
         try {
-            const res = await fetch(`${API}/users/report`, {
+            const res = await apiFetch(`${API}/users/report`, {
                 method: "POST",
                 headers: { 
                     "Authorization": `Bearer ${token}`,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { API } from "@/lib/api";
+import { API, apiFetch } from "@/lib/api";
 import ProfileCard from "@/components/ProfileCard";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -21,7 +21,7 @@ export default function Matches() {
         if (!token) return;
 
         try {
-            const res = await fetch(`${API}/users/affinities`, {
+            const res = await apiFetch(`${API}/users/affinities`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
